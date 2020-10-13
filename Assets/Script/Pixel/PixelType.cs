@@ -3,7 +3,7 @@
 namespace Prototype.Element
 {
     [CreateAssetMenu(fileName = "Pixel", menuName = "Prototype/Pixel")]
-    public class PixelElement : ScriptableObject
+    public class PixelType : ScriptableObject
     {
         public Sprite sprite;
         

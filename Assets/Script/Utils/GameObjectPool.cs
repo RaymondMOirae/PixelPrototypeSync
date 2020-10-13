@@ -7,6 +7,54 @@ namespace Prototype.Utils
     public class GameObjectPool : Singleton<GameObjectPool>
     {
         private static Dictionary<GameObject, Pool> prefabPools = new Dictionary<GameObject, Pool>();
+        private static Dictionary<Type, Pool> _perComponentPools = new Dictionary<Type, Pool>();
+
+        #region Types
+        
+        private static class PerComponentPool<T> where T : Component
+        {
+            public static Pool ObjectPool;
+            private static string DefaultName = "[GameObject]";
+
+            public static T Get()
+                => Get(DefaultName);
+            public static T Get(string name)
+            {
+                return GetOrCreatePool().Get(name).GetComponent<T>();
+            }
+
+            public static void Release(T component)
+            {
+                GetOrCreatePool().Release(component.gameObject);
+            }
+
+            public static void PreAlloc(int count)
+            {
+                GetOrCreatePool().PreAlloc(count);
+            }
+
+            private static Pool GetOrCreatePool()
+            {
+                if(ObjectPool is null)
+                    CreatePool();
+                return ObjectPool;
+            }
+
+            private static void CreatePool()
+            {
+                var container = new GameObject("[Pool]" + typeof(T).Name);
+                container.transform.SetParent(GameObjectPool.Instance.transform);
+                ObjectPool = new Pool(container, Allocator);
+                _perComponentPools.Add(typeof(T), ObjectPool);
+            }
+
+            private static GameObject Allocator()
+            {
+                var obj = new GameObject(DefaultName);
+                obj.AddComponent<T>();
+                return obj;
+            }
+        }
 
         private class Pool
         {
@@ -70,6 +118,10 @@ namespace Prototype.Utils
                 }
             }
         }
+        
+        #endregion
+        
+        #region PrefabPool
 
         private static GameObject Get(GameObject prefab) => GetOrCreatePrefabPool(prefab).Get();
 
@@ -118,6 +170,24 @@ namespace Prototype.Utils
             pool.ObjectCollection.name = "[Pool]" + prefab.name;
             return pool;
         }
+        
+        #endregion
+
+        #region PerComponentPool
+
+        public static T Get<T>(string name) where T : Component
+            => PerComponentPool<T>.Get(name);
+
+        public static T Get<T>() where T : Component
+            => PerComponentPool<T>.Get();
+
+        public static void Release<T>(T component) where T : Component
+            => PerComponentPool<T>.Release(component);
+
+        public static void PreAlloc<T>(int count) where T : Component
+            => PerComponentPool<T>.PreAlloc(count);
+
+        #endregion
 
         protected override void Awake()
         {

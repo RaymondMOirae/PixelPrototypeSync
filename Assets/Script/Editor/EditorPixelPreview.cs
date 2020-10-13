@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Prototype.Editor
 {
-    [CustomPreview(typeof(PixelElement))]
+    [CustomPreview(typeof(PixelType))]
     public class EditorPixelPreview : ObjectPreview
     {
         public override bool HasPreviewGUI()
@@ -14,7 +14,7 @@ namespace Prototype.Editor
 
         public override void OnPreviewGUI(Rect r, GUIStyle background)
         {
-            if (target is PixelElement pixel && pixel.sprite)
+            if (target is PixelType pixel && pixel.sprite)
             {
                 var center = r.center;
                 r.size = Vector2.one * Mathf.Min(r.size.x, r.size.y);

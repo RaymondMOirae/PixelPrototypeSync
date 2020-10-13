@@ -12,27 +12,27 @@ namespace Prototype.UI
 
         private int count;
 
-        private PixelElement pixelElement;
-        public PixelElement Pixel
+        private PixelType pixelType;
+        public PixelType Pixel
         {
-            get => pixelElement;
+            get => pixelType;
             set
             {
-                pixelElement = value;
-                if (pixelElement is null)
+                pixelType = value;
+                if (pixelType is null)
                 {
                     pixelImage.sprite = null;
                     pixelImage.color = new Color(1, 1, 1, 0);
                 }
                 else
                 {
-                    pixelImage.sprite = pixelElement.sprite;
+                    pixelImage.sprite = pixelType.sprite;
                     pixelImage.color = Color.white;
                 }
             }
         }
 
-        public void UpdateUI(PixelElement pixel, int count)
+        public void UpdateUI(PixelType pixel, int count)
         {
             Pixel = pixel;
             this.count = count;

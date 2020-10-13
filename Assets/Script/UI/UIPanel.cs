@@ -1,4 +1,5 @@
-﻿using Prototype.Utils;
+﻿using System.Threading.Tasks;
+using Prototype.Utils;
 using UnityEngine;
 
 namespace Prototype.UI
@@ -22,10 +23,20 @@ namespace Prototype.UI
             StartCoroutine(Utility.ShowUI(canvasGroup, time));
         }
 
+        public Task ShowAsync(float time = .2f)
+        {
+            return Utility.ShowUIAsync(canvasGroup, time);
+        }
+
         public void Hide(float time = .2f)
         {
             StopAllCoroutines();
             StartCoroutine(Utility.HideUI(canvasGroup, time, true));
+        }
+
+        public Task HideAsync(float time = .2f)
+        {
+            return Utility.HideUIAsync(canvasGroup, time);
         }
     }
 }

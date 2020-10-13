@@ -10,14 +10,14 @@ using UnityEngine.UI;
 namespace Prototype.UI
 {
     [RequireComponent(typeof(RectTransform))]
-    public class PixelPalette : SelectGroup<PixelElement>
+    public class PixelPalette : SelectGroup<PixelType>
     {
         public SelectItem pointerItem;
         public SelectItem eraserItem;
 
-        private Dictionary<PixelElement, List<Pixel>> availablePixels = new Dictionary<PixelElement, List<Pixel>>();
+        private Dictionary<PixelType, List<Pixel>> availablePixels = new Dictionary<PixelType, List<Pixel>>();
 
-        public PixelElement SelectedPixel => (Selected as PixelItem)?.Pixel;
+        public PixelType SelectedPixel => (Selected as PixelItem)?.Pixel;
         
 
         private void Awake()
@@ -32,8 +32,8 @@ namespace Prototype.UI
                 else
                     PixelEditor.Instance.EditMode = PixelEditMode.Paint;
             };
-            var eraserElement = ScriptableObject.CreateInstance<PixelElement>();
-            var pointerElement = ScriptableObject.CreateInstance<PixelElement>();
+            var eraserElement = ScriptableObject.CreateInstance<PixelType>();
+            var pointerElement = ScriptableObject.CreateInstance<PixelType>();
             AddItem(pointerElement, pointerItem);
             AddItem(eraserElement, eraserItem);
         }
@@ -52,9 +52,9 @@ namespace Prototype.UI
 
             foreach (var pixel in pixels)
             {
-                if(!this.availablePixels.ContainsKey(pixel.element))
-                    this.availablePixels[pixel.element] = new List<Pixel>(32);
-                this.availablePixels[pixel.element].Add(pixel);
+                if(!this.availablePixels.ContainsKey(pixel.Type))
+                    this.availablePixels[pixel.Type] = new List<Pixel>(32);
+                this.availablePixels[pixel.Type].Add(pixel);
             }
 
             foreach (var pair in this.availablePixels)
@@ -63,16 +63,16 @@ namespace Prototype.UI
             }
         }
 
-        void AddPaletteUI(PixelElement pixelElement, int count)
+        void AddPaletteUI(PixelType pixelType, int count)
         {
             var item = GameObjectPool.Get<PixelItem>(ResourceManager.Instance.PrefabPixelItem);
-            item.UpdateUI(pixelElement, count);
-            AddItem(pixelElement, item);
+            item.UpdateUI(pixelType, count);
+            AddItem(pixelType, item);
         }
 
-        void UpdatePaletteUI(PixelElement pixelElement)
+        void UpdatePaletteUI(PixelType pixelType)
         {
-            FindSelectItem<PixelItem>(pixelElement)?.UpdateUI(pixelElement, this.availablePixels[pixelElement].Count);
+            FindSelectItem<PixelItem>(pixelType)?.UpdateUI(pixelType, this.availablePixels[pixelType].Count);
         }
 
         public Pixel TakePixel()
@@ -89,20 +89,20 @@ namespace Prototype.UI
 
         public void SavePixel(Pixel pixel)
         {
-            if (pixel?.element is null)
+            if (pixel?.Type is null)
                 return;
 
-            if (availablePixels.TryGetValue(pixel.element, out var list))
+            if (availablePixels.TryGetValue(pixel.Type, out var list))
             {
                 list.Add(pixel);
-                UpdatePaletteUI(pixel.element);
+                UpdatePaletteUI(pixel.Type);
             }
             else
             {
                 var newList = ObjectPool<List<Pixel>>.Get();
-                availablePixels.Add(pixel.element, newList);
+                availablePixels.Add(pixel.Type, newList);
                 
-                AddPaletteUI(pixel.element, newList.Count);
+                AddPaletteUI(pixel.Type, newList.Count);
             }
         }
     }

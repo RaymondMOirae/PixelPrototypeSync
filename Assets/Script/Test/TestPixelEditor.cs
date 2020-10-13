@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Prototype.Element;
+using Prototype.Rendering;
 using Prototype.UI;
+using Prototype.Utils;
 using Script.GameSystem;
 using UnityEngine;
 
@@ -12,7 +14,7 @@ namespace Prototype.Script.Test
         public int Count = 32;
         
         private List<Pixel> pixels = new List<Pixel>();
-        private void Start()
+        private async void Start()
         {
             foreach (var pixelElement in ResourceManager.Instance.PixelElements)
             {
@@ -22,7 +24,10 @@ namespace Prototype.Script.Test
                 }
             }
             
-            PixelEditor.Instance.UpdateUI(pixels, new Vector2Int(8, 8));
+            var image = await PixelEditor.Instance.Edit(pixels, new Vector2Int(8, 8));
+
+            var renderer = GameObjectPool.Get<PixelImageRenderer>();
+            renderer.UpdatePixelImage(image);
         }
     }
 }

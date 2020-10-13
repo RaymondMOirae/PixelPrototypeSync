@@ -14,7 +14,7 @@ namespace Prototype.UI
 
         public Image highlight;
 
-        private Pixel pixel;
+        public Pixel Pixel { get; private set; }
 
         private void Awake()
         {
@@ -26,11 +26,11 @@ namespace Prototype.UI
             switch (PixelEditor.Instance.EditMode)
             {
                 case PixelEditMode.Paint:
-                    PixelEditor.Instance.palette.SavePixel(pixel);
+                    PixelEditor.Instance.palette.SavePixel(Pixel);
                     SetPixel(PixelEditor.Instance.palette.TakePixel());
                     break;
                 case PixelEditMode.Erase:
-                    PixelEditor.Instance.palette.SavePixel(pixel);
+                    PixelEditor.Instance.palette.SavePixel(Pixel);
                     SetPixel(null);
                     break;
             }
@@ -45,11 +45,11 @@ namespace Prototype.UI
             }
             else
             {
-                pixelImage.sprite = pixel.element.sprite;
+                pixelImage.sprite = pixel.Type.sprite;
                 pixelImage.color = Color.white;
             }
 
-            this.pixel = pixel;
+            this.Pixel = pixel;
         }
     }
 }
