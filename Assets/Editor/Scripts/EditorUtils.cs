@@ -109,6 +109,38 @@ namespace Prototype.Editor
             }
         }
 
+        public static void GridLayout(Rect container, Vector2 gridSize, int count, Action<Rect> renderCallback)
+        {
+            var layoutPos = container.min;
+            for (var i = 0; i < count; i++)
+            {
+                renderCallback(new Rect(layoutPos, gridSize));
+                layoutPos.x += gridSize.x;
+                if (gridSize.x - container.xMin > gridSize.x)
+                {
+                    layoutPos.x = container.x;
+                    layoutPos.y += gridSize.y;
+                }
+            }
+        }
+
+        public static void GridLayout<T>(Rect container, Vector2 gridSize, IEnumerable<T> collection,
+            Action<Rect, T> renderCallback)
+        {
+            var layoutPos = container.min;
+            foreach(var element in collection)
+            {
+                renderCallback(new Rect(layoutPos, gridSize), element);
+                layoutPos.x += gridSize.x;
+                if (gridSize.x - container.xMin > container.width)
+                {
+                    layoutPos.x = container.x;
+                    layoutPos.y += gridSize.y;
+                }
+            }
+        }
+        
+
         public class ListDrawer<T>
         {
             bool fold = true;

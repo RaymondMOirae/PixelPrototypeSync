@@ -1,16 +1,28 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Prototype.Element
 {
+    [Serializable]
     public class PixelImage
     {
-        public Vector2Int Size { get; }
-        public Pixel[,] Pixels { get; }
+        [SerializeField]
+        private Vector2Int _size;
 
+        public Vector2Int Size => _size;
+        
+        [SerializeField]
+        private Pixel[,] _pixels;
+
+        public Pixel[,] Pixels => _pixels;
+
+        public PixelImage(int x, int y) : this(new Vector2Int(x, y))
+        {
+        }
         public PixelImage(Vector2Int size)
         {
-            Size = size;
-            Pixels = new Pixel[size.x, size.y];
+            _size = size;
+            _pixels = new Pixel[size.x, size.y];
         }
     }
 }

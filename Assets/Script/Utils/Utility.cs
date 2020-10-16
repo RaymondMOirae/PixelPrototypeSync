@@ -755,6 +755,38 @@ public static class Utility
         return mesh;
     }
 
+    private static Mesh _fullNDCQuad;
+    public static Mesh GetFullNDCQuad()
+    {
+        if (_fullNDCQuad)
+            return _fullNDCQuad;
+        _fullNDCQuad = new Mesh();
+        _fullNDCQuad.vertices = new []
+        {
+            new Vector3(-1, -1, 0), 
+            new Vector3( 1, -1, 0), 
+            new Vector3( 1,  1, 0), 
+            new Vector3(-1,  1, 0), 
+        };
+        _fullNDCQuad.triangles = new int[]
+        {
+            0, 2, 1,
+            0, 3, 2,
+        };
+        _fullNDCQuad.uv = new Vector2[]
+        {
+            new Vector2(0, 0),
+            new Vector2(1, 0),
+            new Vector2(1, 1),
+            new Vector2(0, 1),
+        };
+        _fullNDCQuad.RecalculateBounds();
+        _fullNDCQuad.RecalculateNormals();
+        _fullNDCQuad.RecalculateTangents();
+        _fullNDCQuad.UploadMeshData(true);
+        return _fullNDCQuad;
+    }
+
     public static void DebugDrawTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
     {
         Debug.DrawLine(a, b, color);

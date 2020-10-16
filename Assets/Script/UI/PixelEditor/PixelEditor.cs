@@ -15,6 +15,7 @@ namespace Prototype.UI
         None,
         Paint,
         Erase,
+        ColorPicker,
     }
     [RequireComponent(typeof(CanvasGroup))]
     public class PixelEditor : GlobalUIPanel<PixelEditor>, ICustomEditorEX
@@ -31,6 +32,8 @@ namespace Prototype.UI
         public PixelEditMode EditMode = PixelEditMode.None;
 
         private TaskCompletionSource<PixelImage> _promise = null;
+        private readonly HashSet<Vector2Int> _lockedPixels = new HashSet<Vector2Int>();
+        private PixelImage _editingImage = null;
 
         protected override void Awake()
         {
@@ -54,12 +57,29 @@ namespace Prototype.UI
             UpdateLayout();
         }
 
-        public async Task<PixelImage> Edit(IEnumerable<Pixel> pixels, Vector2Int canvasSize)
+        public void SetEditable(Vector2Int pos, bool editable)
+        {
+            if (!editable)
+            {
+                _lockedPixels.Add(pos);
+                if (slots != null && slots.ContainsIndex(pos) && slots[pos.x, pos.y])
+                    slots[pos.x, pos.y].Editable = false;
+            }
+            else
+            {
+                _lockedPixels.Remove(pos);
+                if (slots != null && slots.ContainsIndex(pos) && slots[pos.x, pos.y])
+                    slots[pos.x, pos.y].Editable = true;
+            }
+        }
+
+        public async Task<PixelImage> Edit(IEnumerable<Pixel> pixels, PixelImage image)
         {
             if (!(_promise is null))
                 throw new Exception("Duplicated editor.");
-            
-            UpdateUI(pixels, canvasSize);
+
+            _editingImage = image;
+            UpdateUI(pixels, _editingImage.Size);
 
             Show();
             
@@ -67,6 +87,7 @@ namespace Prototype.UI
             _promise = promise;
 
             var result = await promise.Task;
+            _editingImage = null;
 
             Hide();
             
@@ -75,14 +96,13 @@ namespace Prototype.UI
 
         public PixelImage GetImage()
         {
-            PixelImage image = new PixelImage(size);
             for(var y = 0 ;  y<size.y;y++)
             for (var x = 0; x < size.x; x++)
             {
-                image.Pixels[x, y] = slots[x, y].Pixel;
+                _editingImage.Pixels[x, y] = slots[x, y].Pixel;
             }
 
-            return image;
+            return _editingImage;
         }
 
         [EditorButton]
@@ -106,8 +126,18 @@ namespace Prototype.UI
                     var slot = GameObjectPool.Get<PixelSlot>(ResourceManager.Instance.PrefabPixelSlot);
                     slot.transform.SetParent(pixelCanvas.transform);
                     slots[x, y] = slot;
+                    slot.SetPixel(_editingImage.Pixels[x, y]);
                 }
             }
+
+
+
+            foreach (var lockedSlot in _lockedPixels)
+            {
+                if (slots.ContainsIndex(lockedSlot))
+                    slots[lockedSlot.x, lockedSlot.y].Editable = false;
+            }
+            
         }
         
         

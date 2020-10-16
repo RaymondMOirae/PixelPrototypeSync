@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 1cacf2bde0e84442a14378a08cf2c218
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - _editAsset: {instanceID: 0}
+  - _iconCursor: {fileID: 6192944022281365145, guid: 2e812572ab9250746b47015228d6b610,
+      type: 3}
+  - _iconEraser: {fileID: 6192944022281365145, guid: abc225f3636537141b413b6b5bc7190c,
+      type: 3}
+  - _iconColorPicker: {fileID: 6192944022281365145, guid: 2ba8ffa2e3a93514daaf887279b78f0b,
+      type: 3}
+  - _iconBrush: {fileID: 6192944022281365145, guid: d6ae14f9217a2224eaf3bb9ed5d46bf5,
+      type: 3}
+  - Skin: {fileID: 11400000, guid: 855de52fdc491c440a5bbe68da642757, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

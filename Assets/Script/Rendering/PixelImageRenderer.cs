@@ -35,7 +35,9 @@ namespace Prototype.Rendering
             if (image.Size != RenderGridSize)
             {
                 RenderGridSize = image.Size;
-                UpdateMesh();
+                
+                Mesh.Clear();
+                Mesh = CreateImageMesh(image);
             }
 
             var uvs = Mesh.uv;
@@ -77,17 +79,22 @@ namespace Prototype.Rendering
             Mesh.UploadMeshData(false);
         }
 
-        private void UpdateMesh()
+        /// <summary>
+        /// Generate grid mesh in x,y ∈ [-.5, .5]
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        public static Mesh CreateImageMesh(PixelImage image)
         {
             var vertices = ObjectPool<List<Vector3>>.Get();
             var indices = ObjectPool<List<int>>.Get();
             var uvs = ObjectPool<List<Vector2>>.Get();
             var colors = ObjectPool<List<Color>>.Get();
-            Vector2 pixelSize = Vector2.one / RenderGridSize;
+            Vector2 pixelSize = Vector2.one / image.Size;
             Vector2 offset = Vector2.one * -.5f;
-            for (var y = 0; y < RenderGridSize.y; y++)
+            for (var y = 0; y < image.Size.y; y++)
             {
-                for (var x = 0; x < RenderGridSize.x; x++)
+                for (var x = 0; x < image.Size.x; x++)
                 {
                     var pos = new Vector2(x, y);
                     var baseIdx = vertices.Count;
@@ -111,14 +118,15 @@ namespace Prototype.Rendering
                     colors.Add(Color.white.Transparent());
                 }
             }
-            Mesh.Clear();
-            Mesh.SetVertices(vertices);
-            Mesh.SetTriangles(indices, 0);
-            Mesh.SetUVs(0, uvs);
-            Mesh.SetColors(colors);
-            Mesh.RecalculateBounds();
-            Mesh.RecalculateNormals();
-            Mesh.RecalculateTangents();
+            var mesh = new Mesh();
+            mesh.Clear();
+            mesh.SetVertices(vertices);
+            mesh.SetTriangles(indices, 0);
+            mesh.SetUVs(0, uvs);
+            mesh.SetColors(colors);
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
 
             vertices.Clear();
             indices.Clear();
@@ -129,7 +137,8 @@ namespace Prototype.Rendering
             ObjectPool.Release(indices);
             ObjectPool.Release(uvs);
             ObjectPool.Release(colors);
-            
+
+            return mesh;
         }
     }
 }

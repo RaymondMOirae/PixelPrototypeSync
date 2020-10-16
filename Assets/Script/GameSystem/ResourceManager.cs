@@ -12,8 +12,5 @@ namespace Script.GameSystem
         public GameObject PrefabPixelSlot;
 
         public GameObject PrefabPixelItem;
-
-        [Header("Resources")] 
-        public List<PixelType> PixelElements = new List<PixelType>();
     }
 }

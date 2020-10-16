@@ -20,6 +20,7 @@ namespace Prototype.Editor
                 r.size = Vector2.one * Mathf.Min(r.size.x, r.size.y);
                 r.center = center;
                 GUI.DrawTextureWithTexCoords(r, pixel.sprite.texture,  pixel.sprite.rect.Scale(pixel.sprite.texture.texelSize), false);
+                
             }
         }
     }

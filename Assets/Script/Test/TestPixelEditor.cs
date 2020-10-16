@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Prototype.Element;
 using Prototype.Rendering;
 using Prototype.UI;
@@ -16,7 +17,7 @@ namespace Prototype.Script.Test
         private List<Pixel> pixels = new List<Pixel>();
         private async void Start()
         {
-            foreach (var pixelElement in ResourceManager.Instance.PixelElements)
+            foreach (var pixelElement in PixelAssetManager.Instance.PixelTypes.Where(p=>p.Attribute == PixelAttribute.Default))
             {
                 for (var i = 0; i < Count; i++)
                 {
@@ -24,7 +25,14 @@ namespace Prototype.Script.Test
                 }
             }
             
-            var image = await PixelEditor.Instance.Edit(pixels, new Vector2Int(8, 8));
+            PixelEditor.Instance.SetEditable(new Vector2Int(7, 0), false);
+            PixelEditor.Instance.SetEditable(new Vector2Int(6, 1), false);
+            
+            var image = new PixelImage(8, 8);
+            image.Pixels[7, 0] = PixelAssetManager.CreatePixel(PixelAssetManager.FindPixelType("WoodHandel"));
+            image.Pixels[6, 1] = PixelAssetManager.CreatePixel(PixelAssetManager.FindPixelType("Wood"));
+            
+            await PixelEditor.Instance.Edit(pixels, image);
 
             var renderer = GameObjectPool.Get<PixelImageRenderer>();
             renderer.UpdatePixelImage(image);

@@ -1,15 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Prototype.Element
 {
+    [Serializable]
     public class Pixel
     {
-        public PixelType Type { get; }
+        [SerializeField]
+        private PixelType _type;
+        public PixelType Type => _type;
         public float Hardness;
 
         public Pixel(PixelType type)
         {
-            this.Type = type;
+            this._type = type;
             this.Hardness = type.hardness;
         }
     }

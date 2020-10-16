@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6237ca65a9540dbbbe9e13b8e305f82, type: 3}
+  m_Name: PixelImage
+  m_EditorClassIdentifier: 
+  _width: 8
+  _height: 8
+  _pixels:
+  - Pixels:
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
+      Hardness: 1
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 11400000, guid: 487a22452a476f7459ff17f5e1f4cc93, type: 2}
+      Hardness: 1
+  - Pixels:
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: 487a22452a476f7459ff17f5e1f4cc93, type: 2}
+      Hardness: 1
+    - _type: {fileID: 0}
+      Hardness: 0
+  - Pixels:
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: c365a5d4099e62b4b9baf3916464526e, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
+      Hardness: 1
+    - _type: {fileID: 0}
+      Hardness: 0
+  - Pixels:
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: 1129843bb78c51a4d846596f35179585, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
+      Hardness: 1
+  - Pixels:
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: 1129843bb78c51a4d846596f35179585, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+  - Pixels:
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: 1129843bb78c51a4d846596f35179585, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+  - Pixels:
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: 1129843bb78c51a4d846596f35179585, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+  - Pixels:
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
+      Hardness: 1
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+    - _type: {fileID: 0}
+      Hardness: 0
+  pixel:
+    _type: {fileID: 0}
+    Hardness: 0

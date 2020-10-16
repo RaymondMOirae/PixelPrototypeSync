@@ -164,6 +164,14 @@ public static class MathUtility
         return false;
     }
 
+    public static bool ContainsIndex<T>(this T[,] array, Vector2Int idx)
+    {
+        return 0 <= idx.x
+               && idx.x < array.GetLength(0)
+               && 0 <= idx.y
+               && idx.y < array.GetLength(1);
+    }
+
     public static Color Transparent(this Color color)
         => new Color(color.r, color.g, color.b, 0);
 

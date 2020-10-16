@@ -760,6 +760,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
   - {fileID: 11400000, guid: e01b00e120004f642b7838a8404e8b52, type: 2}
   - {fileID: 11400000, guid: 487a22452a476f7459ff17f5e1f4cc93, type: 2}
+  - {fileID: 11400000, guid: db4a1855a85122d44943fa5a3b771232, type: 2}
 --- !u!1 &762094038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1222,14 +1223,6 @@ MonoBehaviour:
     type: 3}
   PrefabPixelItem: {fileID: 7896164511652900594, guid: 3fb5ea12bcc51c441ab5120c27e9562c,
     type: 3}
-  PixelElements:
-  - {fileID: 11400000, guid: 1129843bb78c51a4d846596f35179585, type: 2}
-  - {fileID: 11400000, guid: e12d3ec4370c30442b408a9dfe0e6f9c, type: 2}
-  - {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
-  - {fileID: 11400000, guid: c365a5d4099e62b4b9baf3916464526e, type: 2}
-  - {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
-  - {fileID: 11400000, guid: e01b00e120004f642b7838a8404e8b52, type: 2}
-  - {fileID: 11400000, guid: 487a22452a476f7459ff17f5e1f4cc93, type: 2}
 --- !u!1 &1351718808
 GameObject:
   m_ObjectHideFlags: 0

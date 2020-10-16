@@ -16,6 +16,8 @@ namespace Prototype.UI
 
         public Pixel Pixel { get; private set; }
 
+        public bool Editable = true;
+
         private void Awake()
         {
             SetPixel(null);
@@ -23,6 +25,9 @@ namespace Prototype.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if(!Editable)
+                return;
+            
             switch (PixelEditor.Instance.EditMode)
             {
                 case PixelEditMode.Paint:

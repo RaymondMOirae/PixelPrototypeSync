@@ -2,6 +2,14 @@
 
 namespace Prototype.Element
 {
+    public enum PixelAttribute
+    {
+        Default,
+        Pivot,
+        LightSource,
+        Hand,
+    }
+    
     [CreateAssetMenu(fileName = "Pixel", menuName = "Prototype/Pixel")]
     public class PixelType : ScriptableObject
     {
@@ -16,6 +24,8 @@ namespace Prototype.Element
         public float damage = 1;
         
         public float defence = 1;
+
+        public PixelAttribute Attribute;
 
     }
 }
