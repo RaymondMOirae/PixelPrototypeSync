@@ -26,6 +26,11 @@ namespace Prototype.Editor
                 image.Resize(_size);
                 EditorUtility.SetDirty(image);
             }
+            else if (GUILayout.Button("Edit"))
+            {
+                var editor = PixelEditorWindow.GetWindow();
+                editor.Edit(image);
+            }
         }
     }
 

@@ -60,10 +60,17 @@ namespace Prototype.Editor
         [MenuItem("Window/PixelEditor")]
         private static void ShowWindow()
         {
+            var window = GetWindow();
+            window.Show();
+        }
+
+        public static PixelEditorWindow GetWindow()
+        {
+            
             var window = GetWindow<PixelEditorWindow>();
             window.titleContent = new GUIContent("PixelEditor");
             window.NewImage();
-            window.Show();
+            return window;
         }
 
         private void OnGUI()
@@ -78,6 +85,15 @@ namespace Prototype.Editor
             
             DrawWorkSpace(new Rect(0, canvasHeight, position.width, position.height - canvasHeight));
         }
+
+        public void Edit(PixelImageAsset pixelImage)
+        {
+            if(!pixelImage)
+                return;
+            _editAsset = pixelImage;
+            ReloadImage();
+        }
+        
 
         void DrawWorkSpace(Rect rect)
         {

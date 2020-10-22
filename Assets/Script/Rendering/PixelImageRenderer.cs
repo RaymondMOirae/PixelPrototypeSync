@@ -9,6 +9,8 @@ namespace Prototype.Rendering
     [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
     public class PixelImageRenderer : MonoBehaviour
     {
+        [SerializeField]
+        private PixelImageAsset _imageAsset;
         public PixelImage Image { get; private set; }
         
         public Vector2Int RenderGridSize { get; private set; }
@@ -28,6 +30,12 @@ namespace Prototype.Rendering
             _meshRenderer.sharedMaterial = PixelAssetManager.Instance.PixelImageMaterial;    
         }
 
+        private void Update()
+        {
+            if(_imageAsset && Image is null)
+                UpdatePixelImage(_imageAsset.Image);
+        }
+
         public void UpdatePixelImage(PixelImage image)
         {
             Image = image;
@@ -38,6 +46,7 @@ namespace Prototype.Rendering
                 
                 Mesh.Clear();
                 Mesh = CreateImageMesh(image);
+                _meshFilter.sharedMesh = Mesh;
             }
 
             var uvs = Mesh.uv;
