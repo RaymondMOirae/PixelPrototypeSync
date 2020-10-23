@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace Prototype.Utils
 {
+    [ExecuteAlways]
+    [ExecuteInEditMode]
     public class GameObjectPool : Singleton<GameObjectPool>
     {
         private static Dictionary<GameObject, Pool> prefabPools = new Dictionary<GameObject, Pool>();
@@ -192,7 +194,10 @@ namespace Prototype.Utils
         protected override void Awake()
         {
             base.Awake();
-            gameObject.ClearChildren();
+            if (Application.isPlaying)
+                gameObject.ClearChildren();
+            else
+                gameObject.ClearChildImmediate();
         }
     }
 }

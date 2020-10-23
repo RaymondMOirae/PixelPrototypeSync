@@ -844,7 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70558a2e90974b898fd1b068637437d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
+  dontDestroyOnLoad: 0
   PixelImageMaterial: {fileID: 2100000, guid: c280690b612e620499c65f6fb8f26116, type: 2}
   PixelTexture: {fileID: 2800000, guid: 039727f2c9ff5464db94e47571673e08, type: 3}
   PixelTypes:
@@ -1581,7 +1581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219ff517815ece746abc0c891e860ce1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
+  dontDestroyOnLoad: 0
   palette: {fileID: 456482576}
   pixelCanvas: {fileID: 1266262037}
   CompleteButton: {fileID: 589830952}

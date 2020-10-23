@@ -9,34 +9,36 @@ namespace Prototype.Utils
     public class Singleton<T> : UnityEngine.MonoBehaviour where T:Singleton<T>
     {
         [UnityEngine.SerializeField]
-        bool dontDestroyOnLoad = true;
+        bool DontDestroyOnLoad = false;
 
-        private static T instance = null;
+        private static T _instance = null;
         public static T Instance
         {
             get
             {
-                return instance;
+                return _instance;
             }
         }
 
         public Singleton()
         {
-            if (!instance)
-                instance = this as T;
+            // if (!_instance)
+            //     _instance = this as T;
         }
 
         protected virtual void Awake()
         {
-            if (instance && instance != this)
+            if (!_instance)
+                _instance = this as T;
+            if (_instance && _instance != this)
             {
                 Destroy(gameObject);
             }
             else
             {
-                if (dontDestroyOnLoad)
+                if (DontDestroyOnLoad)
                     DontDestroyOnLoad(gameObject);
-                instance = this as T;
+                _instance = this as T;
             }
         }
     }
