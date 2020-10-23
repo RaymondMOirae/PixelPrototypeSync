@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Prototype.Element;
 using Prototype.Rendering;
+using Prototype.Settings;
 using Prototype.UI;
 using Prototype.Utils;
 using UnityEditor;
@@ -98,23 +99,26 @@ namespace Prototype.Editor
         void DrawWorkSpace(Rect rect)
         {
             GUILayout.BeginArea(rect);
+            EditorGUILayout.Space();
+            
             
             var style = new GUIStyle();
             style.margin = new RectOffset(10, 10, 10, 10);
-
-            var toolIdx = _modes.IndexOf(_editMode);
-            toolIdx = GUILayout.SelectionGrid(toolIdx, new Texture[]
-            {
-                _iconCursor,
-                _iconBrush,
-                _iconEraser,
-                _iconColorPicker
-            }, 4);
-            _editMode = _modes[toolIdx];
-            
-            
             EditorUtils.Verticle(style, () =>
             {
+                
+                var toolStyle = Skin.toggle;
+                var toolIdx = _modes.IndexOf(_editMode);
+                toolIdx = GUILayout.SelectionGrid(toolIdx, new Texture[]
+                {
+                    _iconCursor,
+                    _iconBrush,
+                    _iconEraser,
+                    _iconColorPicker
+                }, 4, toolStyle);
+                _editMode = _modes[toolIdx];
+                
+                
                 _editSize = EditorGUILayout.Vector2IntField("Size", _editSize);
                 _editAsset = EditorGUILayout.ObjectField("Asset", _editAsset, typeof(PixelImageAsset), true) as PixelImageAsset;
                 
@@ -238,7 +242,7 @@ namespace Prototype.Editor
             EditorUtils.GridLayout(
                 new Rect(Vector2.zero, rect.size - 15 * Vector2.one), 
                 new Vector2(24, 24), 
-                PixelAssetManager.Instance.PixelTypes,
+                PixelAssets.Current.PixelTypes,
                 (elementRect, pixelType) =>
                 {
                     if (DrawPaletteItem(elementRect, pixelType, pixelType == _selectedPixelType))

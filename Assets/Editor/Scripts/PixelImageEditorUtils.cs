@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Prototype.Element;
+using Prototype.Settings;
 using Prototype.Utils;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -111,7 +112,7 @@ namespace Prototype.Editor
             var cmd = CommandBufferPool.Get();
             cmd.SetRenderTarget(target);
             cmd.ClearRenderTarget(true, true, Color.white.Transparent());
-            cmd.SetGlobalTexture("_MainTex", PixelAssetManager.Instance.PixelTexture);
+            cmd.SetGlobalTexture("_MainTex", PixelAssets.Current.PixelTexture);
             cmd.DrawMesh(imageMesh, Matrix4x4.identity, ShaderPool.Get("Prototype/Editor/CanvasGridCode"), 0, 1);
             
             Graphics.ExecuteCommandBuffer(cmd);

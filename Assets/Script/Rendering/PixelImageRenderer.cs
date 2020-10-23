@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Prototype.Element;
+using Prototype.Settings;
 using Prototype.Utils;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ namespace Prototype.Rendering
             _meshFilter.sharedMesh = Mesh;
 
             _meshRenderer = GetComponent<MeshRenderer>();
-            _meshRenderer.sharedMaterial = PixelAssetManager.Instance.PixelImageMaterial;    
+            _meshRenderer.sharedMaterial = PixelAssets.Current.PixelMaterial;    
         }
 
         private void Update()

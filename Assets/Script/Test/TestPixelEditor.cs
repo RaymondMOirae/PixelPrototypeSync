@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Prototype.Element;
 using Prototype.Rendering;
+using Prototype.Settings;
 using Prototype.UI;
 using Prototype.Utils;
 using Script.GameSystem;
@@ -17,7 +18,7 @@ namespace Prototype.Script.Test
         private List<Pixel> pixels = new List<Pixel>();
         private async void Start()
         {
-            foreach (var pixelElement in PixelAssetManager.Instance.PixelTypes.Where(p=>p.Attribute == PixelAttribute.Default))
+            foreach (var pixelElement in PixelAssets.Current.PixelTypes.Where(p=>p.Attribute == PixelAttribute.Default))
             {
                 for (var i = 0; i < Count; i++)
                 {
