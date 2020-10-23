@@ -11,9 +11,10 @@ public class OverlayHost : MonoBehaviour
     void Start()
     {
         Transform t = transform.Find("Wall");
-        verticalRegion.y = t.GetComponent<TilemapRenderer>().chunkSize.y;
-        verticalRegion.x = transform.position.y - verticalRegion.y / 2;
+        Bounds bounds = t.GetComponent<TilemapRenderer>().bounds;
 
+        verticalRegion.x = bounds.min.y;
+        verticalRegion.y = bounds.size.y;
 
         Transform units = transform.Find("CombatUnits");
         units.BroadcastMessage("UpdateIntervalSpace", verticalRegion);
