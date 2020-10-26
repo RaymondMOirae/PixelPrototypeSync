@@ -58,12 +58,12 @@ namespace Prototype.Editor
         private float[,] _analyseGrid;
         private PixelWeaponAnalyser _analyser;
 
-        private float _analyseParamP = 0.57f;
+        private float _analyseParamP = 0.48f;
         private float _analyseParamK = 1.02f;
-        private float _analyseParamY = 1.9f;
-        private float _analyseParamE = 2.52f;
+        private float _analyseParamY = 2.26f;
+        private float _analyseParamE = 2.73f;
 
-        private float[] _thresholds = new float[4] {0, 0, 0, 0}; 
+        private float[] _thresholds = new float[4] {0.9f, 3.6f, 7.52f, 18.62f}; 
 
         [SerializeField]
         private GUISkin Skin;
