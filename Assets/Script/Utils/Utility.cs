@@ -488,6 +488,61 @@ public static class Utility
         }
     }
 
+    public enum RectCorner
+    {
+        XMinYMin,
+        XMinYMax,
+        XMaxYMin,
+        XMaxYMax,
+    }
+
+    public static IEnumerable<(int x, int y)> DiagonalIndices(int width, int height, RectCorner entryPoint)
+    {
+        for (int i = 0; i <= width + height - 2; i++)
+        {
+            int x = 0, y = 0;
+
+            switch (entryPoint)
+            {
+                case RectCorner.XMinYMin:
+                    x = Math.Max(0, i - (height - 1));
+                    y = i - x;
+                    break;
+                case RectCorner.XMaxYMax:
+                    x = Math.Max(0, width - 1 - i);
+                    y = (width + height - 2) - i - x;
+                    break;
+                case RectCorner.XMinYMax:
+                    x = Math.Max(i - (height - 1), 0);
+                    y = x + height - 1 - i;
+                    break;
+                case RectCorner.XMaxYMin:
+                    x = Math.Max(width - 1 - i, 0);
+                    y = x - (width - 1) + i;
+                    break;
+            }
+            
+            while (0 <= x && x < width && 0 <= y && y < height)
+            {
+                yield return (x, y);
+
+                switch (entryPoint)
+                {
+                    case RectCorner.XMinYMin:
+                    case RectCorner.XMaxYMax:
+                        x++;
+                        y--;
+                        break;
+                    case RectCorner.XMinYMax:
+                    case RectCorner.XMaxYMin:
+                        x++;
+                        y++;
+                        break;
+                }
+            }
+        }
+    }
+
     public static T GetOrAddComponent<T>(this GameObject gameObject) where T : UnityEngine.Component
     {
         var component = gameObject.GetComponent<T>();
@@ -825,6 +880,101 @@ public static class Utility
             previousPoint = p;
         }
         Debug.DrawLine(previousPoint, center, color);
+    }
+
+    public class OffsetArray<T> : IList<T>
+    {
+        private T[] _array;
+        private int _zeroIndexOffset;
+        
+
+        public IEnumerable<int> Indices
+        {
+            get
+            {
+                for (var i = 0; i < Count; i++)
+                {
+                    yield return i + _zeroIndexOffset;
+                }
+            }
+        }
+
+        public int StartIndex => _zeroIndexOffset;
+
+        public T this[int index]
+        {
+            get => _array[index - _zeroIndexOffset];
+            set => _array[index - _zeroIndexOffset] = value;
+        }
+        
+        
+
+        public OffsetArray(int startIndex, int size)
+        {
+            _zeroIndexOffset = startIndex;
+            _array = new T[size];
+        }
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (var i = 0; i < Count; i++)
+            {
+                var idx = _zeroIndexOffset + i;
+                idx = idx >= Count 
+                    ? idx - Count 
+                    : idx;
+                yield return _array[idx];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        void ICollection<T>.Add(T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        void ICollection<T>.Clear()
+        {
+            throw new NotSupportedException();
+        }
+
+        public bool Contains(T item)
+        {
+            return _array.Contains(item);
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+            // _array.CopyTo(array, arrayIndex);
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public int Count => _array.Length;
+
+        public bool IsReadOnly => _array.IsReadOnly;
+
+        public int IndexOf(T item)
+        {
+            return _array.IndexOf(item) + _zeroIndexOffset;
+        }
+
+        void IList<T>.Insert(int index, T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        void IList<T>.RemoveAt(int index)
+        {
+            throw new NotSupportedException();
+        }
     }
 }
 

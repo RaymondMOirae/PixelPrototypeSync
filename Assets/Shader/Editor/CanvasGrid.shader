@@ -100,5 +100,42 @@ Shader "Prototype/Editor/CanvasGridCode" {
             ENDHLSL
         }
 
+        // #2 Damage Visualization
+        Pass {
+            Cull Off
+            Blend SrcAlpha OneMinusSrcAlpha
+
+            HLSLPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            sampler2D _MainTex;
+            
+            float4 RenderSize; // (w, h, 1/w, 1/h)
+
+            v2f vert(appdata_full i)
+            {
+                v2f o;
+                o.pos = float4(i.vertex.xyz * 2, 1);
+                o.pos.y *= _ProjectionParams.x;
+                o.uv = i.texcoord;
+                o.pixelCoord = i.texcoord * RenderSize.xy;
+                o.color = i.color;
+                return o;
+            }
+
+            float4 frag(v2f i) : SV_TARGET
+            {
+                float4 color = i.color;
+                // color.rgb /= 8;
+                color.a *= .3f;
+                return color;
+            }
+
+            ENDHLSL
+
+        }
+
     }
 }

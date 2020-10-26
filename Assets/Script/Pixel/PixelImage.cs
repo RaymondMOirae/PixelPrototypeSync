@@ -24,5 +24,16 @@ namespace Prototype.Element
             _size = size;
             _pixels = new Pixel[size.x, size.y];
         }
+
+        public Pixel this[int x, int y]
+        {
+            get => _pixels[x, y];
+            set => _pixels[x, y] = value;
+        }
+
+        public static implicit operator bool(PixelImage image)
+        {
+            return !(image?._pixels is null);
+        }
     }
 }

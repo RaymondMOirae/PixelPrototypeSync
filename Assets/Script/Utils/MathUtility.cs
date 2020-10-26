@@ -164,6 +164,41 @@ public static class MathUtility
         return false;
     }
 
+    public static Rect Shrink(this Rect rect, float width)
+    {
+        var newRect = rect;
+        newRect.size -= width * 2 * Vector2.one;
+        newRect.center = rect.center;
+        return newRect;
+    }
+
+    public static Rect Shrink(this Rect rect, Vector2 offset)
+    {
+        var newRect = rect;
+        rect.size -= offset * 2;
+        newRect.center = rect.center;
+        return newRect;
+    }
+
+    public static Rect Shrink(this Rect rect, RectOffset offset, bool zeroTop = false)
+    {
+        var newRect = rect;
+        newRect.xMin += offset.left;
+        newRect.xMax -= offset.right;
+        if (zeroTop)
+        {
+            newRect.yMin += offset.top;
+            newRect.yMax -= offset.bottom;
+        }
+        else
+        {
+            newRect.yMin += offset.bottom;
+            newRect.yMax -= offset.top;
+        }
+
+        return newRect;
+    }
+
     public static bool ContainsIndex<T>(this T[,] array, Vector2Int idx)
     {
         return 0 <= idx.x
@@ -189,6 +224,25 @@ public static class MathUtility
         t = (t - inA) / (inB - inA);
         t = Mathf.Clamp01(t);
         return Mathf.Lerp(outA, outB, t);
+    }
+
+    public static T ListMapClamped<T>(IList<T> list, float inA, float inB, float value)
+    {
+        var index = Mathf.FloorToInt((value - inA) / (inB - inA) * list.Count) % list.Count;
+        return list[index];
+    }
+
+    public static T ListRangeMap<T>(float[] inputList, T[] outputList, float value)
+    {
+        for (var i = 1; i < inputList.Length; i++)
+        {
+            if (i > outputList.Length)
+                return outputList[outputList.Length - 1];
+            if (inputList[i] > value)
+                return outputList[i];
+        }
+
+        return outputList[outputList.Length - 1];
     }
 
     public static Vector3 QuadraticBezierCurve(Vector3 p0, Vector3 p1, Vector3 p2, float t)
@@ -365,6 +419,16 @@ public static class MathUtility
         {
             return Mathf.Min(Vector3.Distance(a, point), Vector3.Distance(b, point));
         }
+    }
+
+    /// <summary>
+    /// Get a normal vector perpendicular to given vector v.
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
+    public static Vector2 NormalVector(this Vector2 v)
+    {
+        return Vector3.Cross(v, Vector3.back).normalized;
     }
     
 }

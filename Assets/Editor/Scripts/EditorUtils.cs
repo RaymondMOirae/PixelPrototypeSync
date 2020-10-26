@@ -73,6 +73,59 @@ namespace Prototype.Editor
             Verticle(null, renderContent);
         }
 
+        public static void Area(Rect rect, GUIStyle style, Action renderCallback)
+        {
+            GUILayout.BeginArea(rect, style);
+            renderCallback?.Invoke();
+            GUILayout.EndArea();
+        }
+
+        public static void Area(Rect rect, Action renderCallback)
+        {
+            GUILayout.BeginArea(rect);
+            renderCallback?.Invoke();
+            GUILayout.EndArea();
+        }
+
+        public static Rect HorizontalSplit(Rect container, int height, Action<Rect> renderCallback)
+        {
+            var restPart = container;
+            restPart.y += height;
+            restPart.height = container.height - height;
+            renderCallback(new Rect(container.position, new Vector2(container.width, height)));
+            return restPart;
+        }
+
+        public static void HorizontalSplit(Rect container, int height, Action<Rect> topPartRenderer,
+            Action<Rect> bottomPartRenderer)
+        {
+            var restPart = container;
+            restPart.y += height;
+            restPart.height = container.height - height;
+            topPartRenderer?.Invoke(new Rect(container.position, new Vector2(container.width, height)));
+            bottomPartRenderer?.Invoke(restPart);
+        }
+
+        public static Rect VerticalSplit(Rect container, int width, Action<Rect> renderCallback)
+        {
+            var restPart = container;
+            restPart.x += width;
+            restPart.width = container.width - width;
+            renderCallback?.Invoke(new Rect(container.position, new Vector2(width, container.height)));
+            return restPart;
+        }
+
+        public static void VerticalSplit(Rect rect, int width, Action<Rect> leftPartRenderer,
+            Action<Rect> rightPartRenderer)
+        {
+            var restPart = rect;
+            restPart.x += width;
+            restPart.width = rect.width - width;
+            leftPartRenderer?.Invoke(new Rect(rect.position, new Vector2(width, rect.height)));
+            rightPartRenderer?.Invoke(restPart);
+        }
+        
+
         public static void Horizontal(GUIStyle style, Action renderContent)
         {
             if (style == null)

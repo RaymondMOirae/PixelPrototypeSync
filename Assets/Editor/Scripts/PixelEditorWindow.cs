@@ -13,7 +13,7 @@ namespace Prototype.Editor
 {
     public class PixelEditorWindow : EditorWindow
     {
-        private const int WorkSpaceHeight = 200;
+        private const int WorkSpaceHeight = 500;
 
         private const int PaletteMinHeight = 80;
 
@@ -54,6 +54,16 @@ namespace Prototype.Editor
 
         private PixelImage _editImage;
         private Mesh _imageMesh;
+        private Mesh _analyseMesh;
+        private float[,] _analyseGrid;
+        private PixelWeaponAnalyser _analyser;
+
+        private float _analyseParamP = 0.57f;
+        private float _analyseParamK = 1.02f;
+        private float _analyseParamY = 1.9f;
+        private float _analyseParamE = 2.52f;
+
+        private float[] _thresholds = new float[4] {0, 0, 0, 0}; 
 
         [SerializeField]
         private GUISkin Skin;
@@ -94,57 +104,90 @@ namespace Prototype.Editor
             _editAsset = pixelImage;
             ReloadImage();
         }
+
+        void DrawToolBar(Rect rect)
+        {
+            
+        }
+
+        void DrawInfoArea(Rect rect)
+        {
+            
+        }
         
 
         void DrawWorkSpace(Rect rect)
         {
-            GUILayout.BeginArea(rect);
-            EditorGUILayout.Space();
-            
-            
-            var style = new GUIStyle();
-            style.margin = new RectOffset(10, 10, 10, 10);
-            EditorUtils.Verticle(style, () =>
+            rect = EditorUtils.HorizontalSplit(rect, 56, (area) =>
+            {
+                var style = new GUIStyle();
+                style.padding = new RectOffset(10, 10, 10, 10);
+                EditorUtils.Area(area, style, () =>
+                {
+                    var toolStyle = Skin.toggle;
+                    var toolIdx = _modes.IndexOf(_editMode);
+                    toolIdx = GUILayout.SelectionGrid(toolIdx, new Texture[]
+                    {
+                        _iconCursor,
+                        _iconBrush,
+                        _iconEraser,
+                        _iconColorPicker
+                    }, 4, toolStyle);
+                    _editMode = _modes[toolIdx];
+                });
+            });
+            rect = EditorUtils.HorizontalSplit(rect, 100, (area) =>
             {
                 
-                var toolStyle = Skin.toggle;
-                var toolIdx = _modes.IndexOf(_editMode);
-                toolIdx = GUILayout.SelectionGrid(toolIdx, new Texture[]
+                EditorGUI.DrawRect(area.Shrink(10), EditorUtils.HTMLColor("#E4E4E4"));
+                EditorUtils.Area(area , () =>
                 {
-                    _iconCursor,
-                    _iconBrush,
-                    _iconEraser,
-                    _iconColorPicker
-                }, 4, toolStyle);
-                _editMode = _modes[toolIdx];
-                
-                
-                _editSize = EditorGUILayout.Vector2IntField("Size", _editSize);
-                _editAsset = EditorGUILayout.ObjectField("Asset", _editAsset, typeof(PixelImageAsset), true) as PixelImageAsset;
-                
-                EditorGUILayout.LabelField("Save Path");
-                EditorUtils.Horizontal(() =>
-                {
-                    _filePath = EditorGUILayout.DelayedTextField(_filePath);
-                    if (GUILayout.Button("Browse"))
-                        _filePath = EditorUtility.SaveFilePanelInProject("Save", "PixelImage", "asset", "");
                     
-                });
-                EditorGUILayout.Space();
-                
-                EditorUtils.Horizontal(() =>
-                {
-                    if (GUILayout.Button("New"))
-                        NewImage();
-                    else if (GUILayout.Button("Reload"))
-                        ReloadImage();
-                    else if (GUILayout.Button("Save"))
-                        SaveImage();
                 });
             });
             
+            EditorUtils.Area(rect, () =>
+            {
+                EditorGUILayout.Space();
             
-            GUILayout.EndArea();
+                var style = new GUIStyle();
+                style.margin = new RectOffset(10, 10, 10, 10);
+                EditorUtils.Verticle(style, () =>
+                {
+                    _analyseParamP = EditorGUILayout.FloatField("p", _analyseParamP);
+                    _analyseParamK = EditorGUILayout.FloatField("k", _analyseParamK);
+                    _analyseParamY = EditorGUILayout.FloatField("y", _analyseParamY);
+                    _analyseParamE = EditorGUILayout.FloatField("e", _analyseParamE);
+
+                    EditorGUILayout.LabelField("Threshold");
+                    for (var i = 0; i < _thresholds.Length; i++)
+                        _thresholds[i] = EditorGUILayout.FloatField(i.ToString(), _thresholds[i]);
+                    
+                    UpdateMeshData();
+                    _editSize = EditorGUILayout.Vector2IntField("Size", _editSize);
+                    _editAsset = EditorGUILayout.ObjectField("Asset", _editAsset, typeof(PixelImageAsset), true) as PixelImageAsset;
+                
+                    EditorGUILayout.LabelField("Save Path");
+                    EditorUtils.Horizontal(() =>
+                    {
+                        _filePath = EditorGUILayout.DelayedTextField(_filePath);
+                        if (GUILayout.Button("Browse"))
+                            _filePath = EditorUtility.SaveFilePanelInProject("Save", "PixelImage", "asset", "");
+                    
+                    });
+                    EditorGUILayout.Space();
+                
+                    EditorUtils.Horizontal(() =>
+                    {
+                        if (GUILayout.Button("New"))
+                            NewImage();
+                        else if (GUILayout.Button("Reload"))
+                            ReloadImage();
+                        else if (GUILayout.Button("Save"))
+                            SaveImage();
+                    });
+                });
+            });
         }
 
         void ReloadImage()
@@ -194,13 +237,24 @@ namespace Prototype.Editor
             _pixelImageRT.filterMode = FilterMode.Bilinear;
             _pixelImageRT.Create();
 
+            _analyseGrid = new float[_editSize.x,_editSize.y];
+            
             _imageMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
+            _analyseMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
+            
+            _analyser = new PixelWeaponAnalyser(_editImage, WeaponForwardDirection.TopLeft);
+            
             UpdateMeshData();
             RenderImage();
         }
 
         void UpdateMeshData()
-            => PixelImageEditorUtils.UpdateImageMesh(_editImage, _imageMesh);
+        {
+            if (!_editImage)
+                return;
+            PixelImageEditorUtils.UpdateImageMesh(_editImage, _imageMesh);
+            ReloadAnalyse(1);
+        }
 
         void RenderImage()
             => PixelImageEditorUtils.RenderImage(_imageMesh, _pixelImageRT);
@@ -211,6 +265,9 @@ namespace Prototype.Editor
             cmd.SetRenderTarget(_canvasGridRT);
             cmd.ClearRenderTarget(true, true, EditorUtils.HTMLColor("#444"));
             cmd.Blit(_pixelImageRT, _canvasGridRT, ShaderPool.Get("Prototype/Utils/BlitCopy"), 1);
+
+            if (_analyseMesh)
+                cmd.DrawMesh(_analyseMesh, Matrix4x4.identity, ShaderPool.Get("Prototype/Editor/CanvasGridCode"), 0, 2);
             
             cmd.SetGlobalVector("RenderSize", new Vector4(
                 _canvasGridRT.width, 
@@ -223,6 +280,108 @@ namespace Prototype.Editor
             
             Graphics.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
+        }
+
+        void ReloadAnalyse(int direction)
+        {
+            var colors = _analyseMesh.colors;
+            
+            for(var y = 0; y < _editSize.y;y ++)
+            for (var x = 0; x < _editSize.x; x++)
+            {
+                _analyseGrid[x, y] = 0;
+                
+                var baseIdx = y * _editSize.x * 4 + x * 4;
+                colors[baseIdx + 0]
+                    = colors[baseIdx + 1]
+                        = colors[baseIdx + 2]
+                            = colors[baseIdx + 3] = Color.white.Transparent();
+            }
+
+            _analyser._paramY = _analyseParamY;
+            _analyser._paramE = _analyseParamE;
+            _analyser._paramK = _analyseParamK;
+            _analyser._paramP = _analyseParamP;
+            _analyser.UpdateWeaponData();
+            
+            // if (direction > 0)
+            // {
+            //     for (var i = 0; i < _editSize.x + _editSize.y - 2; i++)
+            //     {
+            //         var x = Math.Max(_editSize.x - 1 - i, 0);
+            //         var y = _editSize.x + _editSize.y - 2 - i - x;
+            //         while (0 <= x && x < _editSize.x && 0 <= y && y < _editSize.y)
+            //         {
+            //             if (_editImage[x, y] != null)
+            //             {
+            //                 AddPixelField(x, y, direction);
+            //             }
+            //             ++x;
+            //             --y;
+            //         }
+            //
+            //     }
+            // }
+
+            var maxValue = 0f;
+            for(var y = 0; y < _editSize.y;y ++)
+            for (var x = 0; x < _editSize.x; x++)
+            {
+                maxValue = Mathf.Max(maxValue, _analyser.RightAnalyser.DamageAttenuationField[x, y]);
+            }
+
+            for(var y = 0; y < _editSize.y;y ++)
+            for (var x = 0; x < _editSize.x; x++)
+            {
+                var baseIdx = y * _editSize.x * 4 + x * 4;
+                var rawValue = _analyser.RightAnalyser.DamageAttenuationField[x, y];
+                var value = rawValue;
+                // var value = MathUtility.RangeMapClamped(0, maxValue, 0, 1, _analyser.RightAnalyser.DamageAttenuationField[x, y]);
+                value = MathUtility.ListRangeMap(
+                    new[] {0, _thresholds[0], _thresholds[1], _thresholds[2], _thresholds[3]},
+                    new[] {0, 1, 2, 3, 4}, value);
+                if (rawValue != 0)
+                    colors[baseIdx + 0]
+                        = colors[baseIdx + 1]
+                            = colors[baseIdx + 2]
+                                = colors[baseIdx + 3] =
+                                    Color.HSVToRGB((1 - (value - 1) / 3) / 2, 1, 1);
+            }
+         
+            _analyseMesh.SetColors(colors);
+            _analyseMesh.UploadMeshData(false); 
+        }
+
+        void AddPixelField(int posX, int posY, int direction)
+        {
+            Vector2 baseAxis = Vector2.zero;
+            if (direction >= 0)
+                baseAxis = new Vector2(-1, 1).normalized;
+            else
+                baseAxis = new Vector2(1, -1).normalized;
+            var normAxis = baseAxis.NormalVector();
+            for(var y = 0; y < _editSize.y;y ++)
+            for (var x = 0; x < _editSize.x; x++)
+            {
+                if(x == posX && y == posY)
+                    continue;
+                if(x + y > posX + posY)
+                    continue;
+                
+                var delta = new Vector2(x - posX, y - posY);
+                delta = new Vector2(Vector2.Dot(delta, baseAxis), Vector2.Dot(delta, normAxis));
+                delta.y += _analyseParamY;
+                var p = _analyseParamP;
+                if (2 * p * delta.y - delta.x * delta.x < 0)
+                    _analyseGrid[x, y] = Mathf.Max(0, _analyseGrid[x, y]);
+                else
+                {
+                    var z = Mathf.Sqrt(2 * p * delta.y - delta.x * delta.x);
+                    z = Mathf.Pow(z, _analyseParamE) * _analyseParamK;
+                    _analyseGrid[x, y] = Mathf.Max(z, _analyseGrid[x, y]);
+                }
+                
+            }
         }
 
         void DrawEditor(int height)
