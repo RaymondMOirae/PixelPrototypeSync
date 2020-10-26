@@ -35,6 +35,10 @@ namespace Prototype.Element
             public Func<int, int, bool> OcclusionChecker;
             public float[,] DamageAttenuationField;
             public Utility.OffsetArray<int> OccludedPixels;
+            /// <summary>
+            /// (x, y, pixelX, pixelY) -> bool (should ignore)
+            /// </summary>
+            public Func<int, int, int, int, bool> IgnorePixel;
 
             public void Reset()
             {
@@ -54,26 +58,7 @@ namespace Prototype.Element
         public readonly WeaponPixelData[,] WeaponDataLeft;
         public readonly WeaponPixelData[,] WeaponDataRight;
         public readonly WeaponForwardDirection ForwardCorner;
-        // public readonly WeaponForwardDirection RightCorner;
-        // public readonly WeaponForwardDirection LeftCorner;
-        // public float[,] _damageLeftAttenuationField;
-        // public float[,] _damageRightAttenuationField;
-        // private Vector2 _normalDirection;
-        // private Vector2 _tangentDirection;
 
-        /*
-         * In diagonal coordinate
-         * use ToDiagonal() & FromDiagonal() transform between normal coordinate & diagonal coordinate
-         *            y
-         *    \ | | / 
-         * ----\--/---
-         *     |X|   
-         * ---/--\---
-         *  / | | \
-         *         x
-         */
-        // private readonly Utility.OffsetArray<int> _leftMostPixel;
-        // private readonly Utility.OffsetArray<int> _rightMostPixel;
 
         public readonly OneSideAnalyserHelper LeftAnalyser;
         public readonly OneSideAnalyserHelper RightAnalyser;
@@ -88,8 +73,6 @@ namespace Prototype.Element
             Image = image;
             WeaponDataLeft = new WeaponPixelData[image.Size.x, image.Size.y];
             WeaponDataRight = new WeaponPixelData[image.Size.x, image.Size.y];
-            // _damageLeftAttenuationField = new float[image.Size.x, image.Size.y];
-            // _damageRightAttenuationField = new float[image.Size.x, image.Size.y];
             ForwardCorner = forwardCorner;
 
             switch (forwardCorner)
@@ -106,7 +89,8 @@ namespace Prototype.Element
                             Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMinYMin),
                         OcclusionChecker = (x, y) =>
                             PixelOccluded(x, y, LeftAnalyser.OccludedPixels, PixelCompareMode.Less),
-                        DamageAttenuationField = new float[image.Size.x, image.Size.y]
+                        DamageAttenuationField = new float[image.Size.x, image.Size.y],
+                        IgnorePixel = (x, y, pixelX, pixelY) => (x + y) < (pixelX + pixelY)
                     };
 
                     RightAnalyser = new OneSideAnalyserHelper()
@@ -120,15 +104,11 @@ namespace Prototype.Element
                             Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMaxYMax),
                         OcclusionChecker = (x, y) =>
                             PixelOccluded(x, y, RightAnalyser.OccludedPixels, PixelCompareMode.Greater),
-                        DamageAttenuationField = new float[image.Size.x, image.Size.y]
+                        DamageAttenuationField = new float[image.Size.x, image.Size.y],
+                        IgnorePixel = (x, y, pixelX, pixelY) => (x + y) > (pixelX + pixelY),
                     };
                     
-                    // _normalDirection = new Vector2(1, 1).normalized;
-                    // _tangentDirection = new Vector2(-1, 1).normalized;
-                    // _leftMostPixel = new Utility.OffsetArray<int>(-image.Size.y - 3, image.Size.x + image.Size.y + 4);
-                    // _rightMostPixel = new Utility.OffsetArray<int>(_leftMostPixel.StartIndex, _leftMostPixel.Count);
-                    // RightCorner = WeaponForwardDirection.TopRight;
-                    // LeftCorner = WeaponForwardDirection.BottomLeft;
+                    
                     break;
                 default:
                     throw new NotImplementedException();
@@ -187,7 +167,7 @@ namespace Prototype.Element
                 {
                     if(x == posX && y == posY)
                         continue;
-                    if(x + y > posX + posY)
+                    if(helper.IgnorePixel(x, y, posX, posY))
                         continue;
                 
                     var delta = new Vector2(x, y) - new Vector2(posX, posY);
@@ -213,16 +193,28 @@ namespace Prototype.Element
             delta.y += _paramY;
             
             var p = _paramP;
-            if (2 * p * delta.y - delta.x * delta.x < 0)
+            var z = 2 * p * delta.y - delta.x * delta.x;
+            if (z < 0)
                 return 0;
             else
             {
-                var z = Mathf.Sqrt(2 * p * delta.y - delta.x * delta.x);
+                z = Mathf.Sqrt(z);
                 z = Mathf.Pow(z, _paramE) * _paramK;
                 return z;
             }
         }
 
+        /*
+         * In diagonal coordinate
+         * use ToDiagonal() & FromDiagonal() transform between normal coordinate & diagonal coordinate
+         *            y
+         *    \ | | / 
+         * ----\--/---
+         *     |X|   
+         * ---/--\---
+         *  / | | \
+         *         x
+         */
         public static Vector2Int ToDiagonal(Vector2Int v)
         {
             return new Vector2Int(v.x - v.y, v.x + v.y);

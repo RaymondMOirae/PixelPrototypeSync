@@ -17,6 +17,13 @@ namespace Prototype.Editor
 
         private const int PaletteMinHeight = 80;
 
+        enum DebugLayer
+        {
+            None,
+            LeftAttenuation,
+            RightAttenuation,
+        }
+
         enum ShaderPass : int
         {
             RenderGrid = 0,
@@ -32,6 +39,9 @@ namespace Prototype.Editor
         [SerializeField] private Texture2D _iconEraser;
         [SerializeField] private Texture2D _iconColorPicker;
         [SerializeField] private Texture2D _iconBrush;
+        [SerializeField] private Texture2D _iconArrowBottomLeft;
+        [SerializeField] private Texture2D _iconArrowTopRight;
+        [SerializeField] private Texture2D _iconHide;
 
         private PixelEditMode[] _modes = new[]
         {
@@ -40,6 +50,16 @@ namespace Prototype.Editor
             PixelEditMode.Erase,
             PixelEditMode.ColorPicker,
         };
+        private PixelEditMode _currentEditMode = PixelEditMode.None;
+
+        private DebugLayer[] _debugLayer = new[]
+        {
+            DebugLayer.None,
+            DebugLayer.LeftAttenuation,
+            DebugLayer.RightAttenuation,
+        };
+
+        private DebugLayer _currentDebugLayer = DebugLayer.None;
 
         private Vector2 _paletteScrollPosition;
 
@@ -48,14 +68,12 @@ namespace Prototype.Editor
         private PixelType _selectedPixelType;
         private PixelType _inspectingPixelType;
 
-        private PixelEditMode _editMode = PixelEditMode.None;
         private RenderTexture _canvasGridRT;
         private RenderTexture _pixelImageRT;
 
         private PixelImage _editImage;
         private Mesh _imageMesh;
         private Mesh _analyseMesh;
-        private float[,] _analyseGrid;
         private PixelWeaponAnalyser _analyser;
 
         private float _analyseParamP = 0.48f;
@@ -124,16 +142,31 @@ namespace Prototype.Editor
                 style.padding = new RectOffset(10, 10, 10, 10);
                 EditorUtils.Area(area, style, () =>
                 {
-                    var toolStyle = Skin.toggle;
-                    var toolIdx = _modes.IndexOf(_editMode);
-                    toolIdx = GUILayout.SelectionGrid(toolIdx, new Texture[]
+                    EditorUtils.Horizontal(() =>
                     {
-                        _iconCursor,
-                        _iconBrush,
-                        _iconEraser,
-                        _iconColorPicker
-                    }, 4, toolStyle);
-                    _editMode = _modes[toolIdx];
+                        var toolStyle = Skin.toggle;
+                        var toolIdx = _modes.IndexOf(_currentEditMode);
+                        toolIdx = GUILayout.SelectionGrid(toolIdx, new Texture[]
+                        {
+                            _iconCursor,
+                            _iconBrush,
+                            _iconEraser,
+                            _iconColorPicker
+                        }, 4, toolStyle);
+                        _currentEditMode = _modes[toolIdx];
+                        
+                        EditorGUILayout.Space();
+
+                        var debugLayerIdx = _debugLayer.IndexOf(_currentDebugLayer);
+                        debugLayerIdx = GUILayout.SelectionGrid(debugLayerIdx, new Texture[]
+                        {
+                            _iconHide,
+                            _iconArrowBottomLeft,
+                            _iconArrowTopRight,
+                        }, 3, toolStyle);
+                        _currentDebugLayer = _debugLayer[debugLayerIdx];
+
+                    });
                 });
             });
             rect = EditorUtils.HorizontalSplit(rect, 100, (area) =>
@@ -237,8 +270,6 @@ namespace Prototype.Editor
             _pixelImageRT.filterMode = FilterMode.Bilinear;
             _pixelImageRT.Create();
 
-            _analyseGrid = new float[_editSize.x,_editSize.y];
-            
             _imageMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
             _analyseMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
             
@@ -259,6 +290,17 @@ namespace Prototype.Editor
         void RenderImage()
             => PixelImageEditorUtils.RenderImage(_imageMesh, _pixelImageRT);
 
+        void RenderDebugLayer(CommandBuffer cmd)
+        {
+            if(_currentDebugLayer == DebugLayer.None)
+                return;
+            
+            if(!_analyseMesh)
+                return;
+
+            cmd.DrawMesh(_analyseMesh, Matrix4x4.identity, ShaderPool.Get("Prototype/Editor/CanvasGridCode"), 0, 2);
+        }
+
         void RenderCanvas()
         {
             var cmd = CommandBufferPool.Get();
@@ -266,8 +308,7 @@ namespace Prototype.Editor
             cmd.ClearRenderTarget(true, true, EditorUtils.HTMLColor("#444"));
             cmd.Blit(_pixelImageRT, _canvasGridRT, ShaderPool.Get("Prototype/Utils/BlitCopy"), 1);
 
-            if (_analyseMesh)
-                cmd.DrawMesh(_analyseMesh, Matrix4x4.identity, ShaderPool.Get("Prototype/Editor/CanvasGridCode"), 0, 2);
+            RenderDebugLayer(cmd);
             
             cmd.SetGlobalVector("RenderSize", new Vector4(
                 _canvasGridRT.width, 
@@ -284,13 +325,11 @@ namespace Prototype.Editor
 
         void ReloadAnalyse(int direction)
         {
+            // Reset debug layer mesh colors to transparent.
             var colors = _analyseMesh.colors;
-            
             for(var y = 0; y < _editSize.y;y ++)
             for (var x = 0; x < _editSize.x; x++)
             {
-                _analyseGrid[x, y] = 0;
-                
                 var baseIdx = y * _editSize.x * 4 + x * 4;
                 colors[baseIdx + 0]
                     = colors[baseIdx + 1]
@@ -303,38 +342,21 @@ namespace Prototype.Editor
             _analyser._paramK = _analyseParamK;
             _analyser._paramP = _analyseParamP;
             _analyser.UpdateWeaponData();
-            
-            // if (direction > 0)
-            // {
-            //     for (var i = 0; i < _editSize.x + _editSize.y - 2; i++)
-            //     {
-            //         var x = Math.Max(_editSize.x - 1 - i, 0);
-            //         var y = _editSize.x + _editSize.y - 2 - i - x;
-            //         while (0 <= x && x < _editSize.x && 0 <= y && y < _editSize.y)
-            //         {
-            //             if (_editImage[x, y] != null)
-            //             {
-            //                 AddPixelField(x, y, direction);
-            //             }
-            //             ++x;
-            //             --y;
-            //         }
-            //
-            //     }
-            // }
-
-            var maxValue = 0f;
-            for(var y = 0; y < _editSize.y;y ++)
-            for (var x = 0; x < _editSize.x; x++)
-            {
-                maxValue = Mathf.Max(maxValue, _analyser.RightAnalyser.DamageAttenuationField[x, y]);
-            }
 
             for(var y = 0; y < _editSize.y;y ++)
             for (var x = 0; x < _editSize.x; x++)
             {
                 var baseIdx = y * _editSize.x * 4 + x * 4;
-                var rawValue = _analyser.RightAnalyser.DamageAttenuationField[x, y];
+                float rawValue = 0;
+                switch (_currentDebugLayer)
+                {
+                    case DebugLayer.LeftAttenuation:
+                        rawValue = _analyser.LeftAnalyser.DamageAttenuationField[x, y];
+                        break;
+                    case DebugLayer.RightAttenuation:
+                        rawValue = _analyser.RightAnalyser.DamageAttenuationField[x, y];
+                        break;
+                }
                 var value = rawValue;
                 // var value = MathUtility.RangeMapClamped(0, maxValue, 0, 1, _analyser.RightAnalyser.DamageAttenuationField[x, y]);
                 value = MathUtility.ListRangeMap(
@@ -350,38 +372,6 @@ namespace Prototype.Editor
          
             _analyseMesh.SetColors(colors);
             _analyseMesh.UploadMeshData(false); 
-        }
-
-        void AddPixelField(int posX, int posY, int direction)
-        {
-            Vector2 baseAxis = Vector2.zero;
-            if (direction >= 0)
-                baseAxis = new Vector2(-1, 1).normalized;
-            else
-                baseAxis = new Vector2(1, -1).normalized;
-            var normAxis = baseAxis.NormalVector();
-            for(var y = 0; y < _editSize.y;y ++)
-            for (var x = 0; x < _editSize.x; x++)
-            {
-                if(x == posX && y == posY)
-                    continue;
-                if(x + y > posX + posY)
-                    continue;
-                
-                var delta = new Vector2(x - posX, y - posY);
-                delta = new Vector2(Vector2.Dot(delta, baseAxis), Vector2.Dot(delta, normAxis));
-                delta.y += _analyseParamY;
-                var p = _analyseParamP;
-                if (2 * p * delta.y - delta.x * delta.x < 0)
-                    _analyseGrid[x, y] = Mathf.Max(0, _analyseGrid[x, y]);
-                else
-                {
-                    var z = Mathf.Sqrt(2 * p * delta.y - delta.x * delta.x);
-                    z = Mathf.Pow(z, _analyseParamE) * _analyseParamK;
-                    _analyseGrid[x, y] = Mathf.Max(z, _analyseGrid[x, y]);
-                }
-                
-            }
         }
 
         void DrawEditor(int height)
@@ -407,7 +397,7 @@ namespace Prototype.Editor
                     if (DrawPaletteItem(elementRect, pixelType, pixelType == _selectedPixelType))
                     {
                         _selectedPixelType = pixelType;
-                        _editMode = PixelEditMode.Paint;
+                        _currentEditMode = PixelEditMode.Paint;
                     }
                 });
             GUI.skin = null;
@@ -488,7 +478,7 @@ namespace Prototype.Editor
         {
             if(_editImage is null)
                 return;
-            switch (_editMode)
+            switch (_currentEditMode)
             {
                 case PixelEditMode.None:
                     InspectPixel(gridPos);

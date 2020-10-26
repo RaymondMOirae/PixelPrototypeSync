@@ -14,6 +14,12 @@ MonoImporter:
       type: 3}
   - _iconBrush: {fileID: 6192944022281365145, guid: d6ae14f9217a2224eaf3bb9ed5d46bf5,
       type: 3}
+  - _iconArrowBottomLeft: {fileID: 6192944022281365145, guid: 79ed7ebe7919a2b46a34a142405d5ad3,
+      type: 3}
+  - _iconArrowTopRight: {fileID: 6192944022281365145, guid: 6d7db7a086d258440a0a44df3f1689d3,
+      type: 3}
+  - _iconHide: {fileID: 6192944022281365145, guid: bb496f4fd0db8644693b291ce018acb1,
+      type: 3}
   - Skin: {fileID: 11400000, guid: 855de52fdc491c440a5bbe68da642757, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
