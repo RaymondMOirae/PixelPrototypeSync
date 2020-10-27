@@ -76,6 +76,8 @@ namespace Prototype.Editor
         private Mesh _analyseMesh;
         private PixelWeaponAnalyser _analyser;
 
+        private bool _showParametersEditor = true;
+
         private float _analyseParamP = 0.48f;
         private float _analyseParamK = 1.02f;
         private float _analyseParamY = 2.26f;
@@ -173,9 +175,24 @@ namespace Prototype.Editor
             {
                 
                 EditorGUI.DrawRect(area.Shrink(10), EditorUtils.HTMLColor("#E4E4E4"));
-                EditorUtils.Area(area , () =>
+                EditorUtils.Area(area.Shrink(20) , () =>
                 {
-                    
+                    if(_analyser is null)
+                        return;
+                    EditorUtils.Horizontal(() =>
+                    {
+                        EditorUtils.Verticle(() =>
+                        {
+                            EditorGUILayout.LabelField("Mass", _analyser.Mass.ToString("F2"));
+                            EditorGUILayout.LabelField("Intertia", _analyser.Inertia.ToString("F2"));
+                            EditorGUILayout.LabelField("Length", _analyser.Length.ToString("F2"));
+                        });
+                        EditorUtils.Verticle(() =>
+                        {
+                            EditorGUILayout.LabelField("Left Damage", _analyser.TotalDamageLeft.ToString("F2"));
+                            EditorGUILayout.LabelField("Right Damage", _analyser.TotalDamageRight.ToString("F2"));
+                        });
+                    });
                 });
             });
             
@@ -184,19 +201,23 @@ namespace Prototype.Editor
                 EditorGUILayout.Space();
             
                 var style = new GUIStyle();
-                style.margin = new RectOffset(10, 10, 10, 10);
+                style.margin = new RectOffset(10, 10, 0, 10);
                 EditorUtils.Verticle(style, () =>
                 {
-                    _analyseParamP = EditorGUILayout.FloatField("p", _analyseParamP);
-                    _analyseParamK = EditorGUILayout.FloatField("k", _analyseParamK);
-                    _analyseParamY = EditorGUILayout.FloatField("y", _analyseParamY);
-                    _analyseParamE = EditorGUILayout.FloatField("e", _analyseParamE);
+                    EditorUtils.Fold("Parameters", ref _showParametersEditor, () =>
+                    {
+                        _analyseParamP = EditorGUILayout.FloatField("p", _analyseParamP);
+                        _analyseParamK = EditorGUILayout.FloatField("k", _analyseParamK);
+                        _analyseParamY = EditorGUILayout.FloatField("y", _analyseParamY);
+                        _analyseParamE = EditorGUILayout.FloatField("e", _analyseParamE);
 
-                    EditorGUILayout.LabelField("Threshold");
-                    for (var i = 0; i < _thresholds.Length; i++)
-                        _thresholds[i] = EditorGUILayout.FloatField(i.ToString(), _thresholds[i]);
+                        EditorGUILayout.LabelField("Threshold");
+                        for (var i = 0; i < _thresholds.Length; i++)
+                            _thresholds[i] = EditorGUILayout.FloatField(i.ToString(), _thresholds[i]);
+                        
+                        UpdateMeshData();
+                    });
                     
-                    UpdateMeshData();
                     _editSize = EditorGUILayout.Vector2IntField("Size", _editSize);
                     _editAsset = EditorGUILayout.ObjectField("Asset", _editAsset, typeof(PixelImageAsset), true) as PixelImageAsset;
                 
@@ -341,6 +362,10 @@ namespace Prototype.Editor
             _analyser._paramE = _analyseParamE;
             _analyser._paramK = _analyseParamK;
             _analyser._paramP = _analyseParamP;
+            _analyser._attenuationLevels[2] = _thresholds[0];
+            _analyser._attenuationLevels[3] = _thresholds[1];
+            _analyser._attenuationLevels[4] = _thresholds[2];
+            _analyser._attenuationLevels[5] = _thresholds[3];
             _analyser.UpdateWeaponData();
 
             for(var y = 0; y < _editSize.y;y ++)
@@ -357,17 +382,19 @@ namespace Prototype.Editor
                         rawValue = _analyser.RightAnalyser.DamageAttenuationField[x, y];
                         break;
                 }
+                if(rawValue <= 0)
+                    continue;
                 var value = rawValue;
                 // var value = MathUtility.RangeMapClamped(0, maxValue, 0, 1, _analyser.RightAnalyser.DamageAttenuationField[x, y]);
                 value = MathUtility.ListRangeMap(
                     new[] {0, _thresholds[0], _thresholds[1], _thresholds[2], _thresholds[3]},
                     new[] {0, 1, 2, 3, 4}, value);
-                if (rawValue != 0)
-                    colors[baseIdx + 0]
-                        = colors[baseIdx + 1]
-                            = colors[baseIdx + 2]
-                                = colors[baseIdx + 3] =
-                                    Color.HSVToRGB((1 - (value - 1) / 3) / 2, 1, 1);
+                colors[baseIdx + 0]
+                    = colors[baseIdx + 1]
+                    = colors[baseIdx + 2]
+                    = colors[baseIdx + 3] 
+                    = Color.HSVToRGB((1 - (value - 1) / 3) / 2, 1, 1);
+                    
             }
          
             _analyseMesh.SetColors(colors);

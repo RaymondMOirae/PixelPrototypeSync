@@ -68,6 +68,13 @@ namespace Prototype.Editor
             EditorGUILayout.EndVertical();
         }
 
+        public static bool Fold(string label, ref bool visible, Action renderCallback)
+        {
+            visible = EditorGUILayout.Foldout(visible, label);
+            Verticle(Styles.Indent, renderCallback);
+            return visible;
+        }
+
         public static void Verticle(Action renderContent)
         {
             Verticle(null, renderContent);

@@ -15,8 +15,15 @@ namespace Prototype.Element
     {
         public Pixel Pixel;
         public float DamageRate;
+        /// <summary>
+        /// Hardness drop rate per hit
+        /// </summary>
         public float WearRate;
-        
+
+        /// <summary>
+        /// Damage per hit
+        /// </summary>
+        public float Damage => Pixel?.Type.damage ?? 0 * DamageRate;
     }
     public class PixelWeaponAnalyser
     {
@@ -45,7 +52,7 @@ namespace Prototype.Element
                 for (var x = 0; x < DamageAttenuationField.GetLength(0); x++)
                 for (var y = 0; y < DamageAttenuationField.GetLength(1); y++)
                 {
-                    DamageAttenuationField[x, y] = 0;
+                    DamageAttenuationField[x, y] = -1;
                 }
 
                 foreach (var i in OccludedPixels.Indices)
@@ -68,6 +75,17 @@ namespace Prototype.Element
         public float _paramY = 1.9f;
         public float _paramE = 2.52f;
 
+        public float[] _attenuationLevels = new [] {-1, 0.01f, 0.9f, 3.6f, 7.52f, 18.62f};
+
+        private Vector2Int _gridOrigin;
+        public Vector2 Origin { get; private set; }
+        public float Length { get; private set; }
+        public float Mass { get; private set; }
+        public float Inertia { get; private set; }
+        
+        public float TotalDamageLeft { get; private set; }
+        public float TotalDamageRight { get; private set; }
+
         public PixelWeaponAnalyser(PixelImage image, WeaponForwardDirection forwardCorner)
         {
             Image = image;
@@ -78,6 +96,9 @@ namespace Prototype.Element
             switch (forwardCorner)
             {
                 case WeaponForwardDirection.TopLeft:
+                    _gridOrigin = new Vector2Int(image.Size.x, 0);
+                    Origin = new Vector2(.5f, -.5f);
+                    
                     LeftAnalyser = new OneSideAnalyserHelper()
                     {
                         Tangent = new Vector2(-1, 1).normalized,
@@ -140,7 +161,30 @@ namespace Prototype.Element
             
             AnalyseOneSide(LeftAnalyser);
             AnalyseOneSide(RightAnalyser);
+
+            GenerateWeaponData();
             
+            PhysicalAnalyse();
+        }
+
+        void PhysicalAnalyse()
+        {
+
+            Mass = 0;
+            Inertia = 0;
+            Length = 0;
+
+            for (var y = 0; y < Image.Size.y; y++)
+            for (var x = 0; x < Image.Size.x; x++)
+            {
+                if(Image[x, y] is null)
+                    continue;
+
+                var r = Vector2.Distance(new Vector2(x, y), _gridOrigin);
+                Length = Mathf.Max(Length, r);
+                Inertia += r * r;
+                Mass += 1;
+            }
         }
 
         void AnalyseOneSide(OneSideAnalyserHelper helper)
@@ -161,8 +205,8 @@ namespace Prototype.Element
                     continue;
 
                 helper.OccludedPixels[diagonalPos.x] = diagonalPos.y;
-                
-                for(var y = 0;y<Image.Size.y; y++)
+
+                for (var y = 0; y < Image.Size.y; y++) 
                 for (var x = 0; x < Image.Size.x; x++)
                 {
                     if(x == posX && y == posY)
@@ -178,6 +222,14 @@ namespace Prototype.Element
             }
         }
 
+        /// <summary>
+        /// For given pixel (x, y) return whether it is occluded by other pixels. 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="topMostPixel"></param>
+        /// <param name="compareMode"></param>
+        /// <returns></returns>
         bool PixelOccluded(int x, int y, IList<int> topMostPixel, PixelCompareMode compareMode)
         {
             var leftOccluded = topMostPixel[x - 1].CompareTo(y) == (int)compareMode ||
@@ -203,6 +255,52 @@ namespace Prototype.Element
                 return z;
             }
         }
+
+        void GenerateWeaponData()
+        {
+            TotalDamageLeft = 0;
+            TotalDamageRight = 0;
+            for (var y = 0; y < Image.Size.y; y++)
+            for (var x = 0; x < Image.Size.x; x++)
+            {
+                if (Image[x, y] is null)
+                {
+                    WeaponDataLeft[x, y] = WeaponDataRight[x, y] = new WeaponPixelData()
+                    {
+                        Pixel = null,
+                        DamageRate = 0,
+                        WearRate = 0
+                    };
+                    continue;
+                }
+                var r = Vector2.Distance(new Vector2(x, y), _gridOrigin);
+                WeaponDataLeft[x, y] = GenerateWeaponData(x, y, r, LeftAnalyser.DamageAttenuationField[x, y]);
+                WeaponDataRight[x, y] = GenerateWeaponData(x, y, r, RightAnalyser.DamageAttenuationField[x, y]);
+
+                TotalDamageLeft += WeaponDataLeft[x, y].Damage;
+                TotalDamageRight += WeaponDataRight[x, y].Damage;
+            }
+        }
+
+        WeaponPixelData GenerateWeaponData(int x, int y, float distance, float damageAttenuation)
+        {
+            // will never get -1 here, since it is only for null pixels.
+            var attenuationLevel = MathUtility.ListRangeMap(
+                _attenuationLevels,
+                new[] {-1, 0, 1, 2, 3, 4}, damageAttenuation);
+
+            var attenuation = 1 / (1 + attenuationLevel);
+                
+            // TODO: Complete weapon data.
+            return new WeaponPixelData()
+            {
+                Pixel = Image[x, y],
+                DamageRate = distance * attenuation,
+                WearRate = distance * attenuation,
+            };
+        }
+        
+        
 
         /*
          * In diagonal coordinate
