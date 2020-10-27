@@ -23,7 +23,7 @@ namespace Prototype.Element
         /// <summary>
         /// Damage per hit
         /// </summary>
-        public float Damage => Pixel?.Type.damage ?? 0 * DamageRate;
+        public float Damage => (Pixel?.Damage ?? 0) * DamageRate;
     }
     public class PixelWeaponAnalyser
     {
@@ -182,8 +182,8 @@ namespace Prototype.Element
 
                 var r = Vector2.Distance(new Vector2(x, y), _gridOrigin);
                 Length = Mathf.Max(Length, r);
-                Inertia += r * r;
-                Mass += 1;
+                Inertia += Image[x, y].Weight * r * r;
+                Mass += Image[x, y].Weight;
             }
         }
 
@@ -289,14 +289,15 @@ namespace Prototype.Element
                 _attenuationLevels,
                 new[] {-1, 0, 1, 2, 3, 4}, damageAttenuation);
 
-            var attenuation = 1 / (1 + attenuationLevel);
-                
+            var attenuation = 1.0f / (1 + attenuationLevel);
+
+            var pixel = Image[x, y];
             // TODO: Complete weapon data.
             return new WeaponPixelData()
             {
-                Pixel = Image[x, y],
-                DamageRate = distance * attenuation,
-                WearRate = distance * attenuation,
+                Pixel = pixel,
+                DamageRate = attenuation,
+                WearRate = attenuation,
             };
         }
         

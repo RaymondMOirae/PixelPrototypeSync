@@ -257,6 +257,7 @@ namespace Prototype.Editor
             {
                 _editImage.Pixels[x, y] = _editAsset.Image.Pixels[x, y];
             }
+            _analyser = new PixelWeaponAnalyser(_editImage, WeaponForwardDirection.TopLeft);
             UpdateMeshData();
             RenderImage();
             Repaint();

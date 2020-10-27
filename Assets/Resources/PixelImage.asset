@@ -30,7 +30,7 @@ MonoBehaviour:
       Hardness: 0
     - _type: {fileID: 0}
       Hardness: 0
-    - _type: {fileID: 11400000, guid: 487a22452a476f7459ff17f5e1f4cc93, type: 2}
+    - _type: {fileID: 11400000, guid: db4a1855a85122d44943fa5a3b771232, type: 2}
       Hardness: 1
   - Pixels:
     - _type: {fileID: 0}
@@ -45,7 +45,7 @@ MonoBehaviour:
       Hardness: 0
     - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
       Hardness: 1
-    - _type: {fileID: 11400000, guid: 487a22452a476f7459ff17f5e1f4cc93, type: 2}
+    - _type: {fileID: 11400000, guid: db4a1855a85122d44943fa5a3b771232, type: 2}
       Hardness: 1
     - _type: {fileID: 0}
       Hardness: 0

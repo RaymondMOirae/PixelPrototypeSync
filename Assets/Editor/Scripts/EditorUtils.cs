@@ -71,7 +71,8 @@ namespace Prototype.Editor
         public static bool Fold(string label, ref bool visible, Action renderCallback)
         {
             visible = EditorGUILayout.Foldout(visible, label);
-            Verticle(Styles.Indent, renderCallback);
+            if (visible)
+                Verticle(Styles.Indent, renderCallback);
             return visible;
         }
 
