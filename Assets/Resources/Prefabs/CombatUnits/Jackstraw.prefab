@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 925450033471798881}
   - component: {fileID: 4034079555557297031}
   - component: {fileID: 8863993502089749052}
-  m_Layer: 0
+  - component: {fileID: 5052029145971239267}
+  m_Layer: 8
   m_Name: Jackstraw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,5 +145,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03484de7eb4a63f48936139511a85637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nearPlane: 0
-  farPlane: 10
+  near: 0
+  far: 10
+  lerpFriction: 0
+  lowerRegion: 0
+--- !u!114 &5052029145971239267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342367861362784332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa6c9b0303c0164bbcec6966fe76742, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

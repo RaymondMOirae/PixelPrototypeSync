@@ -241,7 +241,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 25594668}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: HandleInput
+        m_MethodName: MoveInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -253,6 +253,54 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 1c366862-92f8-4089-ae43-61b34048b672
     m_ActionName: Player/Move[/XInputControllerWindows/leftStick,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 25594668}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: AttackInputL
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 0337f7bf-7b0e-461f-a5cd-590f27f9996c
+    m_ActionName: Player/AttackL[/Keyboard/j]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 25594668}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: AttackInputM
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4186fbc5-49cb-4a41-809f-64f219e90273
+    m_ActionName: Player/AttackM[/Keyboard/k]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 25594668}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: AttackInputR
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e9f41582-7c4c-40d9-8c56-d03a114dbc91
+    m_ActionName: Player/AttackR[/Keyboard/l]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -272,6 +320,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: {x: 8, y: 8}
   turningThresholdAngle: 50
+  attackRadius: 1
+  MidOuterAngle: 30
+  SideOuterAngle: 120
+  attackLayer:
+    serializedVersion: 2
+    m_Bits: 256
   curDir: {x: 1, y: 0}
 --- !u!50 &25594669
 Rigidbody2D:
@@ -3421,6 +3475,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Jackstraw1
+      objectReference: {fileID: 0}
+    - target: {fileID: 342367861362784332, guid: 6cc22345a1180c24a88ade80cb4a324b,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 342367861362784334, guid: 6cc22345a1180c24a88ade80cb4a324b,
         type: 3}
