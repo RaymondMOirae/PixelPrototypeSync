@@ -27,10 +27,18 @@ namespace Prototype.Element
     }
     public class PixelWeaponAnalyser
     {
-        enum PixelCompareMode : int
+        public enum PixelCompareMode : int
         {
             Less = -1,
             Greater = 1,
+        }
+
+        public struct AttenuationFieldParameters
+        {
+            public float p;
+            public float k;
+            public float y;
+            public float e;
         }
 
         public class OneSideAnalyserHelper
@@ -39,13 +47,18 @@ namespace Prototype.Element
             public Vector2 Normal;
             public int OcclusionClearValue;
             public IEnumerable<(int x, int y)> PixelIterator;
-            public Func<int, int, bool> OcclusionChecker;
+            // public Func<int, int, bool> OcclusionChecker;
+            public Func<int, int, (int, int)> OcclusionCoordMap;
+            public PixelCompareMode OcclusionCompareMode;
+            
             public float[,] DamageAttenuationField;
             public Utility.OffsetArray<int> OccludedPixels;
             /// <summary>
             /// (x, y, pixelX, pixelY) -> bool (should ignore)
             /// </summary>
             public Func<int, int, int, int, bool> IgnorePixel;
+
+            public AttenuationFieldParameters AttenuationFieldParams;
 
             public void Reset()
             {
@@ -64,16 +77,18 @@ namespace Prototype.Element
         public readonly PixelImage Image;
         public readonly WeaponPixelData[,] WeaponDataLeft;
         public readonly WeaponPixelData[,] WeaponDataRight;
+        public readonly WeaponPixelData[,] WeaponDataStab;
         public readonly WeaponForwardDirection ForwardCorner;
 
 
         public readonly OneSideAnalyserHelper LeftAnalyser;
         public readonly OneSideAnalyserHelper RightAnalyser;
+        public readonly OneSideAnalyserHelper StabAnalyser;
         
-        public float _paramP = 0.57f;
-        public float _paramK = 1.02f;
-        public float _paramY = 1.9f;
-        public float _paramE = 2.52f;
+        // public float _paramP = 0.57f;
+        // public float _paramK = 1.02f;
+        // public float _paramY = 1.9f;
+        // public float _paramE = 2.52f;
 
         public float[] _attenuationLevels = new [] {-1, 0.01f, 0.9f, 3.6f, 7.52f, 18.62f};
 
@@ -85,12 +100,14 @@ namespace Prototype.Element
         
         public float TotalDamageLeft { get; private set; }
         public float TotalDamageRight { get; private set; }
+        public float TotalDamageStab { get; private set; }
 
         public PixelWeaponAnalyser(PixelImage image, WeaponForwardDirection forwardCorner)
         {
             Image = image;
             WeaponDataLeft = new WeaponPixelData[image.Size.x, image.Size.y];
             WeaponDataRight = new WeaponPixelData[image.Size.x, image.Size.y];
+            WeaponDataStab = new WeaponPixelData[image.Size.x, image.Size.y];
             ForwardCorner = forwardCorner;
 
             switch (forwardCorner)
@@ -104,14 +121,19 @@ namespace Prototype.Element
                         Tangent = new Vector2(-1, 1).normalized,
                         Normal = new Vector2(-1, -1).normalized,
                         OcclusionClearValue = int.MaxValue,
-                        OccludedPixels =
-                            new Utility.OffsetArray<int>(-image.Size.y - 3, image.Size.x + image.Size.y + 4),
-                        PixelIterator =
-                            Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMinYMin),
-                        OcclusionChecker = (x, y) =>
-                            PixelOccluded(x, y, LeftAnalyser.OccludedPixels, PixelCompareMode.Less),
+                        OccludedPixels = new Utility.OffsetArray<int>(-image.Size.y - 3, image.Size.x + image.Size.y + 4),
+                        PixelIterator = Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMinYMin),
+                        OcclusionCoordMap = (x, y) => (x, y),
+                        OcclusionCompareMode = PixelCompareMode.Less,
                         DamageAttenuationField = new float[image.Size.x, image.Size.y],
-                        IgnorePixel = (x, y, pixelX, pixelY) => (x + y) < (pixelX + pixelY)
+                        IgnorePixel = (x, y, pixelX, pixelY) => (x + y) < (pixelX + pixelY),
+                        AttenuationFieldParams = new AttenuationFieldParameters()
+                        {
+                            p = 0.57f,
+                            k = 1.02f,
+                            y = 1.9f,
+                            e = 2.52f,
+                        },
                     };
 
                     RightAnalyser = new OneSideAnalyserHelper()
@@ -119,14 +141,39 @@ namespace Prototype.Element
                         Tangent = new Vector2(-1, 1).normalized,
                         Normal = new Vector2(1, 1).normalized,
                         OcclusionClearValue = int.MinValue,
-                        OccludedPixels =
-                            new Utility.OffsetArray<int>(-image.Size.y - 3, image.Size.x + image.Size.y + 4),
-                        PixelIterator =
-                            Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMaxYMax),
-                        OcclusionChecker = (x, y) =>
-                            PixelOccluded(x, y, RightAnalyser.OccludedPixels, PixelCompareMode.Greater),
+                        OccludedPixels = new Utility.OffsetArray<int>(-image.Size.y - 3, image.Size.x + image.Size.y + 4),
+                        PixelIterator = Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMaxYMax),
+                        OcclusionCoordMap = (x, y) => (x, y),
+                        OcclusionCompareMode = PixelCompareMode.Greater,
                         DamageAttenuationField = new float[image.Size.x, image.Size.y],
                         IgnorePixel = (x, y, pixelX, pixelY) => (x + y) > (pixelX + pixelY),
+                        AttenuationFieldParams = new AttenuationFieldParameters()
+                        {
+                            p = 0.57f,
+                            k = 1.02f,
+                            y = 1.9f,
+                            e = 2.52f,
+                        },
+                    };
+
+                    StabAnalyser = new OneSideAnalyserHelper()
+                    {
+                        Tangent = new Vector2(1, 1).normalized,
+                        Normal = new Vector2(-1, 1).normalized,
+                        OcclusionClearValue = int.MaxValue,
+                        OccludedPixels = new Utility.OffsetArray<int>(-2, image.Size.x + image.Size.y + 4),
+                        PixelIterator = Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMinYMax),
+                        OcclusionCoordMap = (x, y) => (y, x),
+                        OcclusionCompareMode = PixelCompareMode.Less,
+                        DamageAttenuationField = new float[image.Size.x, image.Size.y],
+                        IgnorePixel = (x, y, pixelX, pixelY) => (x - y) < (pixelX - pixelY),
+                        AttenuationFieldParams = new AttenuationFieldParameters()
+                        {
+                            p = 0.09f,
+                            k = 0.18f,
+                            y = 11.3f,
+                            e = 6.34f,
+                        },
                     };
                     
                     
@@ -154,13 +201,21 @@ namespace Prototype.Element
                     DamageRate = 1,
                     WearRate = 1,
                 };
+                WeaponDataStab[x, y] = new WeaponPixelData()
+                {
+                    Pixel = Image[x, y],
+                    DamageRate = 1,
+                    WearRate = 1,
+                };
             }
             
             LeftAnalyser.Reset();
             RightAnalyser.Reset();
+            StabAnalyser.Reset();
             
             AnalyseOneSide(LeftAnalyser);
             AnalyseOneSide(RightAnalyser);
+            AnalyseOneSide(StabAnalyser);
 
             GenerateWeaponData();
             
@@ -193,7 +248,8 @@ namespace Prototype.Element
             {
                 var diagonalPos = ToDiagonal(new Vector2Int(posX, posY));
 
-                var occluded = helper.OcclusionChecker(diagonalPos.x, diagonalPos.y);
+                var (occludeX, occludeY) = helper.OcclusionCoordMap(diagonalPos.x, diagonalPos.y);
+                var occluded = PixelOccluded(occludeX, occludeY, helper.OccludedPixels, helper.OcclusionCompareMode);
                 if (occluded)
                 {
                     helper.DamageAttenuationField[posX, posY] = float.MaxValue;
@@ -204,7 +260,7 @@ namespace Prototype.Element
                 if (Image[posX, posY] is null)
                     continue;
 
-                helper.OccludedPixels[diagonalPos.x] = diagonalPos.y;
+                helper.OccludedPixels[occludeX] = occludeY;
 
                 for (var y = 0; y < Image.Size.y; y++) 
                 for (var x = 0; x < Image.Size.x; x++)
@@ -216,7 +272,7 @@ namespace Prototype.Element
                 
                     var delta = new Vector2(x, y) - new Vector2(posX, posY);
                     
-                    var attenuation = PixelAttenuation(delta, helper.Tangent, -helper.Normal);
+                    var attenuation = PixelAttenuation(delta, helper.Tangent, -helper.Normal, helper.AttenuationFieldParams);
                     helper.DamageAttenuationField[x, y] = Mathf.Max(helper.DamageAttenuationField[x, y], attenuation);
                 }
             }
@@ -239,19 +295,19 @@ namespace Prototype.Element
             return leftOccluded && rightOccluded;
         }
 
-        float PixelAttenuation(Vector2 delta, Vector2 tangentVector, Vector2 normalVector)
+        float PixelAttenuation(Vector2 delta, Vector2 tangentVector, Vector2 normalVector, AttenuationFieldParameters param)
         {
             delta = new Vector2(Vector2.Dot(delta, tangentVector), Vector2.Dot(delta, normalVector));
-            delta.y += _paramY;
+            delta.y += param.y;
             
-            var p = _paramP;
+            var p = param.p;
             var z = 2 * p * delta.y - delta.x * delta.x;
             if (z < 0)
                 return 0;
             else
             {
                 z = Mathf.Sqrt(z);
-                z = Mathf.Pow(z, _paramE) * _paramK;
+                z = Mathf.Pow(z, param.e) * param.k;
                 return z;
             }
         }
@@ -260,12 +316,13 @@ namespace Prototype.Element
         {
             TotalDamageLeft = 0;
             TotalDamageRight = 0;
+            TotalDamageStab = 0;
             for (var y = 0; y < Image.Size.y; y++)
             for (var x = 0; x < Image.Size.x; x++)
             {
                 if (Image[x, y] is null)
                 {
-                    WeaponDataLeft[x, y] = WeaponDataRight[x, y] = new WeaponPixelData()
+                    WeaponDataLeft[x, y] = WeaponDataRight[x, y] = WeaponDataStab[x, y] = new WeaponPixelData()
                     {
                         Pixel = null,
                         DamageRate = 0,
@@ -276,9 +333,11 @@ namespace Prototype.Element
                 var r = Vector2.Distance(new Vector2(x, y), _gridOrigin);
                 WeaponDataLeft[x, y] = GenerateWeaponData(x, y, r, LeftAnalyser.DamageAttenuationField[x, y]);
                 WeaponDataRight[x, y] = GenerateWeaponData(x, y, r, RightAnalyser.DamageAttenuationField[x, y]);
+                WeaponDataStab[x, y] = GenerateWeaponData(x, y, r, StabAnalyser.DamageAttenuationField[x, y]);
 
                 TotalDamageLeft += WeaponDataLeft[x, y].Damage;
                 TotalDamageRight += WeaponDataRight[x, y].Damage;
+                TotalDamageStab += WeaponDataStab[x, y].Damage;
             }
         }
 
@@ -289,7 +348,23 @@ namespace Prototype.Element
                 _attenuationLevels,
                 new[] {-1, 0, 1, 2, 3, 4}, damageAttenuation);
 
-            var attenuation = 1.0f / (1 + attenuationLevel);
+            var attenuation = 1f;
+            switch (attenuationLevel)
+            {
+                case -1: 
+                case 4:
+                    attenuation = 0;
+                    break;
+                case 1:
+                    attenuation = 0.8f;
+                    break;
+                case 2:
+                    attenuation = 0.5f;
+                    break;
+                case 3:
+                    attenuation = 0.3f;
+                    break;
+            }
 
             var pixel = Image[x, y];
             // TODO: Complete weapon data.

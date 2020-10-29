@@ -22,6 +22,7 @@ namespace Prototype.Editor
             None,
             LeftAttenuation,
             RightAttenuation,
+            StabAttenuation,
         }
 
         enum ShaderPass : int
@@ -41,6 +42,7 @@ namespace Prototype.Editor
         [SerializeField] private Texture2D _iconBrush;
         [SerializeField] private Texture2D _iconArrowBottomLeft;
         [SerializeField] private Texture2D _iconArrowTopRight;
+        [SerializeField] private Texture2D _iconArrowTopLeft;
         [SerializeField] private Texture2D _iconHide;
 
         private PixelEditMode[] _modes = new[]
@@ -56,6 +58,7 @@ namespace Prototype.Editor
         {
             DebugLayer.None,
             DebugLayer.LeftAttenuation,
+            DebugLayer.StabAttenuation,
             DebugLayer.RightAttenuation,
         };
 
@@ -83,7 +86,25 @@ namespace Prototype.Editor
         private float _analyseParamY = 2.26f;
         private float _analyseParamE = 2.73f;
 
-        private float[] _thresholds = new float[4] {0.9f, 3.6f, 7.52f, 18.62f}; 
+        private float[] _thresholds = new float[4] {0.9f, 3.6f, 7.52f, 18.62f};
+
+        private PixelWeaponAnalyser.OneSideAnalyserHelper _analyserHelper
+        {
+            get
+            {
+                switch (_currentDebugLayer)
+                {
+                    case DebugLayer.LeftAttenuation:
+                        return _analyser.LeftAnalyser;
+                    case DebugLayer.RightAttenuation:
+                        return _analyser.RightAnalyser;
+                    case DebugLayer.StabAttenuation:
+                        return _analyser.StabAnalyser;
+                    default:
+                        return null;
+                }
+            }
+        }
 
         [SerializeField]
         private GUISkin Skin;
@@ -106,6 +127,8 @@ namespace Prototype.Editor
 
         private void OnGUI()
         {
+            if(!_editImage || _analyser is null)
+                NewImage();
             var rect = position;
             rect.position = Vector2.zero;
             
@@ -164,8 +187,9 @@ namespace Prototype.Editor
                         {
                             _iconHide,
                             _iconArrowBottomLeft,
+                            _iconArrowTopLeft,
                             _iconArrowTopRight,
-                        }, 3, toolStyle);
+                        }, 4, toolStyle);
                         _currentDebugLayer = _debugLayer[debugLayerIdx];
 
                     });
@@ -183,14 +207,15 @@ namespace Prototype.Editor
                     {
                         EditorUtils.Verticle(() =>
                         {
-                            EditorGUILayout.LabelField("Mass", _analyser.Mass.ToString("F2"));
-                            EditorGUILayout.LabelField("Intertia", _analyser.Inertia.ToString("F2"));
-                            EditorGUILayout.LabelField("Length", _analyser.Length.ToString("F2"));
+                            EditorGUILayout.LabelField("Mass", _analyser.Mass.ToString("F1"));
+                            EditorGUILayout.LabelField("Intertia", _analyser.Inertia.ToString("F1"));
+                            EditorGUILayout.LabelField("Length", _analyser.Length.ToString("F1"));
                         });
                         EditorUtils.Verticle(() =>
                         {
-                            EditorGUILayout.LabelField("Left Damage", _analyser.TotalDamageLeft.ToString("F2"));
-                            EditorGUILayout.LabelField("Right Damage", _analyser.TotalDamageRight.ToString("F2"));
+                            EditorGUILayout.LabelField("Left Damage", _analyser.TotalDamageLeft.ToString("F1"));
+                            EditorGUILayout.LabelField("Right Damage", _analyser.TotalDamageRight.ToString("F1"));
+                            EditorGUILayout.LabelField("Stab Damage", _analyser.TotalDamageStab.ToString("F1"));
                         });
                     });
                 });
@@ -204,19 +229,32 @@ namespace Prototype.Editor
                 style.margin = new RectOffset(10, 10, 0, 10);
                 EditorUtils.Verticle(style, () =>
                 {
-                    EditorUtils.Fold("Parameters", ref _showParametersEditor, () =>
+                    if (_analyserHelper != null)
                     {
-                        _analyseParamP = EditorGUILayout.FloatField("p", _analyseParamP);
-                        _analyseParamK = EditorGUILayout.FloatField("k", _analyseParamK);
-                        _analyseParamY = EditorGUILayout.FloatField("y", _analyseParamY);
-                        _analyseParamE = EditorGUILayout.FloatField("e", _analyseParamE);
+                        EditorUtils.Fold("Parameters", ref _showParametersEditor, () =>
+                        {
+                            if (_analyserHelper is null)
+                            {
+                                _analyseParamP = EditorGUILayout.FloatField("p", _analyseParamP);
+                                _analyseParamK = EditorGUILayout.FloatField("k", _analyseParamK);
+                                _analyseParamY = EditorGUILayout.FloatField("y", _analyseParamY);
+                                _analyseParamE = EditorGUILayout.FloatField("e", _analyseParamE);
+                            }
+                            else
+                            {
+                                _analyserHelper.AttenuationFieldParams.p = EditorGUILayout.FloatField("p", _analyserHelper.AttenuationFieldParams.p);
+                                _analyserHelper.AttenuationFieldParams.k = EditorGUILayout.FloatField("k", _analyserHelper.AttenuationFieldParams.k);
+                                _analyserHelper.AttenuationFieldParams.y = EditorGUILayout.FloatField("y", _analyserHelper.AttenuationFieldParams.y);
+                                _analyserHelper.AttenuationFieldParams.e = EditorGUILayout.FloatField("e", _analyserHelper.AttenuationFieldParams.e);
+                            }
 
-                        EditorGUILayout.LabelField("Threshold");
-                        for (var i = 0; i < _thresholds.Length; i++)
-                            _thresholds[i] = EditorGUILayout.FloatField(i.ToString(), _thresholds[i]);
+                            EditorGUILayout.LabelField("Threshold");
+                            for (var i = 2; i < _analyser._attenuationLevels.Length; i++)
+                                _analyser._attenuationLevels[i] = EditorGUILayout.FloatField(i.ToString(), _analyser._attenuationLevels[i]);
                         
-                        UpdateMeshData();
-                    });
+                            UpdateMeshData();
+                        });
+                    }
                     
                     _editSize = EditorGUILayout.Vector2IntField("Size", _editSize);
                     _editAsset = EditorGUILayout.ObjectField("Asset", _editAsset, typeof(PixelImageAsset), true) as PixelImageAsset;
@@ -359,14 +397,14 @@ namespace Prototype.Editor
                             = colors[baseIdx + 3] = Color.white.Transparent();
             }
 
-            _analyser._paramY = _analyseParamY;
-            _analyser._paramE = _analyseParamE;
-            _analyser._paramK = _analyseParamK;
-            _analyser._paramP = _analyseParamP;
-            _analyser._attenuationLevels[2] = _thresholds[0];
-            _analyser._attenuationLevels[3] = _thresholds[1];
-            _analyser._attenuationLevels[4] = _thresholds[2];
-            _analyser._attenuationLevels[5] = _thresholds[3];
+            // _analyser._paramY = _analyseParamY;
+            // _analyser._paramE = _analyseParamE;
+            // _analyser._paramK = _analyseParamK;
+            // _analyser._paramP = _analyseParamP;
+            _thresholds[0] = _analyser._attenuationLevels[2];
+            _thresholds[1] = _analyser._attenuationLevels[3];
+            _thresholds[2] = _analyser._attenuationLevels[4];
+            _thresholds[3] = _analyser._attenuationLevels[5];
             _analyser.UpdateWeaponData();
 
             for(var y = 0; y < _editSize.y;y ++)
@@ -381,6 +419,9 @@ namespace Prototype.Editor
                         break;
                     case DebugLayer.RightAttenuation:
                         rawValue = _analyser.RightAnalyser.DamageAttenuationField[x, y];
+                        break;
+                    case DebugLayer.StabAttenuation:
+                        rawValue = _analyser.StabAnalyser.DamageAttenuationField[x, y];
                         break;
                 }
                 if(rawValue <= 0)
