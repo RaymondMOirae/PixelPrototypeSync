@@ -257,7 +257,7 @@ namespace Prototype.Element
                     
                 }
 
-                if (Image[posX, posY] is null)
+                if (!Image[posX, posY])
                     continue;
 
                 helper.OccludedPixels[occludeX] = occludeY;

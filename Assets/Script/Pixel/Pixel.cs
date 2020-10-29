@@ -19,5 +19,8 @@ namespace Prototype.Element
             this._type = type;
             this.Hardness = type.hardness;
         }
+
+        public static implicit operator bool(Pixel pixel)
+            => !(pixel?._type is null);
     }
 }
