@@ -13,16 +13,16 @@ public enum Attack {L, M, R };
 public class PlayerController : MonoBehaviour
 {
     public Vector2 moveSpeed = new Vector2();
+    [Range(45, 90)]
     public float turningThresholdAngle;
 
     private float _turningThresholdCos;
 
     public float attackRadius;
-
-    private float _toRadianFactor = 0.0174532925f;
     public float MidOuterAngle;
-
     public float SideOuterAngle;
+
+    private readonly float _toRadianFactor = 0.0174532925f;
 
     public LayerMask attackLayer;
 
