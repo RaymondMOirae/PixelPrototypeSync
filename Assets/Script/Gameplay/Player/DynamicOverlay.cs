@@ -5,14 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(Transform))]
 public class DynamicOverlay: MonoBehaviour
 {
-    public float near = 0;
-    public float far = 10;
+    public static float NearZDepth { get; set; } = 0;
+
+    public static float FarZDepth { get; set; } = 10;
+
     public float lerpFriction;
     public float lowerRegion;
     
     private void UpdateIntervalSpace(Vector2 region)
     {
-        lerpFriction = (far - near) / region.y;
+        lerpFriction = (FarZDepth - NearZDepth) / region.y;
         lowerRegion = region.x;
 
     }

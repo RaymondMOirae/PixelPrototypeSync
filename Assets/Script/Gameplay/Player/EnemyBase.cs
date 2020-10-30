@@ -2,10 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBase : MonoBehaviour
+
+public abstract class EnemyBase: MonoBehaviour
 {
-    public void TakeDamage(string m)
+    public HealthBar healthBar;
+    public int maxHealth;
+    public int currentHealth;
+
+    public virtual void InitComponents()
     {
-        Debug.Log(m);
+        healthBar = transform.FindChild("UnitCanvas").GetComponentInChildren<HealthBar>();
+        healthBar.SetMaxHealth(maxHealth);
+        healthBar.RecoverMaxHealth();
     }
+
+    public virtual void TakeDamage(string type, int damage)
+    {
+        currentHealth -= damage;
+        healthBar.SetHealth(currentHealth);
+    }
+
 }

@@ -15,7 +15,7 @@
                 },
                 {
                     "name": "AttackL",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "0337f7bf-7b0e-461f-a5cd-590f27f9996c",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -177,7 +177,7 @@
                     "path": "<XInputController>/buttonWest",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "AttackL",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -199,7 +199,7 @@
                     "path": "<XInputController>/buttonNorth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "AttackM",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -221,7 +221,7 @@
                     "path": "<XInputController>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "AttackR",
                     "isComposite": false,
                     "isPartOfComposite": false

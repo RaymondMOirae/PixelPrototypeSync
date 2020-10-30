@@ -14,18 +14,15 @@ public class PlayerController : MonoBehaviour
 {
     public Vector2 moveSpeed = new Vector2();
     public float turningThresholdAngle;
+
     private float _turningThresholdCos;
 
     public float attackRadius;
 
     private float _toRadianFactor = 0.0174532925f;
     public float MidOuterAngle;
-    private Vector2 _midOuterBoundR;
-    private Vector2 _midOuterBoundL;
 
     public float SideOuterAngle;
-    private Vector2 _sideOuterBoundR;
-    private Vector2 _sideOuterBoundL;
 
     public LayerMask attackLayer;
 
@@ -37,28 +34,33 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         _turningThresholdCos = Mathf.Cos(turningThresholdAngle);
-
-        //_midOuterBoundR = MathUtility.Rotate(curDir, MidOuterAngle * _toRadianFactor);
-        //_midOuterBoundL = MathUtility.Rotate(curDir, -MidOuterAngle * _toRadianFactor);
-
-        //_sideOuterBoundR = MathUtility.Rotate(curDir, SideOuterAngle * _toRadianFactor);
-        //_sideOuterBoundL = MathUtility.Rotate(curDir, -SideOuterAngle * _toRadianFactor);
-
     }
 
     private void Update()
     {
-        DrawGizmos();
+        DrawAttackRange();
     }
 
-    private void DrawGizmos()
+    private void DrawAttackRange()
     {
         Debug.DrawRay(transform.position, curDir * attackRadius, Color.cyan);
-        Debug.DrawRay(transform.position, MathUtility.Rotate(curDir, SideOuterAngle * _toRadianFactor)* attackRadius, Color.yellow);
-        Debug.DrawRay(transform.position, MathUtility.Rotate(curDir, -SideOuterAngle * _toRadianFactor)* attackRadius, Color.yellow);
-        Debug.DrawRay(transform.position, MathUtility.Rotate(curDir, MidOuterAngle * _toRadianFactor)* attackRadius, Color.red);
-        Debug.DrawRay(transform.position, MathUtility.Rotate(curDir, -MidOuterAngle * _toRadianFactor)* attackRadius, Color.red);
+        symmetryAction(SideOuterAngle, 
+                        (float a) => Debug.DrawRay(transform.position, 
+                                                    MathUtility.Rotate(curDir, a * _toRadianFactor) * attackRadius, 
+                                                    Color.yellow)
+                        );
+        symmetryAction(MidOuterAngle, 
+                        (float a) => Debug.DrawRay(transform.position, 
+                                                    MathUtility.Rotate(curDir, a * _toRadianFactor) * attackRadius, 
+                                                    Color.red)
+                        );
     }
+
+    private Action<float, Action<float>> symmetryAction = (angle, f) =>
+    {
+        f(angle);
+        f(-angle);
+    };
 
     public void MoveInput(InputAction.CallbackContext cxt)
     {
@@ -69,29 +71,41 @@ public class PlayerController : MonoBehaviour
 
     public void AttackInputL(InputAction.CallbackContext cxt)
     {
-        CastDamageSector(-SideOuterAngle, -MidOuterAngle, Attack.L);
+        if(cxt.started)
+            CastDamageSector(-SideOuterAngle, -MidOuterAngle, Attack.L);
     }
     public void AttackInputM(InputAction.CallbackContext cxt)
     {
-        CastDamageSector(-MidOuterAngle, MidOuterAngle, Attack.M);
+        if(cxt.started)
+            CastDamageSector(-MidOuterAngle, MidOuterAngle, Attack.M);
     }
 
     public void AttackInputR(InputAction.CallbackContext cxt)
     {
-        CastDamageSector(MidOuterAngle, SideOuterAngle, Attack.R);
+        if(cxt.started)
+            CastDamageSector(MidOuterAngle, SideOuterAngle, Attack.R);
     }
 
     public void CastDamageSector(float innerAngle,float outerAngle, Attack a)
     {
-        RaycastHit2D[] res = Physics2D.CircleCastAll(MathUtility.ToVector2(transform.position), attackRadius, curDir, 0, attackLayer);
+        // 获取范围内的collider，抽取对应的GameObject
+        Collider2D[] res = Physics2D.OverlapCircleAll(MathUtility.ToVector2(transform.position), attackRadius, attackLayer);
+
         IEnumerable<GameObject> resObj = res.Select(r => r.transform.gameObject);
 
         foreach(GameObject obj in resObj)
         {
+            // 如果是可攻击对象（挂有EnemyBase），则进行攻击判定
             EnemyBase e = obj.GetComponent<EnemyBase>();
-            if(e != null && InSector(e.transform.position - transform.position, innerAngle, outerAngle) )
+            if(e != null)
             {
-                e.TakeDamage(a.ToString());
+                BoxCollider2D box = e.GetComponent<BoxCollider2D>();
+                Vector2 hitBoxOffset = MathUtility.ToVector2(e.transform.position - transform.position) + box.offset;
+                if(InSector(hitBoxOffset, innerAngle, outerAngle) )
+                {
+
+                    e.TakeDamage(a.ToString(), 5);
+                }
             }
         }
 
@@ -110,6 +124,8 @@ public class PlayerController : MonoBehaviour
 
     public void Turn(Vector2 dir)
     {
+        // 输入向量与当前朝向超过turningThresholdAngle时转向
+        // 相当于使用Vector2.SignedAngle()
         if(Vector2.Dot(dir, curDir) < _turningThresholdCos && dir!=Vector2.zero)
         {
             curDir = Mathf.Abs(dir.x) > Mathf.Abs(dir.y) ? 
