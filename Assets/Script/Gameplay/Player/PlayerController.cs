@@ -22,6 +22,12 @@ public class PlayerController : MonoBehaviour
     public float MidOuterAngle;
     public float SideOuterAngle;
 
+    public int MidInterpoNum;
+    public int SideInterpoNum;
+
+    private float SideDeltaAngle;
+    private float MidDeltaAngle;
+
     private readonly float _toRadianFactor = 0.0174532925f;
 
     public LayerMask attackLayer;
@@ -34,6 +40,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         _turningThresholdCos = Mathf.Cos(turningThresholdAngle);
+        SideDeltaAngle = (SideOuterAngle - MidOuterAngle) / SideInterpoNum;
+        MidDeltaAngle = MidOuterAngle * 2 / MidInterpoNum;
     }
 
     private void Update()
@@ -86,29 +94,51 @@ public class PlayerController : MonoBehaviour
             CastDamageSector(MidOuterAngle, SideOuterAngle, Attack.R);
     }
 
-    public void CastDamageSector(float innerAngle,float outerAngle, Attack a)
+    //public void CastDamageSector(float minAngle,float maxAngle, Attack a)
+    //{
+    //    // 获取范围内的collider，抽取对应的GameObject
+    //    Collider2D[] res = Physics2D.OverlapCircleAll(MathUtility.ToVector2(transform.position), attackRadius, attackLayer);
+
+    //    IEnumerable<GameObject> resObj = res.Select(r => r.transform.gameObject);
+
+    //    foreach(GameObject obj in resObj)
+    //    {
+    //        // 如果是可攻击对象（挂有EnemyBase），则进行攻击判定
+    //        EnemyBase e = obj.GetComponent<EnemyBase>();
+    //        if(e != null)
+    //        {
+    //            BoxCollider2D box = e.GetComponent<BoxCollider2D>();
+    //            Vector2 hitBoxOffset = MathUtility.ToVector2(e.transform.position - transform.position) + box.offset;
+    //            if(InSector(hitBoxOffset, minAngle, maxAngle) )
+    //            {
+
+    //                e.TakeDamage(a.ToString(), 5);
+    //            }
+    //        }
+    //    }
+
+    //}
+
+    public void CastDamageSector(float minAngle, float maxAngle, Attack a)
     {
-        // 获取范围内的collider，抽取对应的GameObject
-        Collider2D[] res = Physics2D.OverlapCircleAll(MathUtility.ToVector2(transform.position), attackRadius, attackLayer);
-
-        IEnumerable<GameObject> resObj = res.Select(r => r.transform.gameObject);
-
-        foreach(GameObject obj in resObj)
+        List<EnemyBase> res = new List<EnemyBase>();
+        float deltaAngle = a == Attack.M ? MidDeltaAngle : SideDeltaAngle;
+        for(float i = minAngle; i <= maxAngle; i += deltaAngle)
         {
-            // 如果是可攻击对象（挂有EnemyBase），则进行攻击判定
-            EnemyBase e = obj.GetComponent<EnemyBase>();
-            if(e != null)
+            RaycastHit2D hit = RaycastWithGizmos(i);
+            EnemyBase eb = hit.collider == null ? null : hit.transform.gameObject.GetComponent<EnemyBase>();
+            if (eb != null && !res.Contains(eb))
             {
-                BoxCollider2D box = e.GetComponent<BoxCollider2D>();
-                Vector2 hitBoxOffset = MathUtility.ToVector2(e.transform.position - transform.position) + box.offset;
-                if(InSector(hitBoxOffset, innerAngle, outerAngle) )
-                {
-
-                    e.TakeDamage(a.ToString(), 5);
-                }
+                res.Add(eb);
+                eb.TakeDamage(a.ToString(), 10);
             }
         }
+    }
 
+    public RaycastHit2D RaycastWithGizmos(float relativeAngle)
+    {
+        Debug.DrawRay(transform.position, MathUtility.Rotate(curDir, -relativeAngle * _toRadianFactor) *attackRadius, Color.green, 1.0f);
+        return Physics2D.Raycast(transform.position, MathUtility.Rotate(curDir, -relativeAngle * _toRadianFactor), attackRadius, attackLayer);
     }
 
     public bool InSector(Vector2 offset, float innerAngle, float outerAngle)

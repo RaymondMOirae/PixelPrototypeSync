@@ -78,3 +78,4 @@ WeaponPixelData GenerateWeaponData(int x, int y, float distance, float damageAtt
 `Reload` 按钮点击后会将画布重置为 `Asset` 框内指向的 `PixelImageAsset` 中的图像。
 
 `Save` 按钮点击后会将当前画布应用到 `Asset` 框内的 `PixelImageAsset`，并且保存到指定的路径。
+

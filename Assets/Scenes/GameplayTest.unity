@@ -323,6 +323,8 @@ MonoBehaviour:
   attackRadius: 2
   MidOuterAngle: 30
   SideOuterAngle: 120
+  MidInterpoNum: 5
+  SideInterpoNum: 6
   attackLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -3741,7 +3743,7 @@ PrefabInstance:
     - target: {fileID: 3972779125669728899, guid: fef7cbb6a6c1c46488739b2ebd29276b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -11.9
+      value: -11.900024
       objectReference: {fileID: 0}
     - target: {fileID: 3972779125669728899, guid: fef7cbb6a6c1c46488739b2ebd29276b,
         type: 3}
