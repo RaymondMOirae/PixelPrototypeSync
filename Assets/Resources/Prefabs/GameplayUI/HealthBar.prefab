@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 50
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 50
   m_OnValueChanged:
     m_PersistentCalls:
@@ -251,3 +251,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8e45ec604718d041a79ce6460571751, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slider: {fileID: 0}
