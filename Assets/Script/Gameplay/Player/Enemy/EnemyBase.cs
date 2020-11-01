@@ -11,7 +11,7 @@ public abstract class EnemyBase: MonoBehaviour
 
     public virtual void InitComponents()
     {
-        healthBar = transform.FindChild("UnitCanvas").GetComponentInChildren<HealthBar>();
+        healthBar = transform.Find("UnitCanvas").GetComponentInChildren<HealthBar>();
         healthBar.SetMaxHealth(maxHealth);
         healthBar.RecoverMaxHealth();
     }
