@@ -73,6 +73,10 @@ namespace Prototype.Settings
         [SerializeField]
         private PixelAssets PixelAssets;
 
+        [GameSetting] 
+        [SerializeField] 
+        private UISettings UISettings;
+
     }
 
     static class GameSettingsIMGUIRegister

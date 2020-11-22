@@ -24,3 +24,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: f66078a9a799ce34b9e71c4ef8ca52c7, type: 2}
     - {fileID: 11400000, guid: e01b00e120004f642b7838a8404e8b52, type: 2}
     - {fileID: 11400000, guid: 487a22452a476f7459ff17f5e1f4cc93, type: 2}
+  UISettings:
+    InventorySlotPrefab: {fileID: 159236389656896500, guid: fd958c15cc6d2104c9180f06e2c81831,
+      type: 3}

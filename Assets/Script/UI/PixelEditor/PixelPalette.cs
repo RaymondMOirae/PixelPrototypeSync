@@ -17,7 +17,7 @@ namespace Prototype.UI
 
         private Dictionary<PixelType, List<Pixel>> availablePixels = new Dictionary<PixelType, List<Pixel>>();
 
-        public PixelType SelectedPixel => (Selected as PixelItem)?.Pixel;
+        public PixelType SelectedPixel => (SelectedItem as PixelItem)?.Pixel;
         
 
         private void Awake()
@@ -79,7 +79,7 @@ namespace Prototype.UI
         {
             if (!(SelectedPixel is null) && availablePixels.TryGetValue(SelectedPixel, out var list) && list.NotEmpty())
             {
-                var item = Selected as PixelItem;
+                var item = SelectedItem as PixelItem;
                 item.UpdateUI(item.Pixel, availablePixels[item.Pixel].Count - 1);
                 return list.PopBack();
             }

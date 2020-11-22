@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Prototype.Utils
 {
@@ -7,6 +8,7 @@ namespace Prototype.Utils
         public static void Release<T>(T obj) where T : new()
             => ObjectPool<T>.Release(obj);
     }
+    
     public static class ObjectPool<T> where T : new()
     {
         private static List<T> pool = new List<T>(64);

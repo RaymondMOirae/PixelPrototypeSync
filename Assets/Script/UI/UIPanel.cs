@@ -1,42 +1,47 @@
-﻿using System.Threading.Tasks;
-using Prototype.Utils;
+﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Prototype.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class GlobalUIPanel<T> : Singleton<T> where T : GlobalUIPanel<T>
+    public class UIPanel : MonoBehaviour, IUIPanel
     {
-        private CanvasGroup canvasGroup;
-
-        protected override void Awake()
+        [SerializeField] private bool ShowOnLoad = false;
+        private CanvasGroup _canvasGroup;
+        private void Awake()
         {
-            base.Awake();
-
-            canvasGroup = GetComponent<CanvasGroup>();
+            _canvasGroup = GetComponent<CanvasGroup>();
+            if(ShowOnLoad)
+                Show();
+            else
+            {
+                _canvasGroup.alpha = 0;
+                gameObject.SetActive(false);
+            }
         }
 
-        public void Show(float time = .2f)
+        public void Show(float transitionTime = .2f)
         {
             gameObject.SetActive(true);
             StopAllCoroutines();
-            StartCoroutine(Utility.ShowUI(canvasGroup, time));
+            StartCoroutine(Utility.ShowUI(_canvasGroup, transitionTime));
         }
 
-        public Task ShowAsync(float time = .2f)
-        {
-            return Utility.ShowUIAsync(canvasGroup, time);
-        }
-
-        public void Hide(float time = .2f)
+        public void Hide(float transitionTime = .2f)
         {
             StopAllCoroutines();
-            StartCoroutine(Utility.HideUI(canvasGroup, time, true));
+            StartCoroutine(Utility.HideUI(_canvasGroup, transitionTime, true));
         }
 
-        public Task HideAsync(float time = .2f)
+        public async Task ShowAsync(float transitionTime = .2f)
         {
-            return Utility.HideUIAsync(canvasGroup, time);
+            await Utility.ShowUIAsync(_canvasGroup, transitionTime);
+        }
+
+        public async Task HideAsync(float transitionTime = .2f)
+        {
+            await Utility.HideUIAsync(_canvasGroup, transitionTime);
         }
     }
 }

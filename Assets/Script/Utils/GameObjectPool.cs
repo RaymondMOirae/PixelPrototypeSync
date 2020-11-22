@@ -1,15 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Prototype.Utils
 {
-    [ExecuteAlways]
-    [ExecuteInEditMode]
-    public class GameObjectPool : Singleton<GameObjectPool>
+    
+    public class GameObjectPool : MonoBehaviour
     {
-        private static Dictionary<GameObject, Pool> prefabPools = new Dictionary<GameObject, Pool>();
-        private static Dictionary<Type, Pool> _perComponentPools = new Dictionary<Type, Pool>();
+        private Dictionary<GameObject, Pool> prefabPools = new Dictionary<GameObject, Pool>();
+        private Dictionary<Type, Pool> _perComponentPools = new Dictionary<Type, Pool>();
+
+        private static GameObjectPool _instance;
+
+        private static GameObjectPool Instance
+        {
+            get
+            {
+                if (!_instance)
+                    _instance = CreateGameObjectPoolRoot();
+                return _instance;
+            }
+        }
 
         #region Types
         
@@ -22,35 +34,42 @@ namespace Prototype.Utils
                 => Get(DefaultName);
             public static T Get(string name)
             {
-                return GetOrCreatePool().Get(name).GetComponent<T>();
+                if (Application.isPlaying)
+                    return GetOrCreatePool().Get(name).GetComponent<T>();
+                else
+                    return Allocator().GetComponent<T>();
             }
 
             public static void Release(T component)
             {
-                GetOrCreatePool().Release(component.gameObject);
+                if (Application.isPlaying)
+                    GetOrCreatePool().Release(component.gameObject);
+                else
+                    DestroyImmediate(component.gameObject);
             }
 
             public static void PreAlloc(int count)
             {
-                GetOrCreatePool().PreAlloc(count);
+                if (Application.isPlaying)
+                    GetOrCreatePool().PreAlloc(count);
             }
 
-            private static Pool GetOrCreatePool()
+            static Pool GetOrCreatePool()
             {
                 if(ObjectPool is null)
                     CreatePool();
                 return ObjectPool;
             }
 
-            private static void CreatePool()
+            static void CreatePool()
             {
                 var container = new GameObject("[Pool]" + typeof(T).Name);
                 container.transform.SetParent(GameObjectPool.Instance.transform);
                 ObjectPool = new Pool(container, Allocator);
-                _perComponentPools.Add(typeof(T), ObjectPool);
+                Instance._perComponentPools.Add(typeof(T), ObjectPool);
             }
 
-            private static GameObject Allocator()
+            static GameObject Allocator()
             {
                 var obj = new GameObject(DefaultName);
                 obj.AddComponent<T>();
@@ -125,13 +144,32 @@ namespace Prototype.Utils
         
         #region PrefabPool
 
-        private static GameObject Get(GameObject prefab) => GetOrCreatePrefabPool(prefab).Get();
-
-        private static GameObject Get(GameObject prefab, string name) => GetOrCreatePrefabPool(prefab).Get(name);
-        
-        private static void Release(GameObject prefab, GameObject obj)
+        public static GameObject Get(GameObject prefab)
         {
-            GetOrCreatePrefabPool(prefab).Release(obj);
+            if (Application.isPlaying)
+                return GetOrCreatePrefabPool(prefab).Get();
+            else
+                return Instantiate(prefab);
+        }
+
+        public static GameObject Get(GameObject prefab, string name)
+        {
+            if(Application.isPlaying)
+                return GetOrCreatePrefabPool(prefab).Get(name);
+            else
+            {
+                var obj = Instantiate(prefab);
+                obj.name = name;
+                return obj;
+            }
+        }
+        
+        public static void Release(GameObject prefab, GameObject obj)
+        {
+            if (Application.isPlaying)
+                GetOrCreatePrefabPool(prefab).Release(obj);
+            else
+                DestroyImmediate(obj);
         }
 
         public static T Get<T>(GameObject prefab) where T : Component
@@ -148,19 +186,21 @@ namespace Prototype.Utils
 
         public static void PreAlloc(GameObject prefab, int count)
         {
-            GetOrCreatePrefabPool(prefab).PreAlloc(count);
+            if (Application.isPlaying)
+                GetOrCreatePrefabPool(prefab).PreAlloc(count);
         }
 
         static Pool GetOrCreatePrefabPool(GameObject prefab)
         {
-            if (prefabPools.ContainsKey(prefab))
+            Assert.IsTrue(Application.isPlaying);
+            if (Instance.prefabPools.ContainsKey(prefab))
             {
-                var existedPool = prefabPools[prefab];
+                var existedPool = Instance.prefabPools[prefab];
                 if (!(existedPool is null))
                     return existedPool;
             }
             var pool = CreatePrefabPool(prefab);
-            prefabPools[prefab] = pool;
+            Instance.prefabPools[prefab] = pool;
             return pool;
         }
 
@@ -191,13 +231,19 @@ namespace Prototype.Utils
 
         #endregion
 
-        protected override void Awake()
+        // private void OnDestroy()
+        // {
+        //     _instance = null;
+        // }
+
+        static GameObjectPool CreateGameObjectPoolRoot()
         {
-            base.Awake();
-            if (Application.isPlaying)
-                gameObject.ClearChildren();
-            else
-                gameObject.ClearChildImmediate();
+            Assert.IsTrue(Application.isPlaying);
+            var obj = new GameObject();
+            obj.name = "[GameObjectPool]";
+            var pool = obj.AddComponent<GameObjectPool>();
+            DontDestroyOnLoad(obj);
+            return pool;
         }
     }
 }

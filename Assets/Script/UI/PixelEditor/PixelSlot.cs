@@ -31,18 +31,19 @@ namespace Prototype.UI
             switch (PixelEditor.Instance.EditMode)
             {
                 case PixelEditMode.Paint:
-                    PixelEditor.Instance.palette.SavePixel(Pixel);
-                    SetPixel(PixelEditor.Instance.palette.TakePixel());
+                    Paint();
                     break;
                 case PixelEditMode.Erase:
-                    PixelEditor.Instance.palette.SavePixel(Pixel);
-                    SetPixel(null);
+                    Erase();
                     break;
             }
         }
 
         public void SetPixel(Pixel pixel)
         {
+            if (pixel && pixel.Protected)
+                Editable = false;
+            
             if (pixel is null)
             {
                 pixelImage.sprite = null;
@@ -56,5 +57,22 @@ namespace Prototype.UI
 
             this.Pixel = pixel;
         }
+
+        void Paint()
+        {
+            var pixel = PixelEditor.Instance.Inventory.Pixels.Take<Pixel>(PixelEditor.Instance.PixelToPaint);
+            if (!pixel)
+                return;
+            
+            PixelEditor.Instance.Inventory.Pixels.SaveItem(Pixel);
+            SetPixel(pixel);
+        }
+
+        void Erase()
+        {
+            PixelEditor.Instance.Inventory.Pixels.SaveItem(Pixel);
+            SetPixel(null);
+        }
+        
     }
 }

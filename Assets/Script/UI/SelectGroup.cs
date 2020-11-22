@@ -4,26 +4,43 @@ using UnityEngine;
 
 namespace Prototype.UI
 {
-    public class SelectGroup<T> : MonoBehaviour where T : class
+    public class SelectGroup : MonoBehaviour
     {
+        [SerializeField]
+        private bool LoadItemsFromChildren = false;
         public RectTransform container;
-        private Dictionary<T, SelectItem> items = new Dictionary<T, SelectItem>();
-        public SelectItem Selected { get; private set; }
+        private readonly List<SelectItem> _selectItems = new List<SelectItem>();
+        public SelectItem SelectedItem { get; private set; }
+        public int SelectedIndex { get; private set; }
 
-        public IEnumerable<SelectItem> Items => items.Values;
+        public bool HasSelected => SelectedIndex >= 0;
 
-        public event Action<SelectItem, SelectItem> OnSelectChange; 
+        public IEnumerable<SelectItem> Items => _selectItems;
+
+        public delegate void SelectionChangeEventHandler(int oldIndex, int newIndex);
+
+        public event SelectionChangeEventHandler OnSelectChange; 
 
         private void Reset()
         {
             container = transform as RectTransform;
         }
 
-        public void AddItem(T key, SelectItem item)
+        private void Awake()
+        {
+            if (LoadItemsFromChildren)
+            {
+                foreach (var child in GetComponentsInChildren<SelectItem>())
+                    AddItem(child);
+            }
+        }
+
+        public int AddItem(SelectItem item)
         {
             item.transform.SetParent(container);
-            items.Add(key, item);
+            _selectItems.Add(item);
             item.OnSelected += ItemOnSelected;
+            return _selectItems.Count - 1;
         }
 
         private void ItemOnSelected(SelectItem item)
@@ -33,54 +50,41 @@ namespace Prototype.UI
 
         public void SelectItem(SelectItem item)
         {
-            var old = Selected;
-            if(Selected)
-                Selected.DeselectInternal();
-            
-            Selected = item;
-            
-            OnSelectChange?.Invoke(old, item);
-
+            SelectByIndex(_selectItems.IndexOf(item));
         }
 
-        public void SelectKey(T key)
+        public SelectItem ItemByIndex(int index)
         {
-            SelectItem(items[key]);
+            if (index < 0 || index >= _selectItems.Count)
+                return null;
+            return _selectItems[index];
         }
 
-        public SelectItem FindSelectItem(T key)
+        public void SelectByIndex(int index)
         {
-            return items[key];
+            var old = SelectedIndex;
+            if(SelectedItem)
+                SelectedItem.DeselectInternal();
+
+            if (index >= 0)
+                SelectedItem = _selectItems[index];
+            else
+                SelectedItem = null;
+
+            OnSelectChange?.Invoke(old, SelectedIndex);
         }
 
-        public TValue FindSelectItem<TValue>(T key) where TValue : SelectItem
-            => items[key] as TValue;
-
-        public void RemoveItem(T key)
+        public void RemoveItem(int index)
         {
-            if (items.TryGetValue(key, out var item))
-            {
-                item.OnSelected -= ItemOnSelected;
-                items.Remove(key);
-                if (Selected == item)
-                {
-                    SelectItem(null);
-                }
-            }
+            if (HasSelected)
+                SelectByIndex(-1);
+            if (index >= 0 && index < _selectItems.Count)
+                _selectItems.RemoveAt(index);
         }
 
         public void RemoveItem(SelectItem item)
         {
-            foreach (var pair in items)
-            {
-                if (pair.Value == item)
-                {
-                    RemoveItem(pair.Key);
-                    return;
-                }
-                
-            }
-            
+            RemoveItem(_selectItems.IndexOf(item));
         }
     }
 }

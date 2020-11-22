@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Prototype.Element;
+using Prototype.Inventory;
+using Prototype.UI.Inventory;
 using Prototype.Utils;
 using Script.GameSystem;
 using UnityEngine;
@@ -10,9 +12,9 @@ using UnityEngine.UI;
 
 namespace Prototype.UI
 {
-    public enum PixelEditMode
+    public enum PixelEditMode: int
     {
-        None,
+        None = 0,
         Paint,
         Erase,
         ColorPicker,
@@ -20,7 +22,22 @@ namespace Prototype.UI
     [RequireComponent(typeof(CanvasGroup))]
     public class PixelEditor : GlobalUIPanel<PixelEditor>, ICustomEditorEX
     {
-        public PixelPalette palette;
+
+        [SerializeField]
+        private Resources _resources;
+        
+        public InventoryPanel PalettePanel;
+
+        public InventoryPanel TemplatesPanel;
+
+        [SerializeField] private SelectItem EditModeNone;
+        [SerializeField] private SelectItem EditModePaint;
+        [SerializeField] private SelectItem EditModeErase;
+        [SerializeField] private SelectItem EditModeColorPicker;
+
+        public PlayerInventory Inventory { get; private set; }
+
+        // public PixelPalette palette;
         public GridLayoutGroup pixelCanvas;
         public Button CompleteButton;
         
@@ -31,9 +48,11 @@ namespace Prototype.UI
 
         public PixelEditMode EditMode = PixelEditMode.None;
 
-        private TaskCompletionSource<PixelImage> _promise = null;
-        private readonly HashSet<Vector2Int> _lockedPixels = new HashSet<Vector2Int>();
+        private TaskCompletionSource<int> _promise = null;
+        // private readonly HashSet<Vector2Int> _lockedPixels = new HashSet<Vector2Int>();
         private PixelImage _editingImage = null;
+
+        public PixelType PixelToPaint => PalettePanel.SelectedKey.ItemType as PixelType;
 
         protected override void Awake()
         {
@@ -44,46 +63,78 @@ namespace Prototype.UI
             {
                 if(_promise is null)
                     return;
-                _promise.SetResult(GetImage());
+                _promise.SetResult(0);
                 _promise = null;
             });
+            
+            TemplatesPanel.OnSelectChange += TemplatesPanelOnOnSelectChange;
+            
+            EditModeNone.OnSelected += _ => EditMode = PixelEditMode.None;
+            EditModePaint.OnSelected += _ => EditMode = PixelEditMode.Paint;
+            EditModeErase.OnSelected += _ => EditMode = PixelEditMode.Erase;
+            EditModeColorPicker.OnSelected += _ => EditMode = PixelEditMode.ColorPicker;
         }
 
-        void UpdateUI(IEnumerable<Pixel> pixels, Vector2Int canvasSize)
+        void TemplatesPanelOnOnSelectChange(ItemGroup oldkey, ItemGroup selectedGroup)
         {
-            EditMode = PixelEditMode.None;
-            palette.InitPalette(pixels);
-            size = canvasSize;
-            UpdateLayout();
-        }
-
-        public void SetEditable(Vector2Int pos, bool editable)
-        {
-            if (!editable)
+            if (selectedGroup)
             {
-                _lockedPixels.Add(pos);
-                if (slots != null && slots.ContainsIndex(pos) && slots[pos.x, pos.y])
-                    slots[pos.x, pos.y].Editable = false;
+                UpdateCanvas(selectedGroup[0] as PixelImage);
             }
             else
             {
-                _lockedPixels.Remove(pos);
-                if (slots != null && slots.ContainsIndex(pos) && slots[pos.x, pos.y])
-                    slots[pos.x, pos.y].Editable = true;
+                _editingImage = null;
+                UpdateLayout();
             }
         }
 
-        public async Task<PixelImage> Edit(IEnumerable<Pixel> pixels, PixelImage image)
+        void UpdateUI()
+        {
+            EditMode = PixelEditMode.None;
+            PalettePanel.UpdateUI(Inventory.Pixels.ItemGroups);
+            TemplatesPanel.UpdateUI(Inventory.Weapons.ItemGroups);
+         
+            TemplatesPanel.SelectIndex(0);
+            
+            // palette.InitPalette(pixels);
+            // size = canvasSize;
+            // UpdateLayout();
+        }
+
+        void UpdateCanvas(PixelImage image)
+        {
+            _editingImage = image;
+            UpdateLayout();
+        }
+
+        // public void SetEditable(Vector2Int pos, bool editable)
+        // {
+        //     if (!editable)
+        //     {
+        //         _lockedPixels.Add(pos);
+        //         if (slots != null && slots.ContainsIndex(pos) && slots[pos.x, pos.y])
+        //             slots[pos.x, pos.y].Editable = false;
+        //     }
+        //     else
+        //     {
+        //         _lockedPixels.Remove(pos);
+        //         if (slots != null && slots.ContainsIndex(pos) && slots[pos.x, pos.y])
+        //             slots[pos.x, pos.y].Editable = true;
+        //     }
+        // }
+
+        public async Task Edit(PlayerInventory inventory)
         {
             if (!(_promise is null))
                 throw new Exception("Duplicated editor.");
 
-            _editingImage = image;
-            UpdateUI(pixels, _editingImage.Size);
+            Inventory = inventory;
+            // _editingImage = image;
+            UpdateUI();
 
             Show();
             
-            var promise = new TaskCompletionSource<PixelImage>();
+            var promise = new TaskCompletionSource<int>();
             _promise = promise;
 
             var result = await promise.Task;
@@ -91,18 +142,16 @@ namespace Prototype.UI
 
             Hide();
             
-            return result;
+            // return result;
         }
 
-        public PixelImage GetImage()
+        void ApplyImage()
         {
             for(var y = 0 ;  y<size.y;y++)
             for (var x = 0; x < size.x; x++)
             {
                 _editingImage.Pixels[x, y] = slots[x, y].Pixel;
             }
-
-            return _editingImage;
         }
 
         [EditorButton]
@@ -129,18 +178,36 @@ namespace Prototype.UI
                     slot.SetPixel(_editingImage.Pixels[x, y]);
                 }
             }
-
-
-
-            foreach (var lockedSlot in _lockedPixels)
-            {
-                if (slots.ContainsIndex(lockedSlot))
-                    slots[lockedSlot.x, lockedSlot.y].Editable = false;
-            }
+            //
+            //
+            //
+            // foreach (var lockedSlot in _lockedPixels)
+            // {
+            //     if (slots.ContainsIndex(lockedSlot))
+            //         slots[lockedSlot.x, lockedSlot.y].Editable = false;
+            // }
             
         }
-        
-        
+
+        public void Undo()
+        {
+            
+        }
+
+        public void Redo()
+        {
+            
+        }
+
+        public void Done()
+        {
+            
+        }
+
+        public void ResetEditor()
+        {
+            
+        }
     }
 
 }

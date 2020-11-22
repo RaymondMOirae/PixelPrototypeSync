@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Prototype.Inventory;
+using UnityEngine;
 
 namespace Prototype.Element
 {
@@ -11,7 +12,7 @@ namespace Prototype.Element
     }
     
     [CreateAssetMenu(fileName = "Pixel", menuName = "Prototype/Pixel")]
-    public class PixelType : ScriptableObject
+    public class PixelType : ItemType
     {
         public Sprite sprite;
         
@@ -27,5 +28,11 @@ namespace Prototype.Element
 
         public PixelAttribute Attribute;
 
+        public override string Properties => "Properties";
+
+        public override string Description
+        {
+            get => "Description";
+        }
     }
 }
