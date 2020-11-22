@@ -9,7 +9,8 @@ namespace Prototype.Rendering
 {
     // [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
     [RequireComponent(typeof(SpriteRenderer))]
-    public class PixelImageRenderer : MonoBehaviour
+    [ExecuteInEditMode]
+    public class PixelImageRenderer : MonoBehaviour, ICustomEditorEX
     {
         [SerializeField]
         private PixelImageAsset _imageAsset;
@@ -32,6 +33,25 @@ namespace Prototype.Rendering
         {
             if (_imageAsset && _spriteRenderer.sprite is null)
             {
+                var sprite = Sprite.Create(_imageAsset.Image.Texture,
+                    new Rect(0, 0, _imageAsset.Image.Texture.width, _imageAsset.Image.Texture.height), Vector2.one / 2);
+                _spriteRenderer.sprite = sprite;
+            }
+        }
+
+        [EditorButton]
+        void UpdateTexture()
+        {
+            if(_imageAsset)
+                _imageAsset.Image.UpdateTexture();
+        }
+
+        [EditorButton()]
+        void ReGenerateTexture()
+        {
+            if (_imageAsset)
+            {
+                _imageAsset.ReGenerateImage();
                 var sprite = Sprite.Create(_imageAsset.Image.Texture,
                     new Rect(0, 0, _imageAsset.Image.Texture.width, _imageAsset.Image.Texture.height), Vector2.one / 2);
                 _spriteRenderer.sprite = sprite;

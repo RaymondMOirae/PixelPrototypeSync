@@ -1,5 +1,6 @@
 ﻿using System;
 using Prototype.Inventory;
+using Prototype.Rendering;
 using Prototype.Utils;
 using UnityEngine;
 

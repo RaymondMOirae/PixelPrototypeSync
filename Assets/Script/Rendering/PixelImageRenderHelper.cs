@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Prototype.Element;
 using Prototype.Settings;
 using Prototype.Utils;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 
-namespace Prototype.Element
+namespace Prototype.Rendering
 {
     public class PixelImageRenderHelper
     {
@@ -23,11 +24,13 @@ namespace Prototype.Element
             {
                 filterMode = FilterMode.Point,
                 useMipMap = true,
+                autoGenerateMips = false,
             };
             RenderTexture.Create();
             Texture = new Texture2D(size.x * 8, size.y * 8)
             {
-                filterMode = FilterMode.Point
+                filterMode = FilterMode.Point,
+                wrapMode = TextureWrapMode.Clamp,
             };
             Texture.Apply(true);
             Mesh = CreateMesh();
@@ -43,9 +46,13 @@ namespace Prototype.Element
             cmd.SetGlobalTexture("_MainTex", PixelAssets.Current.PixelTexture);
             cmd.DrawMesh(Mesh, Matrix4x4.identity, ShaderPool.Get("Prototype/Editor/CanvasGridCode"), 0, 1);
 
-            // cmd.GenerateMips(RenderTexture);
+            cmd.GenerateMips(RenderTexture);
             cmd.CopyTexture(RenderTexture, Texture);
-                Graphics.ExecuteCommandBuffer(cmd);
+            // cmd.CopyTexture(RenderTexture, 0, 0, Texture, 0, 0);
+            // cmd.CopyTexture(RenderTexture, 0, 1, Texture, 0, 1);
+            
+            Graphics.ExecuteCommandBuffer(cmd);
+                
             // Texture.Apply(true);
             CommandBufferPool.Release(cmd);
         }
