@@ -38,7 +38,9 @@ namespace Prototype.Script.Test
             await PixelEditor.Instance.Edit(inventory);
 
             var renderer = GameObjectPool.Get<PixelImageRenderer>();
-            renderer.UpdatePixelImage(image);
+            image.UpdateTexture();
+            
+            // renderer.UpdatePixelImage(image);
         }
     }
 }

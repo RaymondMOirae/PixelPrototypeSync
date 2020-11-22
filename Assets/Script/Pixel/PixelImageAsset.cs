@@ -72,6 +72,7 @@ namespace Prototype.Element
             {
                 _image.Pixels[x, y] = _pixels[y][x];
             }
+            _image.UpdateTexture();
 
             return _image;
         }

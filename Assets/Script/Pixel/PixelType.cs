@@ -28,6 +28,7 @@ namespace Prototype.Element
 
         public PixelAttribute Attribute;
 
+        public override Sprite Image => sprite;
         public override string Properties => "Properties";
 
         public override string Description

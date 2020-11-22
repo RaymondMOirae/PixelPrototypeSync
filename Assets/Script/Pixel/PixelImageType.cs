@@ -14,11 +14,16 @@ namespace Prototype.Element
         private string _description;
         public override string Properties => _properties;
         public override string Description => _description;
+        
+        private Sprite _image;
+        public override Sprite Image => _image;
 
-        public void Init(Vector2Int size)
+        public void Init(PixelImage pixelImage)
         {
-            _properties = $"Size: {size.x} × {size.y}";
-            _description = $"A {size.x} × {size.y} weapon template. Use to create a new weapon.";
+            _properties = $"Size: {pixelImage.Size.x} × {pixelImage.Size.y}";
+            _description = $"A {pixelImage.Size.x} × {pixelImage.Size.y} weapon template. Use to create a new weapon.";
+            _image = Sprite.Create(pixelImage.Texture,
+                new Rect(0, 0, pixelImage.Texture.width, pixelImage.Texture.height), Vector2.one / 2);
         }
     }
 }

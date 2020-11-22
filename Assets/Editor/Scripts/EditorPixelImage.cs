@@ -61,10 +61,11 @@ namespace Prototype.Editor
             PixelImageEditorUtils.UpdateImageMesh(image.Image, _previewMesh);
             PixelImageEditorUtils.RenderImage(_previewMesh, _imagePreviewTexture);
 
+            image.Image.UpdateTexture();
             var rect = r;
             rect.size = Mathf.Min(r.width, r.height) * Vector2.one;
             rect.center = r.center;
-            GUI.DrawTexture(r, _imagePreviewTexture, ScaleMode.ScaleToFit, true);
+            GUI.DrawTexture(r, image.Image.Texture, ScaleMode.ScaleToFit, true);
         }
     }
 }
