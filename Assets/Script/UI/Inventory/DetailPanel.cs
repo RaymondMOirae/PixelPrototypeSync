@@ -9,6 +9,7 @@ namespace Prototype.UI.Inventory
     public class DetailPanel : UIPanel
     {
         [SerializeField] private Image ItemImage;
+        [SerializeField] private Image PreviewBackground;
         [SerializeField] private Text NameText;
         [SerializeField] private Text PropertiesText;
         [SerializeField] private Text DescriptionText;
@@ -20,9 +21,20 @@ namespace Prototype.UI.Inventory
         public void Show(ItemType itemType, Vector2 position)
         {
             ItemImage.sprite = itemType.Image;
+            ItemImage.color = Color.white;
             NameText.text = itemType.ItemName;
             PropertiesText.text = itemType.Properties;
             DescriptionText.text = itemType.Description;
+            if (itemType.PreviewBackground)
+            {
+                PreviewBackground.sprite = itemType.PreviewBackground;
+                PreviewBackground.color = Color.white;
+            }
+            else
+            {
+                PreviewBackground.sprite = null;
+                PreviewBackground.color = Color.white.Transparent();
+            }
             
             var rectTrans = transform as RectTransform;
             rectTrans.anchoredPosition = position;

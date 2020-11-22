@@ -1,4 +1,5 @@
 ﻿using Prototype.Inventory;
+using Prototype.Settings;
 using UnityEngine;
 
 namespace Prototype.Element
@@ -18,8 +19,19 @@ namespace Prototype.Element
         private Sprite _image;
         public override Sprite Image => _image;
 
+        public override Sprite PreviewBackground
+        {
+            get
+            {
+                if (Size.x == Size.y && Size.x == 8)
+                    return UISettings.Current.InventoryPreviewBackgrounds.Image8x8;
+                return null;
+            }
+        }
+
         public void Init(PixelImage pixelImage)
         {
+            Size = pixelImage.Size;
             _properties = $"Size: {pixelImage.Size.x} × {pixelImage.Size.y}";
             _description = $"A {pixelImage.Size.x} × {pixelImage.Size.y} weapon template. Use to create a new weapon.";
             _image = Sprite.Create(pixelImage.Texture,

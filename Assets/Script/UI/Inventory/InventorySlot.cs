@@ -16,6 +16,8 @@ namespace Prototype.UI.Inventory
         [SerializeField] private Text GroupText;
 
         [SerializeField] private Image ItemImage;
+
+        [SerializeField] private Image Background;
         
         
         private ItemGroup _itemGroup;
@@ -37,6 +39,8 @@ namespace Prototype.UI.Inventory
                 ItemImage.sprite = null;
                 ItemImage.color = Color.white.Transparent();
                 GroupText.text = "0";
+                Background.sprite = null;
+                Background.color = Color.white.Transparent();
                 return;
             }
             
@@ -44,6 +48,17 @@ namespace Prototype.UI.Inventory
             ItemImage.sprite = itemGroup.ItemType.Image;
             ItemImage.color = Color.white;
             GroupText.text = itemGroup.Count.ToString();
+            if (itemGroup.ItemType.PreviewBackground)
+            {
+                Background.sprite = itemGroup.ItemType.PreviewBackground;
+                Background.color = Color.white;
+            }
+            else
+            {
+                Background.sprite = null;
+                Background.color = Color.white.Transparent();
+            }
+            
         }
 
         public void OnPointerEnter(PointerEventData eventData)

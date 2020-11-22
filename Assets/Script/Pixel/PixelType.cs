@@ -29,6 +29,7 @@ namespace Prototype.Element
         public PixelAttribute Attribute;
 
         public override Sprite Image => sprite;
+        public override Sprite PreviewBackground => null;
         public override string Properties => "Properties";
 
         public override string Description

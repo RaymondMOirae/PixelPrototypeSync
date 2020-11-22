@@ -27,3 +27,5 @@ MonoBehaviour:
   UISettings:
     InventorySlotPrefab: {fileID: 159236389656896500, guid: fd958c15cc6d2104c9180f06e2c81831,
       type: 3}
+    InventoryPreviewBackgrounds:
+      Image8x8: {fileID: 21300000, guid: 7b58d4c58b4cbe84b89687f94e2e5f88, type: 3}

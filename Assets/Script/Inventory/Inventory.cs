@@ -16,7 +16,7 @@ namespace Prototype.Inventory
                 if (group.ItemType == item.ItemType)
                 {
                     group.Add(item);
-                    break;
+                    return;
                 }
             }
 

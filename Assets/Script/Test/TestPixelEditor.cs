@@ -33,6 +33,8 @@ namespace Prototype.Script.Test
             image.Pixels[6, 1] = PixelAssetManager.CreatePixel(PixelAssetManager.FindPixelType("Wood"));
             image.Pixels[7, 0].Protected = true;
             image.Pixels[6, 1].Protected = true;
+            image.UpdateTexture();
+            
             inventory.Weapons.SaveItem(image);
             
             await PixelEditor.Instance.Edit(inventory);
