@@ -22,16 +22,6 @@ namespace Prototype.UI
 
         private void Awake()
         {
-            
-            OnSelectChange += (oldSelection, item) =>
-            {
-                if (item == pointerItem)
-                    PixelEditor.Instance.EditMode = PixelEditMode.None;
-                else if (item == eraserItem)
-                    PixelEditor.Instance.EditMode = PixelEditMode.Erase;
-                else
-                    PixelEditor.Instance.EditMode = PixelEditMode.Paint;
-            };
             var eraserElement = ScriptableObject.CreateInstance<PixelType>();
             var pointerElement = ScriptableObject.CreateInstance<PixelType>();
             AddItem(pointerElement, pointerItem);

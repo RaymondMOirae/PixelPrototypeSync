@@ -35,6 +35,8 @@ namespace Prototype.UI
         [SerializeField] private SelectItem EditModeErase;
         [SerializeField] private SelectItem EditModeColorPicker;
 
+        [SerializeField] private SelectGroup EditModeSelectGroup;
+
         public PlayerInventory Inventory { get; private set; }
 
         // public PixelPalette palette;
@@ -63,16 +65,28 @@ namespace Prototype.UI
             {
                 if(_promise is null)
                     return;
+                ApplyImage();
+                _editingImage.UpdateTexture();
                 _promise.SetResult(0);
                 _promise = null;
             });
             
             TemplatesPanel.OnSelectChange += TemplatesPanelOnOnSelectChange;
+            PalettePanel.OnSelectChange += (old, newKey) =>
+            {
+                if (newKey)
+                {
+                    EditMode = PixelEditMode.Paint;
+                    EditModeSelectGroup.SelectItem(EditModePaint);
+                }
+            };
             
             EditModeNone.OnSelected += _ => EditMode = PixelEditMode.None;
             EditModePaint.OnSelected += _ => EditMode = PixelEditMode.Paint;
             EditModeErase.OnSelected += _ => EditMode = PixelEditMode.Erase;
             EditModeColorPicker.OnSelected += _ => EditMode = PixelEditMode.ColorPicker;
+            
+            EditModeSelectGroup.SelectItem(EditModeNone);
         }
 
         void TemplatesPanelOnOnSelectChange(ItemGroup oldkey, ItemGroup selectedGroup)
@@ -90,7 +104,7 @@ namespace Prototype.UI
 
         void UpdateUI()
         {
-            EditMode = PixelEditMode.None;
+            // EditMode = PixelEditMode.None;
             PalettePanel.UpdateUI(Inventory.Pixels.ItemGroups);
             TemplatesPanel.UpdateUI(Inventory.Weapons.ItemGroups);
          

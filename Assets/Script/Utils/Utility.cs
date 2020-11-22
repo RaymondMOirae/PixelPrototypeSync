@@ -370,6 +370,8 @@ public static class Utility
         time = (1 - canvasGroup.alpha) * time;
         canvasGroup.alpha = 0;
         canvasGroup.gameObject.SetActive(true);
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
         var alpha = canvasGroup.alpha;
         foreach(var t in TimerNormalized(time))
         {

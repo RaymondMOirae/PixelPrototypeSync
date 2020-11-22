@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Prototype.UI
@@ -41,7 +42,7 @@ namespace Prototype.UI
         {
             var old = SelectedItem;
             if(SelectedItem)
-                SelectedItem.DeselectInternal();
+                SelectedItem.SetDeselectStyle();
             
             SelectedItem = item;
             SelectedKey = _keysByItem[item];
@@ -50,7 +51,6 @@ namespace Prototype.UI
                 old ? _keysByItem[old] : null,
                 item ? _keysByItem[item] : null
             );
-
         }
 
         public void SelectKey(T key)
@@ -103,6 +103,17 @@ namespace Prototype.UI
                 
             }
             
+        }
+
+        public void ClearItem(Action<SelectItem> itemCleanupCallback)
+        {
+            foreach(var item in Items)
+                itemCleanupCallback?.Invoke(item);
+            _itemsByKey.Clear();
+            _keysByItem.Clear();
+            _keyLists.Clear();
+            SelectedKey = null;
+            SelectedItem = null;
         }
     }
 }

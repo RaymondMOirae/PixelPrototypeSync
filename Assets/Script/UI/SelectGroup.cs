@@ -64,12 +64,16 @@ namespace Prototype.UI
         {
             var old = SelectedIndex;
             if(SelectedItem)
-                SelectedItem.DeselectInternal();
+                SelectedItem.SetDeselectStyle();
 
             if (index >= 0)
                 SelectedItem = _selectItems[index];
             else
                 SelectedItem = null;
+            
+            if(SelectedItem)
+                SelectedItem.SetSelectStyle();
+            
 
             OnSelectChange?.Invoke(old, SelectedIndex);
         }

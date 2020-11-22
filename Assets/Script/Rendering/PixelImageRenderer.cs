@@ -25,18 +25,23 @@ namespace Prototype.Rendering
         private void Awake()
         {
             Mesh = new Mesh();
-
             _spriteRenderer = GetComponent<SpriteRenderer>();
+            
+            if (_imageAsset)
+            {
+                ReGenerateTexture();
+            }
         }
 
         private void Update()
         {
-            if (_imageAsset && _spriteRenderer.sprite is null)
-            {
-                var sprite = Sprite.Create(_imageAsset.Image.Texture,
-                    new Rect(0, 0, _imageAsset.Image.Texture.width, _imageAsset.Image.Texture.height), Vector2.one / 2);
-                _spriteRenderer.sprite = sprite;
-            }
+        }
+
+        public void SetPixelImage(PixelImage image)
+        {
+            var sprite = Sprite.Create(image.Texture,
+                new Rect(0, 0, image.Texture.width, image.Texture.height), Vector2.one / 2);
+            _spriteRenderer.sprite = sprite;
         }
 
         [EditorButton]

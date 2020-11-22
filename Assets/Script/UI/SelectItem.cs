@@ -24,18 +24,18 @@ namespace Prototype.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            SelectInternal();
+            SetSelectStyle();
+            OnSelected?.Invoke(this);
         }
 
-        internal void SelectInternal()
+        internal void SetSelectStyle()
         {
             selected = true;
             UpdateStyle();
-            OnSelected?.Invoke(this);
             OnSelect();
         }
 
-        internal void DeselectInternal()
+        internal void SetDeselectStyle()
         {
             selected = false;
             UpdateStyle();

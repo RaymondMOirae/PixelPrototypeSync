@@ -2789,6 +2789,7 @@ MonoBehaviour:
   EditModePaint: {fileID: 1059203992}
   EditModeErase: {fileID: 788442268}
   EditModeColorPicker: {fileID: 1921889352}
+  EditModeSelectGroup: {fileID: 1358003188}
   pixelCanvas: {fileID: 1266262037}
   CompleteButton: {fileID: 589830952}
   size: {x: 8, y: 8}

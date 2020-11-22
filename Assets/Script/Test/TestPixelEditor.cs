@@ -17,14 +17,16 @@ namespace Prototype.Script.Test
         public int Count = 32;
         
         private List<Pixel> pixels = new List<Pixel>();
+        public PlayerInventory Inventory;
+        private PixelImageRenderer renderer;
         private async void Start()
         {
-            var inventory = new PlayerInventory();
+            Inventory = new PlayerInventory();
             foreach (var pixelType in PixelAssets.Current.PixelTypes.Where(p=>p.Attribute == PixelAttribute.Default))
             {
                 for (var i = 0; i < Count; i++)
                 {
-                    inventory.Pixels.SaveItem(new Pixel(pixelType));
+                    Inventory.Pixels.SaveItem(new Pixel(pixelType));
                 }
             }
             
@@ -35,14 +37,23 @@ namespace Prototype.Script.Test
             image.Pixels[6, 1].Protected = true;
             image.UpdateTexture();
             
-            inventory.Weapons.SaveItem(image);
+            Inventory.Weapons.SaveItem(image);
             
-            await PixelEditor.Instance.Edit(inventory);
+            await PixelEditor.Instance.Edit(Inventory);
 
-            var renderer = GameObjectPool.Get<PixelImageRenderer>();
-            image.UpdateTexture();
+            renderer = GameObjectPool.Get<PixelImageRenderer>();
+            // image.UpdateTexture();
+            renderer.SetPixelImage(image);
             
             // renderer.UpdatePixelImage(image);
+        }
+
+        private async void Update()
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F1))
+            {
+                await PixelEditor.Instance.Edit(Inventory);
+            }
         }
     }
 }
