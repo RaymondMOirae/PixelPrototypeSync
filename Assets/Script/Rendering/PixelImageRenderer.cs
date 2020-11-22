@@ -15,18 +15,17 @@ namespace Prototype.Rendering
         [SerializeField]
         private PixelImageAsset _imageAsset;
         public PixelImage Image { get; private set; }
-        
-        public Vector2Int RenderGridSize { get; private set; }
-        
-        public Mesh Mesh { get; private set; }
 
         private SpriteRenderer _spriteRenderer;
 
         private void Awake()
         {
-            Mesh = new Mesh();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             
+        }
+
+        private void Start()
+        {
             if (_imageAsset)
             {
                 ReGenerateTexture();

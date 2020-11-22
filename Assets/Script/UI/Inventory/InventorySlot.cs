@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Prototype.Inventory;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,6 +22,8 @@ namespace Prototype.UI.Inventory
         
         
         private ItemGroup _itemGroup;
+        private ItemGroup _previousGroup;
+        private int _previousCount;
         public ItemGroup ItemGroup
         {
             get => _itemGroup;
@@ -48,6 +51,8 @@ namespace Prototype.UI.Inventory
             ItemImage.sprite = itemGroup.ItemType.Image;
             ItemImage.color = Color.white;
             GroupText.text = itemGroup.Count.ToString();
+            GroupText.gameObject.SetActive(EnableGrouping);
+            
             if (itemGroup.ItemType.PreviewBackground)
             {
                 Background.sprite = itemGroup.ItemType.PreviewBackground;
@@ -78,6 +83,18 @@ namespace Prototype.UI.Inventory
         {
             yield return new WaitForSeconds(DetailsDelay);
             DetailPanelManager.ShowPanel(_itemGroup.ItemType);
+        }
+
+        private void Update()
+        {
+            if (EnableGrouping && _itemGroup && (_itemGroup != _previousGroup || _itemGroup.Count != _previousCount))
+            {
+                GroupText.text = _itemGroup.Count.ToString();
+            }
+
+            _previousGroup = _itemGroup;
+            if (_itemGroup)
+                _previousCount = _itemGroup.Count;
         }
     }
 }
