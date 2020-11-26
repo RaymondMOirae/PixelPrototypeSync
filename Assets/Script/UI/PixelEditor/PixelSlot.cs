@@ -25,8 +25,11 @@ namespace Prototype.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if(!Editable)
+            if (!Editable)
+            {
+                PopupMessage.Show("The pixel is protected and cannot be modified.");
                 return;
+            }
             
             switch (PixelEditor.Instance.EditMode)
             {

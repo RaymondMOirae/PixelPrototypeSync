@@ -9,6 +9,9 @@ namespace Prototype.UI
         
         Task ShowAsync(float transitionTime);
         Task HideAsync(float transitionTime);
-        
+
+        Task ShowAndWaitClose(float transitionTime);
+
+        Task ShowPopup(IUIPanel panel);
     }
 }

@@ -9,7 +9,9 @@ namespace Prototype.UI
     {
         [SerializeField] private bool ShowOnLoad = false;
         private CanvasGroup _canvasGroup;
-        private void Awake()
+        private TaskCompletionSource<int> _completionSource;
+        private IUIPanel _overlayPopup;
+        protected virtual void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
             if(ShowOnLoad)
@@ -31,7 +33,17 @@ namespace Prototype.UI
         public void Hide(float transitionTime = .2f)
         {
             StopAllCoroutines();
+            NotifyUIHide();
             StartCoroutine(Utility.HideUI(_canvasGroup, transitionTime, true));
+        }
+
+        void NotifyUIHide()
+        {
+            if (_completionSource.NotNull())
+            {
+                _completionSource.SetResult(0);
+                _completionSource = null;
+            }
         }
 
         public async Task ShowAsync(float transitionTime = .2f)
@@ -41,7 +53,26 @@ namespace Prototype.UI
 
         public async Task HideAsync(float transitionTime = .2f)
         {
+            NotifyUIHide();
             await Utility.HideUIAsync(_canvasGroup, transitionTime);
+        }
+
+        public async Task ShowAndWaitClose(float transitionTime = .2f)
+        {
+            _completionSource = new TaskCompletionSource<int>();
+            Show(transitionTime);
+            await _completionSource.Task;
+        }
+
+        public async Task ShowPopup(IUIPanel uiPanel)
+        {
+            if(_overlayPopup.NotNull())
+                throw new Exception("A popup is still on top of current UI.");
+            _canvasGroup.interactable = false;
+            _overlayPopup = uiPanel;
+            await uiPanel.ShowAndWaitClose(.2f);
+            _canvasGroup.interactable = true;
+            _overlayPopup = null;
         }
     }
 }

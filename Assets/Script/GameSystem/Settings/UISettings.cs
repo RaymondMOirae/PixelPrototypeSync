@@ -8,6 +8,7 @@ namespace Prototype.Settings
     public class UISettings : SettingEntry<UISettings>
     {
         public GameObject InventorySlotPrefab;
+        public GameObject PopupMessagePrefab;
 
         public InventoryPreviewBackgrounds_T InventoryPreviewBackgrounds;
 
