@@ -49,6 +49,12 @@ namespace Prototype.Gameplay.Player
         private void Update()
         {
             DrawAttackRange();
+            FlipSprite();
+        }
+
+        private void FlipSprite()
+        {
+            transform.localScale = new Vector3(CurDir.x == 0 ? transform.localScale.x : CurDir.x, 1, 1);
         }
 
         private void DrawAttackRange()
