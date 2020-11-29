@@ -4,14 +4,16 @@ namespace Prototype.UI
 {
     public interface IUIPanel
     {
-        void Show(float transitionTime);
-        void Hide(float transitionTime);
+        void Show();
+        void Hide();
         
-        Task ShowAsync(float transitionTime);
-        Task HideAsync(float transitionTime);
+        Task ShowAsync();
+        Task HideAsync();
 
-        Task ShowAndWaitClose(float transitionTime);
+        Task ShowAndWaitClose();
 
-        Task ShowPopup(IUIPanel panel);
+        void ShowPopup(IUIPanel panel);
+
+        void ClosePopup(IUIPanel panel);
     }
 }

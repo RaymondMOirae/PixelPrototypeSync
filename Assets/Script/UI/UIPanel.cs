@@ -7,6 +7,7 @@ namespace Prototype.UI
     [RequireComponent(typeof(CanvasGroup))]
     public class UIPanel : MonoBehaviour, IUIPanel
     {
+        [SerializeField] private float TransitionTime = .2f;
         [SerializeField] private bool ShowOnLoad = false;
         private CanvasGroup _canvasGroup;
         private TaskCompletionSource<int> _completionSource;
@@ -23,18 +24,18 @@ namespace Prototype.UI
             }
         }
 
-        public void Show(float transitionTime = .2f)
+        public void Show()
         {
             gameObject.SetActive(true);
             StopAllCoroutines();
-            StartCoroutine(Utility.ShowUI(_canvasGroup, transitionTime));
+            StartCoroutine(Utility.ShowUI(_canvasGroup, TransitionTime));
         }
 
-        public void Hide(float transitionTime = .2f)
+        public void Hide()
         {
             StopAllCoroutines();
             NotifyUIHide();
-            StartCoroutine(Utility.HideUI(_canvasGroup, transitionTime, true));
+            StartCoroutine(Utility.HideUI(_canvasGroup, TransitionTime, true));
         }
 
         void NotifyUIHide()
@@ -46,32 +47,39 @@ namespace Prototype.UI
             }
         }
 
-        public async Task ShowAsync(float transitionTime = .2f)
+        public async Task ShowAsync()
         {
-            await Utility.ShowUIAsync(_canvasGroup, transitionTime);
+            await Utility.ShowUIAsync(_canvasGroup, TransitionTime);
         }
 
-        public async Task HideAsync(float transitionTime = .2f)
+        public async Task HideAsync()
         {
             NotifyUIHide();
-            await Utility.HideUIAsync(_canvasGroup, transitionTime);
+            await Utility.HideUIAsync(_canvasGroup, TransitionTime);
         }
 
-        public async Task ShowAndWaitClose(float transitionTime = .2f)
+        public async Task ShowAndWaitClose()
         {
             _completionSource = new TaskCompletionSource<int>();
-            Show(transitionTime);
+            Show();
             await _completionSource.Task;
         }
 
-        public async Task ShowPopup(IUIPanel uiPanel)
+        public void ShowPopup(IUIPanel uiPanel)
         {
             if(_overlayPopup.NotNull())
                 throw new Exception("A popup is still on top of current UI.");
             _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
             _overlayPopup = uiPanel;
-            await uiPanel.ShowAndWaitClose(.2f);
+        }
+
+        public void ClosePopup(IUIPanel panel)
+        {
+            if(panel != _overlayPopup)
+                throw new Exception("Popup instance mismatch.");
             _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
             _overlayPopup = null;
         }
     }

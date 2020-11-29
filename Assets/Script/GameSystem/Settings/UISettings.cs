@@ -9,6 +9,7 @@ namespace Prototype.Settings
     {
         public GameObject InventorySlotPrefab;
         public GameObject PopupMessagePrefab;
+        public GameObject BasicDialogPrefab;
 
         public InventoryPreviewBackgrounds_T InventoryPreviewBackgrounds;
 

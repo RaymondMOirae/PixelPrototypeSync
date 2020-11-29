@@ -34,6 +34,6 @@ namespace Prototype.UI
         }
 
         public static void Show(string message)
-            => PopupMessageManager.Instance.Show(message);
+            => OverlayUIManager.Instance.ShowPopupMessage(message);
     }
 }

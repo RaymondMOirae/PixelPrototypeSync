@@ -29,5 +29,7 @@ MonoBehaviour:
       type: 3}
     PopupMessagePrefab: {fileID: 6179794863485935189, guid: 1f0601745ebf4724f91d5a953e025ef1,
       type: 3}
+    BasicDialogPrefab: {fileID: 7120303244712275096, guid: 26dd05bc829b8b44cab92390cac36000,
+      type: 3}
     InventoryPreviewBackgrounds:
       Image8x8: {fileID: 21300000, guid: 7b58d4c58b4cbe84b89687f94e2e5f88, type: 3}

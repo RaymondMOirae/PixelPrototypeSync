@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Prototype.Element;
 using Prototype.Inventory;
+using Prototype.Settings;
 using Prototype.UI.Inventory;
 using Prototype.Utils;
 using Script.GameSystem;
@@ -65,10 +66,7 @@ namespace Prototype.UI
             {
                 if(_promise is null)
                     return;
-                ApplyImage();
-                _editingImage.UpdateTexture();
-                _promise.SetResult(0);
-                _promise = null;
+                Done();
             });
             
             TemplatesPanel.OnSelectChange += TemplatesPanelOnOnSelectChange;
@@ -213,9 +211,21 @@ namespace Prototype.UI
             
         }
 
-        public void Done()
+        public async void Done()
         {
+            var result = await Dialog.ShowPrefabAsync(
+                UISettings.Current.BasicDialogPrefab,
+                "Are you sure to save the pixel image?",
+                this,
+                DialogType.OkCancel);
             
+            if (!result)
+                return;
+            
+            ApplyImage();
+            _editingImage.UpdateTexture();
+            _promise.SetResult(0);
+            _promise = null;
         }
 
         public void ResetEditor()
