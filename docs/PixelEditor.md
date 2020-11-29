@@ -1,4 +1,4 @@
-# Pixel Editor
+# Pixel Editor for Unity Editor
 用于 Unity Editor 开发环境下的像素图编辑器，目前支持像素武器绘制、武器数据和像素伤害衰减分析等。
 
 
