@@ -28,6 +28,7 @@ namespace Prototype.Rendering
         {
             if (_imageAsset)
             {
+                Image = _imageAsset.Image;
                 ReGenerateTexture();
             }
         }
@@ -38,6 +39,7 @@ namespace Prototype.Rendering
 
         public void SetPixelImage(PixelImage image)
         {
+            Image = image;
             var sprite = Sprite.Create(image.Texture,
                 new Rect(0, 0, image.Texture.width, image.Texture.height), Vector2.one / 2);
             _spriteRenderer.sprite = sprite;
