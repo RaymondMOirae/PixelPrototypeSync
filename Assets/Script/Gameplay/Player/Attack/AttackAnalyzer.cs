@@ -2,38 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Prototype.Element;
+using Prototype.Rendering;
 
-namespace Prototype.Gameplay.Player
+namespace Prototype.Gameplay.Player.Attack
 {
-    public class Weapon : MonoBehaviour
+    public class AttackAnalyzer : MonoBehaviour
     {
-        private SpriteRenderer _renderer;
         [SerializeField] private PixelImageAsset _asset;
         [SerializeField] private PixelWeaponAnalyser _analyser;
+        private PixelImageRenderer _renderer;
+
         // Start is called before the first frame update
         private void Awake()
         {
-
-            _analyser = new PixelWeaponAnalyser(_asset.Image, WeaponForwardDirection.TopLeft);
+            _renderer = GetComponent<PixelImageRenderer>();
+            _analyser = new PixelWeaponAnalyser(_renderer.Image, WeaponForwardDirection.TopLeft);
             _analyser.UpdateWeaponData();
-            _renderer = GetComponent<SpriteRenderer>();
-            
-            //_renderer.
         }
 
-        public float ResolveDamage(Attack type)
+        public float ResolveDamageValue(AttackType type)
         {
             WeaponPixelData[,] data;
             float damage = 0;
             switch (type)
             {
-                case Attack.L:
+                case AttackType.L:
                     data = _analyser.WeaponDataLeft;
                     break;
-                case Attack.M:
+                case AttackType.M:
                     data = _analyser.WeaponDataStab;
                     break;
-                case Attack.R:
+                case AttackType.R:
                     data = _analyser.WeaponDataStab;
                     break;
                 default:

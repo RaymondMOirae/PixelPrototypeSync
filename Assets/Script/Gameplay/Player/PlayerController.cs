@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Prototype.Gameplay.Enemy;
+using Prototype.Gameplay.Player.Attack;
 
 namespace Prototype.Gameplay.Player
 {
-    public enum Attack {L, M, R };
+    public enum AttackType {L, M, R, NA};
 
     public class PlayerController : MonoBehaviour
     {
@@ -35,12 +36,14 @@ namespace Prototype.Gameplay.Player
         public Vector2 CurDir = Vector2.right;
 
         private Rigidbody2D _rigidBody;
-        private Weapon _weapon;
+        private WeaponController _wController;
+        private SpriteRenderer _sprite;
 
         private void Awake()
         {
             _rigidBody = GetComponent<Rigidbody2D>();
-            _weapon = transform.Find("Weapon").GetComponent<Weapon>();
+            _sprite = GetComponent<SpriteRenderer>();
+            _wController = transform.Find("WeaponHolder").GetComponent<WeaponController>();
             _turningThresholdCos = Mathf.Cos(TurningThresholdAngle);
             _sideDeltaAngle = (SideOuterAngle - MidOuterAngle) / SideInterpoNum;
             _midDeltaAngle = MidOuterAngle * 2 / MidInterpoNum;
@@ -51,10 +54,52 @@ namespace Prototype.Gameplay.Player
             DrawAttackRange();
             FlipSprite();
         }
+        public void MoveInput(InputAction.CallbackContext cxt)
+        {
+            Vector2 inputDir = cxt.ReadValue<Vector2>();
+            Move(inputDir);
+            Turn(inputDir);
+        }
+
+        public void AttackInputL(InputAction.CallbackContext cxt)
+        {
+            if (cxt.started)
+                _wController.Attack(AttackType.L);
+        }
+        public void AttackInputM(InputAction.CallbackContext cxt)
+        {
+            if(cxt.started)
+                _wController.Attack(AttackType.M);
+        }
+
+        public void AttackInputR(InputAction.CallbackContext cxt)
+        {
+            if(cxt.started)
+                _wController.Attack(AttackType.R);
+        }
 
         private void FlipSprite()
         {
-            transform.localScale = new Vector3(CurDir.x == 0 ? transform.localScale.x : CurDir.x, 1, 1);
+            _sprite.flipX = CurDir.x == -1;
+        }
+
+        public void Move(Vector2 dir)
+        {
+            _rigidBody.velocity = new Vector2(dir.x * moveSpeed.x, dir.y * moveSpeed.y);
+        }
+
+        public void Turn(Vector2 dir)
+        {
+            // 输入向量与当前朝向超过turningThresholdAngle时转向
+            // 相当于使用Vector2.SignedAngle()
+            if(Vector2.Dot(dir, CurDir) < _turningThresholdCos && dir!=Vector2.zero)
+            {
+                Vector2 lastDir = CurDir;
+                CurDir = Mathf.Abs(dir.x) > Mathf.Abs(dir.y) ? 
+                         Vector2.right * Mathf.Sign(dir.x) : Vector2.up * Mathf.Sign(dir.y);
+                float delta = Vector2.SignedAngle(lastDir ,CurDir);
+                _wController.transform.Rotate(Vector3.forward * delta);
+            }
         }
 
         private void DrawAttackRange()
@@ -78,59 +123,13 @@ namespace Prototype.Gameplay.Player
             f(-angle);
         };
 
-        public void MoveInput(InputAction.CallbackContext cxt)
-        {
-            Vector2 inputDir = cxt.ReadValue<Vector2>();
-            Move(inputDir);
-            Turn(inputDir);
-        }
+        #region TrashCode
 
-        public void AttackInputL(InputAction.CallbackContext cxt)
-        {
-            if(cxt.started)
-                CastDamageSector(-SideOuterAngle, -MidOuterAngle, Attack.L);
-        }
-        public void AttackInputM(InputAction.CallbackContext cxt)
-        {
-            if(cxt.started)
-                CastDamageSector(-MidOuterAngle, MidOuterAngle, Attack.M);
-        }
 
-        public void AttackInputR(InputAction.CallbackContext cxt)
-        {
-            if(cxt.started)
-                CastDamageSector(MidOuterAngle, SideOuterAngle, Attack.R);
-        }
-
-        //public void CastDamageSector(float minAngle,float maxAngle, Attack a)
-        //{
-        //    // 获取范围内的collider，抽取对应的GameObject
-        //    Collider2D[] res = Physics2D.OverlapCircleAll(MathUtility.ToVector2(transform.position), attackRadius, attackLayer);
-
-        //    IEnumerable<GameObject> resObj = res.Select(r => r.transform.gameObject);
-
-        //    foreach(GameObject obj in resObj)
-        //    {
-        //        // 如果是可攻击对象（挂有EnemyBase），则进行攻击判定
-        //        EnemyBase e = obj.GetComponent<EnemyBase>();
-        //        if(e != null)
-        //        {
-        //            BoxCollider2D box = e.GetComponent<BoxCollider2D>();
-        //            Vector2 hitBoxOffset = MathUtility.ToVector2(e.transform.position - transform.position) + box.offset;
-        //            if(InSector(hitBoxOffset, minAngle, maxAngle) )
-        //            {
-
-        //                e.TakeDamage(a.ToString(), 5);
-        //            }
-        //        }
-        //    }
-
-        //}
-
-        public void CastDamageSector(float minAngle, float maxAngle, Attack a)
+        public void CastDamageSector(float minAngle, float maxAngle, AttackType a)
         {
             List<EnemyBase> res = new List<EnemyBase>();
-            float deltaAngle = a == Attack.M ? _midDeltaAngle : _sideDeltaAngle;
+            float deltaAngle = a == AttackType.M ? _midDeltaAngle : _sideDeltaAngle;
             for(float i = minAngle; i <= maxAngle; i += deltaAngle)
             {
                 RaycastHit2D hit = RaycastWithGizmos(i);
@@ -138,7 +137,7 @@ namespace Prototype.Gameplay.Player
                 if (eb != null && !res.Contains(eb))
                 {
                     res.Add(eb);
-                    eb.TakeDamage(a.ToString(), _weapon.ResolveDamage(a));
+                    //eb.TakeDamage(a.ToString(), _weapon.ResolveDamageValue(a));
                 }
             }
         }
@@ -155,21 +154,7 @@ namespace Prototype.Gameplay.Player
             return (offsetAngle > innerAngle && offsetAngle <= outerAngle);
         }
 
-        public void Move(Vector2 dir)
-        {
-            _rigidBody.velocity = new Vector2(dir.x * moveSpeed.x, dir.y * moveSpeed.y);
-        }
-
-        public void Turn(Vector2 dir)
-        {
-            // 输入向量与当前朝向超过turningThresholdAngle时转向
-            // 相当于使用Vector2.SignedAngle()
-            if(Vector2.Dot(dir, CurDir) < _turningThresholdCos && dir!=Vector2.zero)
-            {
-                CurDir = Mathf.Abs(dir.x) > Mathf.Abs(dir.y) ? 
-                         Vector2.right * Mathf.Sign(dir.x) : Vector2.up * Mathf.Sign(dir.y);
-            }
-        }
+        #endregion
 
     }
 

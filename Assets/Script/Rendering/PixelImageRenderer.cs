@@ -59,7 +59,7 @@ namespace Prototype.Rendering
             {
                 _imageAsset.ReGenerateImage();
                 var sprite = Sprite.Create(_imageAsset.Image.Texture,
-                    new Rect(0, 0, _imageAsset.Image.Texture.width, _imageAsset.Image.Texture.height), Vector2.one / 2);
+                    new Rect(0, 0, _imageAsset.Image.Texture.width, _imageAsset.Image.Texture.height), Vector2.right);
                 _spriteRenderer.sprite = sprite;
             }
         }

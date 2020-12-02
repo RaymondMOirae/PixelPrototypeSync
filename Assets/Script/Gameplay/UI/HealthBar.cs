@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace Prototype.Gameplay.UI
 {
+    [ExecuteInEditMode]
     [RequireComponent(typeof(Slider))]
     public class HealthBar : MonoBehaviour
     {
