@@ -37,7 +37,7 @@ namespace Prototype.UI
 
         public int AddItem(SelectItem item)
         {
-            item.transform.SetParent(container);
+            item.transform.SetParent(container, false);
             _selectItems.Add(item);
             item.OnSelected += ItemOnSelected;
             return _selectItems.Count - 1;

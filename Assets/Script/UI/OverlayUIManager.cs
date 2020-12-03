@@ -20,14 +20,14 @@ namespace Prototype.UI
         {
             var msgUI = GameObjectPool.Get<PopupMessage>(UISettings.Current.PopupMessagePrefab);
             msgUI.UpdateUI(message);
-            msgUI.transform.SetParent(PopupMessageContainer);
+            msgUI.transform.SetParent(PopupMessageContainer, false);
             await msgUI.Show();
             GameObjectPool.Release(UISettings.Current.PopupMessagePrefab, msgUI);
         }
 
         public void AddDialog(Dialog dialog)
         {
-            dialog.transform.SetParent(DialogContainer);
+            dialog.transform.SetParent(DialogContainer, false);
         }
         
     }

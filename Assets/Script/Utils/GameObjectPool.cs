@@ -64,7 +64,7 @@ namespace Prototype.Utils
             static void CreatePool()
             {
                 var container = new GameObject("[Pool]" + typeof(T).Name);
-                container.transform.SetParent(GameObjectPool.Instance.transform);
+                container.transform.SetParent(GameObjectPool.Instance.transform, false);
                 ObjectPool = new Pool(container, Allocator);
                 Instance._perComponentPools.Add(typeof(T), ObjectPool);
             }
@@ -124,7 +124,7 @@ namespace Prototype.Utils
                 if (!obj)
                     return;
                 // obj.transform.parent = transform;
-                obj.transform.SetParent(ObjectCollection.transform);
+                obj.transform.SetParent(ObjectCollection.transform, false);
                 obj.layer = 0;
                 obj.SetActive(false);
                 objectPool.Push(obj);

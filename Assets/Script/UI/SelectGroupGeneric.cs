@@ -26,7 +26,7 @@ namespace Prototype.UI
 
         public void AddItem(T key, SelectItem item)
         {
-            item.transform.SetParent(container);
+            item.transform.SetParent(container, false);
             _itemsByKey.Add(key, item);
             _keysByItem.Add(item, key);
             item.OnSelected += ItemOnSelected;

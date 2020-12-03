@@ -185,7 +185,7 @@ namespace Prototype.UI
                 for (var x = 0; x < size.x; x++)
                 {
                     var slot = GameObjectPool.Get<PixelSlot>(ResourceManager.Instance.PrefabPixelSlot);
-                    slot.transform.SetParent(pixelCanvas.transform);
+                    slot.transform.SetParent(pixelCanvas.transform, false);
                     slots[x, y] = slot;
                     slot.SetPixel(_editingImage.Pixels[x, y]);
                 }

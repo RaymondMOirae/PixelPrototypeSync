@@ -27,11 +27,13 @@ namespace Prototype.UI.Inventory
         {
             HideAllPanel();
             var panel = GameObjectPool.Get<DetailPanel>(Instance.Prefab);
-            panel.transform.SetParent(Instance.transform);
+            panel.transform.SetParent(Instance.transform, false);
             panel.ResetPivot();
             var pos = InputManager.Inputs.UI.Pointer.ReadValue<Vector2>();
+            var uiScale = Vector2.one / Instance.transform.lossyScale;
+            pos *= uiScale;
             var offsetPos = pos + new Vector2(OffsetX, -OffsetY);
-            if (offsetPos.x + panel.Size.x > Screen.width)
+            if (offsetPos.x + panel.Size.x > Screen.width * uiScale.x)
             {
                 offsetPos.x = pos.x - OffsetX;
                 panel.MovePivotRight();
@@ -42,6 +44,7 @@ namespace Prototype.UI.Inventory
                 offsetPos.y = pos.y + OffsetY;
                 panel.MovePivotBottom();
             }
+
             panel.Show(itemType, offsetPos);
             Instance._panels.Add(panel);
         }
