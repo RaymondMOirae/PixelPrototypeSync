@@ -17,19 +17,20 @@ namespace Prototype.Gameplay.Player.Attack
             _analyzer = transform.parent.Find("Analyzer").GetComponent<AttackAnalyzer>();
         }
 
-        void OnCollisionEnter2D(Collision2D collision)
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (_controller.isAttacking && collision.collider.CompareTag("Enemy"))
+            if (_controller.DuringAttack && collision.gameObject.CompareTag("Enemy"))
             {
-                EnemyBase eb = collision.collider.GetComponent<EnemyBase>();
+                EnemyBase eb = collision.gameObject.GetComponent<EnemyBase>();
                 if(eb != null)
                 {
                     eb.TakeDamage(_controller.CurrentType.ToString(), _analyzer.ResolveDamageValue(_controller.CurrentType));
                 }
                 
             }
-
+            
         }
+
     }
 
 }

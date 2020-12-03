@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 4034079555557297031}
   - component: {fileID: 8863993502089749052}
   - component: {fileID: 342367862574975275}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Jackstraw
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -146,8 +146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03484de7eb4a63f48936139511a85637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  near: 0
-  far: 10
   lerpFriction: 0
   lowerRegion: 0
 --- !u!114 &342367862574975275
@@ -182,10 +180,35 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1710876789306467882, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710876789832531727, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710876789965274592, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+        type: 3}
+      propertyPath: slider
+      value: 
+      objectReference: {fileID: 376454010223962324}
+    - target: {fileID: 1710876789965274594, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 6662701069686273086, guid: a6dd6d5d94fbbec46aaca397fb27114a,
         type: 3}
       propertyPath: m_Name
       value: UnitCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6662701069686273086, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8405999899431554944, guid: a6dd6d5d94fbbec46aaca397fb27114a,
         type: 3}
@@ -300,6 +323,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1335088100295873843}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &376454010223962324 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1710876789965274599, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1335088100295873843}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &376454010223962323 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1710876789965274592, guid: a6dd6d5d94fbbec46aaca397fb27114a,

@@ -13,7 +13,7 @@ namespace Prototype.Gameplay.Player.Attack
         private PixelImageRenderer _renderer;
 
         // Start is called before the first frame update
-        private void Awake()
+        private void Start()
         {
             _renderer = GetComponent<PixelImageRenderer>();
             _analyser = new PixelWeaponAnalyser(_renderer.Image, WeaponForwardDirection.TopLeft);

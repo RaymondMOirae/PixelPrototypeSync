@@ -98,7 +98,7 @@ namespace Prototype.Gameplay.Player
                 CurDir = Mathf.Abs(dir.x) > Mathf.Abs(dir.y) ? 
                          Vector2.right * Mathf.Sign(dir.x) : Vector2.up * Mathf.Sign(dir.y);
                 float delta = Vector2.SignedAngle(lastDir ,CurDir);
-                _wController.transform.Rotate(Vector3.forward * delta);
+                _wController.transform.Rotate(Vector3.forward * delta, Space.Self);
             }
         }
 
