@@ -51,6 +51,14 @@ namespace Prototype.Input
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""InteractionButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""24159b80-0879-4570-bd36-16bf699f4afc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -240,6 +248,28 @@ namespace Prototype.Input
                     ""action"": ""AttackR"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2e45339e-cf47-4dd8-87bc-7e88db6bb44d"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""InteractionButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9c875193-d735-493c-8d47-914c2f6f7927"",
+                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""InteractionButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -340,6 +370,7 @@ namespace Prototype.Input
             m_Player_AttackL = m_Player.FindAction("AttackL", throwIfNotFound: true);
             m_Player_AttackM = m_Player.FindAction("AttackM", throwIfNotFound: true);
             m_Player_AttackR = m_Player.FindAction("AttackR", throwIfNotFound: true);
+            m_Player_InteractionButton = m_Player.FindAction("InteractionButton", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Pointer = m_UI.FindAction("Pointer", throwIfNotFound: true);
@@ -396,6 +427,7 @@ namespace Prototype.Input
         private readonly InputAction m_Player_AttackL;
         private readonly InputAction m_Player_AttackM;
         private readonly InputAction m_Player_AttackR;
+        private readonly InputAction m_Player_InteractionButton;
         public struct PlayerActions
         {
             private @PlayerInputs m_Wrapper;
@@ -404,6 +436,7 @@ namespace Prototype.Input
             public InputAction @AttackL => m_Wrapper.m_Player_AttackL;
             public InputAction @AttackM => m_Wrapper.m_Player_AttackM;
             public InputAction @AttackR => m_Wrapper.m_Player_AttackR;
+            public InputAction @InteractionButton => m_Wrapper.m_Player_InteractionButton;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -425,6 +458,9 @@ namespace Prototype.Input
                     @AttackR.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackR;
                     @AttackR.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackR;
                     @AttackR.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackR;
+                    @InteractionButton.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
+                    @InteractionButton.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
+                    @InteractionButton.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -441,6 +477,9 @@ namespace Prototype.Input
                     @AttackR.started += instance.OnAttackR;
                     @AttackR.performed += instance.OnAttackR;
                     @AttackR.canceled += instance.OnAttackR;
+                    @InteractionButton.started += instance.OnInteractionButton;
+                    @InteractionButton.performed += instance.OnInteractionButton;
+                    @InteractionButton.canceled += instance.OnInteractionButton;
                 }
             }
         }
@@ -529,6 +568,7 @@ namespace Prototype.Input
             void OnAttackL(InputAction.CallbackContext context);
             void OnAttackM(InputAction.CallbackContext context);
             void OnAttackR(InputAction.CallbackContext context);
+            void OnInteractionButton(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Prototype.Gameplay.Enemy;
 using Prototype.Gameplay.Player.Attack;
+using Prototype.Gameplay.RoomFacility;
 
 namespace Prototype.Gameplay.Player
 {
@@ -13,6 +14,8 @@ namespace Prototype.Gameplay.Player
 
     public class PlayerController : MonoBehaviour
     {
+        private readonly float _toRadianFactor = 0.0174532925f;
+
         public Vector2 moveSpeed = new Vector2();
         [Range(45, 90)]
         public float TurningThresholdAngle;
@@ -29,53 +32,37 @@ namespace Prototype.Gameplay.Player
         private float _sideDeltaAngle;
         private float _midDeltaAngle;
 
-        private readonly float _toRadianFactor = 0.0174532925f;
-
-        public LayerMask AttackLayer;
+        [SerializeField] private LayerMask _attackLayer;
+        [SerializeField] public LayerMask _interactLayer;
+        private ContactFilter2D _interactFilter;
 
         public Vector2 CurDir = Vector2.right;
 
-        private Rigidbody2D _rigidBody;
+        private Rigidbody2D _rigidbody;
+        private Collider2D _collider;
         private WeaponController _wController;
         private SpriteRenderer _sprite;
 
         private void Awake()
         {
-            _rigidBody = GetComponent<Rigidbody2D>();
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _collider = GetComponent<BoxCollider2D>();
             _sprite = GetComponent<SpriteRenderer>();
             _wController = transform.Find("WeaponHolder").GetComponent<WeaponController>();
+
+            _interactFilter = new ContactFilter2D();
+            _interactFilter.SetLayerMask(_interactLayer);
+            _interactFilter.useLayerMask = true;
+            _interactFilter.useTriggers = true;
             _turningThresholdCos = Mathf.Cos(TurningThresholdAngle);
             _sideDeltaAngle = (SideOuterAngle - MidOuterAngle) / SideInterpoNum;
             _midDeltaAngle = MidOuterAngle * 2 / MidInterpoNum;
         }
 
-        private void Update()
+        void Update()
         {
             DrawAttackRange();
             FlipSprite();
-        }
-        public void MoveInput(InputAction.CallbackContext cxt)
-        {
-            Vector2 inputDir = cxt.ReadValue<Vector2>();
-            Move(inputDir);
-            Turn(inputDir);
-        }
-
-        public void AttackInputL(InputAction.CallbackContext cxt)
-        {
-            if (cxt.started)
-                _wController.Attack(AttackType.L);
-        }
-        public void AttackInputM(InputAction.CallbackContext cxt)
-        {
-            if(cxt.started)
-                _wController.Attack(AttackType.M);
-        }
-
-        public void AttackInputR(InputAction.CallbackContext cxt)
-        {
-            if(cxt.started)
-                _wController.Attack(AttackType.R);
         }
 
         private void FlipSprite()
@@ -85,7 +72,7 @@ namespace Prototype.Gameplay.Player
 
         public void Move(Vector2 dir)
         {
-            _rigidBody.velocity = new Vector2(dir.x * moveSpeed.x, dir.y * moveSpeed.y);
+            _rigidbody.velocity = new Vector2(dir.x * moveSpeed.x, dir.y * moveSpeed.y);
         }
 
         public void Turn(Vector2 dir)
@@ -100,6 +87,26 @@ namespace Prototype.Gameplay.Player
                 float delta = Vector2.SignedAngle(lastDir ,CurDir);
                 _wController.transform.Rotate(Vector3.forward * delta, Space.Self);
             }
+        }
+
+        public void Attack(AttackType type)
+        {
+            _wController.Attack(type);
+        }
+
+        public void HandleInteraction()
+        {
+            List<Collider2D> res = new List<Collider2D>();
+            _collider.OverlapCollider(_interactFilter, res);
+            foreach(Collider2D c in res)
+            {
+                if (c.CompareTag("InteractiveContactor"))
+                {
+                    c.transform.parent.GetComponent<InteractiveBase>().HandleInteraction();
+                    break;
+                }
+            }
+
         }
 
         private void DrawAttackRange()
@@ -145,7 +152,7 @@ namespace Prototype.Gameplay.Player
         public RaycastHit2D RaycastWithGizmos(float relativeAngle)
         {
             Debug.DrawRay(transform.position, MathUtility.Rotate(CurDir, -relativeAngle * _toRadianFactor) *AttackRadius, Color.green, 1.0f);
-            return Physics2D.Raycast(transform.position, MathUtility.Rotate(CurDir, -relativeAngle * _toRadianFactor), AttackRadius, AttackLayer);
+            return Physics2D.Raycast(transform.position, MathUtility.Rotate(CurDir, -relativeAngle * _toRadianFactor), AttackRadius, _attackLayer);
         }
 
         public bool InSector(Vector2 offset, float innerAngle, float outerAngle)
