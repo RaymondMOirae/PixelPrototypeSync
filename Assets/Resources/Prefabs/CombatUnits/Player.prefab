@@ -1,164 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &554549586
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 554549589}
-  - component: {fileID: 554549588}
-  - component: {fileID: 554549587}
-  m_Layer: 0
-  m_Name: InputHandler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &554549589
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 554549586}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.7241818, y: 0.260334, z: -1.8205476}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 8273969898208333873}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &554549588
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 554549586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 3ddc929ece43ef843b91d7bd228ba05b,
-    type: 3}
-  m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 554549587}
-        m_TargetAssemblyTypeName: Prototype.Gameplay.Player.InputHandler, PixelPrototype
-        m_MethodName: MoveInput
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 1c366862-92f8-4089-ae43-61b34048b672
-    m_ActionName: Player/Move[/XInputControllerWindows/leftStick,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 554549587}
-        m_TargetAssemblyTypeName: Prototype.Gameplay.Player.InputHandler, PixelPrototype
-        m_MethodName: AttackInputL
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 0337f7bf-7b0e-461f-a5cd-590f27f9996c
-    m_ActionName: Player/AttackL[/Keyboard/j]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 554549587}
-        m_TargetAssemblyTypeName: Prototype.Gameplay.Player.InputHandler, PixelPrototype
-        m_MethodName: AttackInputM
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 4186fbc5-49cb-4a41-809f-64f219e90273
-    m_ActionName: Player/AttackM[/Keyboard/k]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 554549587}
-        m_TargetAssemblyTypeName: Prototype.Gameplay.Player.InputHandler, PixelPrototype
-        m_MethodName: AttackInputR
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: e9f41582-7c4c-40d9-8c56-d03a114dbc91
-    m_ActionName: Player/AttackR[/Keyboard/l]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: f221f8a1-32fc-477b-b45b-44371ff078b1
-    m_ActionName: UI/Pointer[/Mouse/position,/Pen/position]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 554549587}
-        m_TargetAssemblyTypeName: Prototype.Gameplay.Player.InputHandler, PixelPrototype
-        m_MethodName: Interact
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 24159b80-0879-4570-bd36-16bf699f4afc
-    m_ActionName: Player/InteractionButton[/Keyboard/e,/XInputControllerWindows/buttonSouth]
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &554549587
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 554549586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57ea9af1a5ead1f49864941e58d57dc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8273969896960140848
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 8273969896960140848}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.8963, y: 1.8963, z: 1.8963}
   m_Children:
   - {fileID: 8273969897481958075}
   - {fileID: 8273969898285665085}
@@ -255,6 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cedb36868548002428210b66988daa07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CheckList: []
 --- !u!1 &8273969897481958020
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,7 +240,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8273969897275074894}
-  - {fileID: 554549589}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -421,13 +262,13 @@ MonoBehaviour:
   SideOuterAngle: 120
   MidInterpoNum: 5
   SideInterpoNum: 6
+  CurDir: {x: 1, y: 0}
   _attackLayer:
     serializedVersion: 2
     m_Bits: 512
   _interactLayer:
     serializedVersion: 2
     m_Bits: 2048
-  CurDir: {x: 1, y: 0}
 --- !u!114 &8273969898208333876
 MonoBehaviour:
   m_ObjectHideFlags: 0

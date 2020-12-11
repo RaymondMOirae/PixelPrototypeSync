@@ -9,16 +9,21 @@ namespace Prototype.Gameplay.RoomFacility
         private BoxCollider2D _detector;
         private GameObject _interactiveSign;
         public LayerMask _layer;
-        public 
+
         // Start is called before the first frame update
-        void Start()
+        protected virtual void Start()
         {
             _detector = transform.Find("Detector").GetComponent<BoxCollider2D>();
             _interactiveSign = transform.Find("Sign").gameObject;
         }
 
         // Update is called once per frame
-        void Update()
+        protected void Update()
+        {
+            CheckContact();
+        }
+
+        protected void CheckContact()
         {
             if (_detector.IsTouchingLayers(_layer))
             {
@@ -28,7 +33,10 @@ namespace Prototype.Gameplay.RoomFacility
             {
                 _interactiveSign.SetActive(false);
             }
+
         }
+
+
 
         public void HandleInteraction()
         {

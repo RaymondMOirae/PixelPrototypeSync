@@ -17,14 +17,15 @@ namespace Prototype.Gameplay.Player.Attack
             _analyzer = transform.parent.Find("Analyzer").GetComponent<AttackAnalyzer>();
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnTriggerStay2D(Collider2D collision)
         {
             if (_controller.DuringAttack && collision.gameObject.CompareTag("Enemy"))
             {
                 EnemyBase eb = collision.gameObject.GetComponent<EnemyBase>();
-                if(eb != null)
+                if(eb != null && !_controller.CheckList.Contains(eb))
                 {
                     eb.TakeDamage(_controller.CurrentType.ToString(), _analyzer.ResolveDamageValue(_controller.CurrentType));
+                    _controller.CheckList.Add(eb);
                 }
                 
             }

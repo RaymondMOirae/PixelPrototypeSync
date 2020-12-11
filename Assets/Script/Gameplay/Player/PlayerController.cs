@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Prototype.Input;
 using Prototype.Gameplay.Enemy;
 using Prototype.Gameplay.Player.Attack;
 using Prototype.Gameplay.RoomFacility;
@@ -14,13 +15,10 @@ namespace Prototype.Gameplay.Player
 
     public class PlayerController : MonoBehaviour
     {
-        private readonly float _toRadianFactor = 0.0174532925f;
-
+        // open fields to designer
         public Vector2 moveSpeed = new Vector2();
-        [Range(45, 90)]
-        public float TurningThresholdAngle;
 
-        private float _turningThresholdCos;
+        [Range(45, 90)] public float TurningThresholdAngle;
 
         public float AttackRadius;
         public float MidOuterAngle;
@@ -29,15 +27,20 @@ namespace Prototype.Gameplay.Player
         public int MidInterpoNum;
         public int SideInterpoNum;
 
+        public Vector2 CurDir = Vector2.right;
+
+        // intermediate values 
+        private float _turningThresholdCos;
         private float _sideDeltaAngle;
         private float _midDeltaAngle;
+
+        private readonly float _toRadianFactor = 0.0174532925f;
 
         [SerializeField] private LayerMask _attackLayer;
         [SerializeField] public LayerMask _interactLayer;
         private ContactFilter2D _interactFilter;
 
-        public Vector2 CurDir = Vector2.right;
-
+        // components
         private Rigidbody2D _rigidbody;
         private Collider2D _collider;
         private WeaponController _wController;
@@ -54,9 +57,20 @@ namespace Prototype.Gameplay.Player
             _interactFilter.SetLayerMask(_interactLayer);
             _interactFilter.useLayerMask = true;
             _interactFilter.useTriggers = true;
+
             _turningThresholdCos = Mathf.Cos(TurningThresholdAngle);
             _sideDeltaAngle = (SideOuterAngle - MidOuterAngle) / SideInterpoNum;
             _midDeltaAngle = MidOuterAngle * 2 / MidInterpoNum;
+        }
+
+        private void Start()
+        {
+            InputManager.Inputs.Player.AttackL.performed += (cxt) => _wController.Attack(AttackType.L);
+            InputManager.Inputs.Player.AttackM.performed += (cxt) => _wController.Attack(AttackType.M);
+            InputManager.Inputs.Player.AttackR.performed += (cxt) => _wController.Attack(AttackType.R);
+            InputManager.Inputs.Player.Move.performed += (cxt) => Move(cxt.ReadValue<Vector2>());
+            InputManager.Inputs.Player.Move.canceled += (cxt) => Move(cxt.ReadValue<Vector2>());
+            InputManager.Inputs.Player.InteractionButton.performed += (cxt) => HandleInteraction();
         }
 
         void Update()
@@ -73,10 +87,7 @@ namespace Prototype.Gameplay.Player
         public void Move(Vector2 dir)
         {
             _rigidbody.velocity = new Vector2(dir.x * moveSpeed.x, dir.y * moveSpeed.y);
-        }
 
-        public void Turn(Vector2 dir)
-        {
             // 输入向量与当前朝向超过turningThresholdAngle时转向
             // 相当于使用Vector2.SignedAngle()
             if(Vector2.Dot(dir, CurDir) < _turningThresholdCos && dir!=Vector2.zero)
@@ -87,11 +98,6 @@ namespace Prototype.Gameplay.Player
                 float delta = Vector2.SignedAngle(lastDir ,CurDir);
                 _wController.transform.Rotate(Vector3.forward * delta, Space.Self);
             }
-        }
-
-        public void Attack(AttackType type)
-        {
-            _wController.Attack(type);
         }
 
         public void HandleInteraction()
