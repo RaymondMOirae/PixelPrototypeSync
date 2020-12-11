@@ -210,6 +210,9 @@ public static class MathUtility
     public static Color Transparent(this Color color)
         => new Color(color.r, color.g, color.b, 0);
 
+    public static Color WithAlpha(this Color color, float alpha)
+        => new Color(color.r, color.g, color.b, alpha);
+
     /// <summary>
     /// Cross product following right hand rule.
     /// </summary>
