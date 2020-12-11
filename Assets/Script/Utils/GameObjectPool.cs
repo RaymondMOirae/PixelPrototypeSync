@@ -125,7 +125,6 @@ namespace Prototype.Utils
                     return;
                 // obj.transform.parent = transform;
                 obj.transform.SetParent(ObjectCollection.transform, false);
-                obj.layer = 0;
                 obj.SetActive(false);
                 objectPool.Push(obj);
             }

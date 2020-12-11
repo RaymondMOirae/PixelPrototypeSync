@@ -29,15 +29,15 @@ namespace Prototype.Element
 
         public PixelImage(int x, int y) : this(new Vector2Int(x, y))
         {
-            _imageRenderHelper = new PixelImageRenderHelper(new Vector2Int(x, y));
-            _itemType = ScriptableObjectPool.Get<PixelImageType>();
-            _itemType.Init(this);
         }
         
         public PixelImage(Vector2Int size)
         {
             _size = size;
             _pixels = new Pixel[size.x, size.y];
+            _imageRenderHelper = new PixelImageRenderHelper(size);
+            _itemType = ScriptableObjectPool.Get<PixelImageType>();
+            _itemType.Init(this);
         }
 
         public Pixel this[int x, int y]
@@ -55,6 +55,18 @@ namespace Prototype.Element
         {
             _imageRenderHelper.UpdateTexture(this);
         }
+
+        // Only use for test
+        public PixelImage Clone()
+        {
+            var image = new PixelImage(this.Size)
+            {
+                _pixels = _pixels.Clone() as Pixel[,]
+            };
+            image.UpdateTexture();
+            return image;
+        }
+        
 
     }
 }

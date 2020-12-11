@@ -20,14 +20,14 @@ namespace Prototype.UI.Inventory
         
         public void Show(ItemType itemType, Vector2 position)
         {
-            ItemImage.sprite = itemType.Image;
+            ItemImage.sprite = itemType.InventoryIcon;
             ItemImage.color = Color.white;
             NameText.text = itemType.ItemName;
             PropertiesText.text = itemType.Properties;
             DescriptionText.text = itemType.Description;
-            if (itemType.PreviewBackground)
+            if (itemType.InventoryBackground)
             {
-                PreviewBackground.sprite = itemType.PreviewBackground;
+                PreviewBackground.sprite = itemType.InventoryBackground;
                 PreviewBackground.color = Color.white;
             }
             else

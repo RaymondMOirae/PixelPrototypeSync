@@ -18,7 +18,7 @@ TagManager:
   - AttackableUnits
   - BackGround
   - RoomFacility
-  - 
+  - DroppedItem
   - 
   - 
   - 
@@ -47,4 +47,7 @@ TagManager:
     locked: 0
   - name: Player&Enemy
     uniqueID: 320184133
+    locked: 0
+  - name: DroppedItem
+    uniqueID: 3851407595
     locked: 0

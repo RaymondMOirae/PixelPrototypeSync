@@ -6,8 +6,9 @@ namespace Prototype.Inventory
     {
         public int ItemID;
         public string ItemName;
-        public abstract Sprite Image { get; }
-        public abstract Sprite PreviewBackground { get; }
+        public abstract Sprite DroppedSprite { get; }
+        public abstract Sprite InventoryIcon { get; }
+        public abstract Sprite InventoryBackground { get; }
         
         public abstract string Properties { get; }
         public abstract string Description { get; }

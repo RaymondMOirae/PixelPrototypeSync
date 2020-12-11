@@ -48,14 +48,14 @@ namespace Prototype.UI.Inventory
             }
             
 
-            ItemImage.sprite = itemGroup.ItemType.Image;
+            ItemImage.sprite = itemGroup.ItemType.InventoryIcon;
             ItemImage.color = Color.white;
             GroupText.text = itemGroup.Count.ToString();
             GroupText.gameObject.SetActive(EnableGrouping);
             
-            if (itemGroup.ItemType.PreviewBackground)
+            if (itemGroup.ItemType.InventoryBackground)
             {
-                Background.sprite = itemGroup.ItemType.PreviewBackground;
+                Background.sprite = itemGroup.ItemType.InventoryBackground;
                 Background.color = Color.white;
             }
             else

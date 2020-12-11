@@ -71,12 +71,15 @@ namespace Prototype.Settings
 
         [GameSetting] 
         [SerializeField]
-        private PixelAssets PixelAssets;
+        private PixelAssets PixelAssets = new PixelAssets();
 
         [GameSetting] 
         [SerializeField] 
-        private UISettings UISettings;
+        private UISettings UISettings = new UISettings();
 
+        [GameSetting]
+        [SerializeField]
+        private GamePrefabs GamePrefabs = new GamePrefabs();
     }
 
     static class GameSettingsIMGUIRegister

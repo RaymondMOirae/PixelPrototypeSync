@@ -17,9 +17,9 @@ namespace Prototype.Element
         public override string Description => _description;
         
         private Sprite _image;
-        public override Sprite Image => _image;
+        public override Sprite InventoryIcon => _image;
 
-        public override Sprite PreviewBackground
+        public override Sprite InventoryBackground
         {
             get
             {
@@ -28,6 +28,8 @@ namespace Prototype.Element
                 return null;
             }
         }
+
+        public override Sprite DroppedSprite => _image;
 
         public void Init(PixelImage pixelImage)
         {

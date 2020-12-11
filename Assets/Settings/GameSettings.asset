@@ -7,7 +7,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbfb1cd0205b408db40dd6b3e1f094a2, type: 3}
   m_Name: GameSettings
@@ -33,3 +33,6 @@ MonoBehaviour:
       type: 3}
     InventoryPreviewBackgrounds:
       Image8x8: {fileID: 21300000, guid: 7b58d4c58b4cbe84b89687f94e2e5f88, type: 3}
+  GamePrefabs:
+    DroppedItem: {fileID: 426827634613633123, guid: 10df8f71b8e7c214d953bb2c7494f059,
+      type: 3}

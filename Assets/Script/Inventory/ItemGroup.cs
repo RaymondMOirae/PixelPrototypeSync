@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Prototype.Inventory
 {
+    [Serializable]
     public class ItemGroup : List<Item>
     {
-        public ItemType ItemType { get; }
+        [SerializeField] private readonly ItemType _itemType;
+        public ItemType ItemType => _itemType;
 
         public ItemGroup(ItemType type)
         {
-            ItemType = type;
+            _itemType = type;
         }
-        
         
         public new void Add(Item item)
         {
