@@ -2,13 +2,7 @@
 
 游戏内的背包系统
 
-Full Name: `Prototype.Inventory.PlayerInventory`
-
-## PlayerInventory
-
-`PlayerInventory` 是游戏玩家的整个背包，背包内有若干个 `Inventory` 容器，：
-- `Pixels` 保存玩家拥有的所有像素素材
-- `Weapons` 保存玩家所有的像素武器
+Full Name: `Prototype.Inventory.Inventory`
 
 ## Inventory
 

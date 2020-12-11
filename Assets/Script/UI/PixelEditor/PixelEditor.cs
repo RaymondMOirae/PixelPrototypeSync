@@ -38,7 +38,7 @@ namespace Prototype.UI
 
         [SerializeField] private SelectGroup EditModeSelectGroup;
 
-        public PlayerInventory Inventory { get; private set; }
+        public Prototype.Inventory.Inventory Inventory { get; private set; }
 
         // public PixelPalette palette;
         public GridLayoutGroup pixelCanvas;
@@ -103,8 +103,8 @@ namespace Prototype.UI
         void UpdateUI()
         {
             // EditMode = PixelEditMode.None;
-            PalettePanel.UpdateUI(Inventory.Pixels.ItemGroups);
-            TemplatesPanel.UpdateUI(Inventory.Weapons.ItemGroups);
+            PalettePanel.LoadInventory(Inventory, itemType => itemType is PixelType);
+            TemplatesPanel.LoadInventory(Inventory, itemType => itemType is PixelImageType);
          
             TemplatesPanel.SelectIndex(0);
             
@@ -135,7 +135,7 @@ namespace Prototype.UI
         //     }
         // }
 
-        public async Task Edit(PlayerInventory inventory)
+        public async Task Edit(Prototype.Inventory.Inventory inventory)
         {
             if (!(_promise is null))
                 throw new Exception("Duplicated editor.");

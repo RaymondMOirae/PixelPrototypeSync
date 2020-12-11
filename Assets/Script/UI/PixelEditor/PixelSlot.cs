@@ -63,17 +63,17 @@ namespace Prototype.UI
 
         void Paint()
         {
-            var pixel = PixelEditor.Instance.Inventory.Pixels.Take<Pixel>(PixelEditor.Instance.PixelToPaint);
+            var pixel = PixelEditor.Instance.Inventory.Take<Pixel>(PixelEditor.Instance.PixelToPaint);
             if (!pixel)
                 return;
             
-            PixelEditor.Instance.Inventory.Pixels.SaveItem(Pixel);
+            PixelEditor.Instance.Inventory.SaveItem(Pixel);
             SetPixel(pixel);
         }
 
         void Erase()
         {
-            PixelEditor.Instance.Inventory.Pixels.SaveItem(Pixel);
+            PixelEditor.Instance.Inventory.SaveItem(Pixel);
             SetPixel(null);
         }
         
