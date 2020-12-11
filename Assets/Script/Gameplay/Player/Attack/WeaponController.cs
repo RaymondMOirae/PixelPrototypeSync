@@ -48,7 +48,7 @@ namespace Prototype.Gameplay.Player.Attack
 
         private void PerformAnimation(AttackType type)
         {
-            _animator.Play("Attack" + type.ToString());
+            _animator.Play("Attack" + type.ToString(), 0, 0);
         }
     }
 
