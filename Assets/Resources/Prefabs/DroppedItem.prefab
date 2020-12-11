@@ -112,3 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf0afea250f84aae95d80d920f343fd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InitialVelocity: {x: 0, y: 5}
+  Acceleration: 20
+  MaxSpeed: 15
+  AngularSpeed: 180

@@ -58,6 +58,22 @@ public static class MathUtility
         return new Vector3(x, y, z);
     }
 
+    /// <summary>
+    /// z = x - y
+    /// Guarantee that z will not be different sign with x
+    /// i.e. positive number will never subtract to nagtive number 
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    public static float SubtractToZero(this float x, float y)
+    {
+        var z = x - y;
+        if (SignInt(z) != SignInt(x))
+            return 0;
+        return z;
+    }
+
     public static Vector2 ToVector2(this Vector3 v)
     {
         return new Vector2(v.x, v.y);
