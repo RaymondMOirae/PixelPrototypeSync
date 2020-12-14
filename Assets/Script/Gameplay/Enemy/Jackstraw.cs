@@ -18,7 +18,7 @@ namespace Prototype.Gameplay.Enemy
             if(currentHealth <= 0.0f)
             {
                 currentHealth = maxHealth;
-                healthBar.RecoverMaxHealth();
+                healthBar.RestoreMaxHealth();
             }
             Debug.Log("Damage:" + type  + " " + damage.ToString() + " received by Jackstraw");
         }

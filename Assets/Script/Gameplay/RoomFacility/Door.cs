@@ -3,31 +3,44 @@ using System.Collections.Generic;
 using UnityEditor.Animations;
 using UnityEngine;
 
-public class Door : MonoBehaviour
+namespace Prototype.Gameplay.RoomFacility
 {
-    public LayerMask playerLayer;
-    private BoxCollider2D box;
-    private Animator animator;
-    // Start is called before the first frame update
-    void Start()
+    public class Door : MonoBehaviour
     {
-        box = GetComponent<BoxCollider2D>();
-        animator = GetComponent<Animator>();
+        public LayerMask playerLayer;
+        private BoxCollider2D _box;
+        private Animator _animator;
+        private OverlayHost _overlayHost;
+        // Start is called before the first frame update
+        void Start()
+        {
+            _box = GetComponent<BoxCollider2D>();
+            _animator = GetComponent<Animator>();
+            _overlayHost = transform.parent.GetComponent<OverlayHost>();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (_box.IsTouchingLayers(playerLayer))
+            {
+                _animator.SetBool("PlayerAround", true);
+            }
+            else
+            {
+                _animator.SetBool("PlayerAround", false);
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Player"))
+            {
+                collision.BroadcastMessage("UpdateIntervalSpace", _overlayHost.verticalRegion);
+            }
+        }
+
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (box.IsTouchingLayers(playerLayer))
-        {
-            animator.SetBool("PlayerAround", true);
-        }
-        else
-        {
-            animator.SetBool("PlayerAround", false);
-        }
-    }
-
-
 }
+

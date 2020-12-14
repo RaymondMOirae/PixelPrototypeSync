@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Prototype.Gameplay.RoomFacility
+namespace Prototype.Gameplay.Enemy
 {
-    public class PickableItem : InteractiveBase
+    public class EnemyBrain : EnemyBase
     {
-        // Start is called before the first frame update
-        protected override void Start()
+
+        void Start()
         {
-            base.Start();
             
         }
 
         // Update is called once per frame
         void Update()
         {
-            base.CheckContact();
             
         }
     }

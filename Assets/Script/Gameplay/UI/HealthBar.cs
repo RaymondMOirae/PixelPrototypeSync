@@ -20,7 +20,12 @@ namespace Prototype.Gameplay.UI
             slider.maxValue = maxHealth;
         }
 
-        public void RecoverMaxHealth()
+        public float GetMaxHealth()
+        {
+            return slider.maxValue;
+        }
+
+        public void RestoreMaxHealth()
         {
             SetHealth((int)slider.maxValue);
         }
@@ -28,6 +33,11 @@ namespace Prototype.Gameplay.UI
         public void SetHealth(float health)
         {
             slider.value = health;
+        }
+
+        public float GetHealth()
+        {
+            return slider.value;
         }
 
     }

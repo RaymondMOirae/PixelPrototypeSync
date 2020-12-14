@@ -15,7 +15,7 @@ namespace Prototype.Gameplay.Enemy
         {
             healthBar = transform.Find("UnitCanvas").GetComponentInChildren<HealthBar>();
             healthBar.SetMaxHealth(maxHealth);
-            healthBar.RecoverMaxHealth();
+            healthBar.RestoreMaxHealth();
         }
 
         public virtual void TakeDamage(string type, float damage)
