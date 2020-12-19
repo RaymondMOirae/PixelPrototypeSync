@@ -8,12 +8,13 @@ using Prototype.Input;
 using Prototype.Gameplay.Enemy;
 using Prototype.Gameplay.Player.Attack;
 using Prototype.Gameplay.RoomFacility;
+using Prototype.Gameplay.UI;
 
 namespace Prototype.Gameplay.Player
 {
     public enum AttackType {L, M, R, NA};
 
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : AttackableBase
     {
         // open fields to designer
         public Vector2 moveSpeed = new Vector2();
@@ -65,6 +66,18 @@ namespace Prototype.Gameplay.Player
 
         private void Start()
         {
+            InitInputs();
+            InitHealthBar();
+        }
+
+        void Update()
+        {
+            DrawAttackRange();
+            FlipSprite();
+        }
+
+        private void InitInputs()
+        {
             InputManager.Inputs.Player.AttackL.performed += (cxt) => _wController.Attack(AttackType.L);
             InputManager.Inputs.Player.AttackM.performed += (cxt) => _wController.Attack(AttackType.M);
             InputManager.Inputs.Player.AttackR.performed += (cxt) => _wController.Attack(AttackType.R);
@@ -73,10 +86,9 @@ namespace Prototype.Gameplay.Player
             InputManager.Inputs.Player.InteractionButton.performed += (cxt) => HandleInteraction();
         }
 
-        void Update()
+        protected override void FindHealthBar()
         {
-            DrawAttackRange();
-            FlipSprite();
+            healthBar = GameObject.Find("PlayerHealthBar").GetComponent<HealthBar>();
         }
 
         private void FlipSprite()
@@ -98,6 +110,12 @@ namespace Prototype.Gameplay.Player
                 float delta = Vector2.SignedAngle(lastDir ,CurDir);
                 _wController.transform.Rotate(Vector3.forward * delta, Space.Self);
             }
+        }
+
+        public void TakeDamage(float d)
+        {
+            base.TakeDamage("Enemy", d);
+            Debug.Log("Player Received" + d + "Damage");
         }
 
         public void HandleInteraction()
@@ -141,15 +159,15 @@ namespace Prototype.Gameplay.Player
 
         public void CastDamageSector(float minAngle, float maxAngle, AttackType a)
         {
-            List<EnemyBase> res = new List<EnemyBase>();
+            List<AttackableBase> res = new List<AttackableBase>();
             float deltaAngle = a == AttackType.M ? _midDeltaAngle : _sideDeltaAngle;
             for(float i = minAngle; i <= maxAngle; i += deltaAngle)
             {
                 RaycastHit2D hit = RaycastWithGizmos(i);
-                EnemyBase eb = hit.collider == null ? null : hit.transform.gameObject.GetComponent<EnemyBase>();
-                if (eb != null && !res.Contains(eb))
+                AttackableBase ab = hit.collider == null ? null : hit.transform.gameObject.GetComponent<AttackableBase>();
+                if (ab != null && !res.Contains(ab))
                 {
-                    res.Add(eb);
+                    res.Add(ab);
                     //eb.TakeDamage(a.ToString(), _weapon.ResolveDamageValue(a));
                 }
             }

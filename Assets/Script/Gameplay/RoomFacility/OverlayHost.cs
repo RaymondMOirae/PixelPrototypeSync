@@ -20,7 +20,7 @@ namespace Prototype.Gameplay
             verticalRegion.y = bounds.size.y;
 
             Transform units = transform.Find("CombatUnits");
-            units.BroadcastMessage("UpdateIntervalSpace", verticalRegion);
+            units.BroadcastMessage("UpdateIntervalSpace", verticalRegion, SendMessageOptions.DontRequireReceiver);
         }
 
     }

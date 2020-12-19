@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace Prototype.Gameplay.Enemy
 {
-    public class Jackstraw : EnemyBase
+    public class Jackstraw : AttackableBase
     {
         private void Awake()
         {
-            healthBar.SetMaxHealth(maxHealth);
+            InitHealthBar();
+            healthBar.MaxHealth = maxHealth;
             currentHealth = maxHealth;
         }
 

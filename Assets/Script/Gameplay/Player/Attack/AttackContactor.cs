@@ -17,20 +17,31 @@ namespace Prototype.Gameplay.Player.Attack
             _analyzer = transform.parent.Find("Analyzer").GetComponent<AttackAnalyzer>();
         }
 
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            QueryNAttack(collision);
+        }
+
         private void OnTriggerStay2D(Collider2D collision)
+        {
+            QueryNAttack(collision);
+        }
+
+        private void QueryNAttack(Collider2D collision)
         {
             if (_controller.DuringAttack && collision.gameObject.CompareTag("Enemy"))
             {
-                EnemyBase eb = collision.gameObject.GetComponent<EnemyBase>();
-                if(eb != null && !_controller.CheckList.Contains(eb))
+                AttackableBase ab = collision.gameObject.GetComponent<AttackableBase>();
+                if(ab != null && !_controller.CheckList.Contains(ab.GetInstanceID()))
                 {
-                    eb.TakeDamage(_controller.CurrentType.ToString(), _analyzer.ResolveDamageValue(_controller.CurrentType));
-                    _controller.CheckList.Add(eb);
+                    ab.TakeDamage(_controller.CurrentType.ToString(), _analyzer.ResolveDamageValue(_controller.CurrentType));
+                    _controller.CheckList.Add(ab.GetInstanceID());
                 }
                 
             }
-            
+
         }
+
 
     }
 

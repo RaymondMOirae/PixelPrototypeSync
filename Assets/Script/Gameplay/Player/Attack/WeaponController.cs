@@ -11,7 +11,7 @@ namespace Prototype.Gameplay.Player.Attack
         private bool _isAttacking = false;
         private AttackType _attackType = AttackType.NA;
         private Animator _animator;
-        public List<EnemyBase> CheckList = new List<EnemyBase>();
+        public List<int> CheckList = new List<int>();
 
         public AttackType CurrentType { get { return _attackType; } }
         public bool DuringAttack { get { return _isAttacking; } }

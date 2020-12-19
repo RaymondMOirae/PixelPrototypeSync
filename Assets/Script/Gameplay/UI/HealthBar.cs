@@ -11,34 +11,29 @@ namespace Prototype.Gameplay.UI
     {
         public Slider slider;
 
+        public float MaxHealth
+        {
+            get { return slider.maxValue; }
+            set { slider.maxValue = value; }
+        }
+
+        public float CurrentHealth
+        {
+            get { return slider.value; }
+            set { slider.value = value; }
+        }
+
         public void Awake()
         {
             slider = GetComponent<Slider>();
         }
-        public void SetMaxHealth(float maxHealth)
-        {
-            slider.maxValue = maxHealth;
-        }
 
-        public float GetMaxHealth()
-        {
-            return slider.maxValue;
-        }
 
         public void RestoreMaxHealth()
         {
-            SetHealth((int)slider.maxValue);
+            CurrentHealth = MaxHealth;
         }
 
-        public void SetHealth(float health)
-        {
-            slider.value = health;
-        }
-
-        public float GetHealth()
-        {
-            return slider.value;
-        }
 
     }
 
