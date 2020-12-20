@@ -12,6 +12,7 @@ namespace Prototype.Gameplay.Player.Attack
         private AttackType _attackType = AttackType.NA;
         private Animator _animator;
         public List<int> CheckList = new List<int>();
+        public float force;
 
         public AttackType CurrentType { get { return _attackType; } }
         public bool DuringAttack { get { return _isAttacking; } }

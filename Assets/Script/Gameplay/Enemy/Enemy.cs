@@ -124,6 +124,17 @@ namespace Prototype.Gameplay.Enemy
             BroadcastMessage("MeleeAttack", Damage);
         }
 
+        public override void TakeDamage(Vector2 pos, float damage, float force)
+        {
+            base.TakeDamage(pos, damage, force);
+            if (currentHealth <= 0)
+            {
+                Destroy(gameObject);
+            }
+            Vector2 f = (MathUtility.ToVector2(transform.position) - pos).normalized * force;
+            Rigidbody.AddForce(f,ForceMode2D.Impulse);
+        }
+
     }
 
 }

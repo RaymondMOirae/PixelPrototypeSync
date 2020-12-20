@@ -34,7 +34,7 @@ namespace Prototype.Gameplay.Player.Attack
                 AttackableBase ab = collision.gameObject.GetComponent<AttackableBase>();
                 if(ab != null && !_controller.CheckList.Contains(ab.GetInstanceID()))
                 {
-                    ab.TakeDamage(_controller.CurrentType.ToString(), _analyzer.ResolveDamageValue(_controller.CurrentType));
+                    ab.TakeDamage(transform.position, _analyzer.ResolveDamageValue(_controller.CurrentType), _controller.force);
                     _controller.CheckList.Add(ab.GetInstanceID());
                 }
                 
