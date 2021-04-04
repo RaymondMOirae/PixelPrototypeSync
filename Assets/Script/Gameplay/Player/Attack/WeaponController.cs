@@ -8,15 +8,18 @@ namespace Prototype.Gameplay.Player.Attack
     [RequireComponent(typeof(Animator))]
     public class WeaponController : MonoBehaviour
     {
+
         private bool _isAttacking = false;
+        [SerializeField] private float _force;
+
         private AttackType _attackType = AttackType.NA;
         private Animator _animator;
-        public List<int> CheckList = new List<int>();
-        public float force;
+        private List<int> _checkList = new List<int>();
 
-        public AttackType CurrentType { get { return _attackType; } }
         public bool DuringAttack { get { return _isAttacking; } }
-
+        public float BeatForce { get { return _force; } }
+        public List<int> CheckList { get { return _checkList; } }
+        public AttackType CurrentType { get { return _attackType; } }
 
         private void Awake()
         {
@@ -32,23 +35,19 @@ namespace Prototype.Gameplay.Player.Attack
             }
         }
 
+        public void PointAt(Vector3 dir)
+        {
+            transform.right = dir;
+        }
+
         public void Attack(AttackType type)
         {
-            UpdateTypeState(type);
-            PerformAnimation(type);
-        }
-
-        private void UpdateTypeState(AttackType type)
-        {
+            // update type state
             _attackType = type;
             _isAttacking = true;
-        }
-
-        private void PerformAnimation(AttackType type)
-        {
+            // perform animation
             _animator.Play("Attack" + type.ToString(), 0, 0);
         }
     }
-
 }
 
