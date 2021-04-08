@@ -35,8 +35,9 @@ namespace Prototype.Gameplay.Player
         // components
         private Rigidbody2D _rigidbody;
         private Collider2D _collider;
-        private WeaponController _wController;
         private SpriteRenderer _sprite;
+
+        private WeaponController _wController;
 
         public float AttackRadius { get { return _attackRadius; } }
         public float MidOuterAngle { get { return _midOuterAngle; } }
@@ -67,37 +68,46 @@ namespace Prototype.Gameplay.Player
 
         private void FixedUpdate()
         {
-            if (_isDashing)
-            {
-                _rigidbody.velocity = DashSpeed;
-            }
+
             if (!_wController.DuringAttack)
             {
                 _isDashing = false;
+                _rigidbody.velocity = MoveSpeed;
             }
+            else if(_isDashing)
+            {
+                _rigidbody.velocity = DashSpeed;
+            }
+            else
+            {
+                _rigidbody.velocity = Vector2.zero;
+            }
+
         }
 
         public void HandleDirectionInput(Vector2 dir)
         {
             dir = dir.normalized;
-            if (_wController.DuringAttack)
+            if (_wController.CurrentType == AttackType.M)
             {
-                if(_wController.CurrentType != AttackType.M)
-                    _rigidbody.velocity = Vector2.zero;
+                _curDir = dir;
+            }
+            else if (Mathf.Abs(dir.x) > 0.0001f || Mathf.Abs(dir.y) > 0.0001f)
+            {
+                _curDir = dir;
+                _sprite.flipX = CurDir.x <= 0;
+                _wController.PointAt(CurDir);
             }
             else
             {
-                _curDir = dir;
-                _rigidbody.velocity = MoveSpeed;
-                // set dead zone for sprite display
-                if (Mathf.Abs(dir.x) > 0.0001f || Mathf.Abs(dir.y) > 0.0001f)
-                {
-                    _sprite.flipX = CurDir.x <= 0;
-                    _wController.PointAt(CurDir);
-                }
+                _curDir = Vector2.zero;
             }
+        }
 
-
+        private void LaunchAttack(AttackType type)
+        {
+            _wController.Attack(type);
+            if (_wController.CurrentType == AttackType.M) _isDashing = true;
         }
 
         public void TakeDamage(float d)
@@ -125,16 +135,12 @@ namespace Prototype.Gameplay.Player
             InputManager.Inputs.Player.AttackL.performed += (cxt) => LaunchAttack(AttackType.L);
             InputManager.Inputs.Player.AttackM.performed += (cxt) => LaunchAttack(AttackType.M);
             InputManager.Inputs.Player.AttackR.performed += (cxt) => LaunchAttack(AttackType.R);
+            InputManager.Inputs.Player.Move.started      += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());
             InputManager.Inputs.Player.Move.performed    += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());
             InputManager.Inputs.Player.Move.canceled     += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());
             InputManager.Inputs.Player.InteractionButton.performed += (cxt) => HandleInteraction();
         }
 
-        private void LaunchAttack(AttackType type)
-        {
-            _wController.Attack(type);
-            if(type == AttackType.M) _isDashing = true;
-        }
 
         protected override void FindHealthBar()
         {

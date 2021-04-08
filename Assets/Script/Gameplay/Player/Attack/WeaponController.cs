@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Prototype.Gameplay.Enemy;
+using Prototype.Gameplay.UI;
 
 namespace Prototype.Gameplay.Player.Attack
 {
@@ -9,12 +10,13 @@ namespace Prototype.Gameplay.Player.Attack
     public class WeaponController : MonoBehaviour
     {
 
-        private bool _isAttacking = false;
+        [SerializeField] private bool _isAttacking = false;
         [SerializeField] private float _force;
-
         private AttackType _attackType = AttackType.NA;
+
         private Animator _animator;
         private List<int> _checkList = new List<int>();
+        private TouchInputs _touchInputs;
 
         public bool DuringAttack { get { return _isAttacking; } }
         public float BeatForce { get { return _force; } }
@@ -24,6 +26,7 @@ namespace Prototype.Gameplay.Player.Attack
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+            _touchInputs = GameObject.Find("TouchInputs").GetComponent<TouchInputs>();
         }
 
         private void FixedUpdate()
@@ -31,6 +34,7 @@ namespace Prototype.Gameplay.Player.Attack
             if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
             {
                 _isAttacking = false;
+                _attackType = AttackType.NA;
                 CheckList.Clear();
             }
         }
@@ -42,11 +46,19 @@ namespace Prototype.Gameplay.Player.Attack
 
         public void Attack(AttackType type)
         {
-            // update type state
-            _attackType = type;
-            _isAttacking = true;
-            // perform animation
-            _animator.Play("Attack" + type.ToString(), 0, 0);
+            if(!_isAttacking && _touchInputs.GetCDStatus(type))
+            {
+                _attackType = type;
+                _isAttacking = true;
+
+                _touchInputs.TriggerCoolDownCheck(type);
+                _animator.Play("Attack" + type.ToString(), 0, 0);
+            }
+            else
+            {
+                _attackType = AttackType.NA;
+            }
+
         }
     }
 }
