@@ -11,7 +11,8 @@ namespace Prototype.Gameplay.UI
         {
             { AttackType.L, true },
             { AttackType.M, true },
-            { AttackType.R, true }
+            { AttackType.R, true },
+            { AttackType.Rotate, true }
         };
 
         public void SetCDStatus(AttackType type, bool isReady)

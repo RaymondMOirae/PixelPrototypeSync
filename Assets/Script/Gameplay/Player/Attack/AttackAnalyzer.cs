@@ -33,6 +33,9 @@ namespace Prototype.Gameplay.Player.Attack
                     data = _analyser.WeaponDataStab;
                     break;
                 case AttackType.R:
+                    data = _analyser.WeaponDataRight;
+                    break;
+                case AttackType.Rotate:
                     data = _analyser.WeaponDataStab;
                     break;
                 default:

@@ -6,19 +6,19 @@ namespace Prototype.Gameplay.Enemy
 {
     public class EnemyGuardContactor : MonoBehaviour, IEnemySensorContactor<CircleCollider2D>
     {
-        private EnemySensor _sensor;
+        private Enemy _enemy;
         private CircleCollider2D _collider;
 
         void Start()
         {
-            _sensor = transform.GetComponentInParent<EnemySensor>();
+            _enemy = transform.GetComponentInParent<Enemy>();
             _collider = GetComponent<CircleCollider2D>();
             InitContactor();
         }
 
         public void InitContactor()
         {
-            _collider.radius = _sensor.GuardRadius;
+            _collider.radius = _enemy.GuardRadius;
             _collider.isTrigger = true;
         }
 
@@ -26,26 +26,17 @@ namespace Prototype.Gameplay.Enemy
         {
             if (collision.CompareTag("Player"))
             {
-                _sensor.SetInViewField(true);
+                _enemy.SetInViewField(true);
             }
         }
-        //private void OnTriggerStay2D(Collider2D collision)
-        //{
-        //    if (collision.CompareTag("Player"))
-        //    {
-        //        _sensor.SetInViewField(true);
-        //    }
-        //}
 
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (collision.CompareTag("Player"))
             {
-                _sensor.SetInViewField(false);
+                _enemy.SetInViewField(false);
             }
         }
-
     }
-
 }
 

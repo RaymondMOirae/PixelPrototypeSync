@@ -38,6 +38,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "AttackRotate",
+                    "type": "Button",
+                    "id": "983c74b8-6526-4b3b-80a5-b3bc030cf646",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "InteractionButton",
                     "type": "Button",
                     "id": "24159b80-0879-4570-bd36-16bf699f4afc",
@@ -253,6 +261,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "InteractionButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bbb89d22-0259-44e8-a49f-d6241ec9de11",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "AttackRotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "52dff60a-45da-402b-b2a6-e791c9afb099",
+                    "path": "<XInputController>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "AttackRotate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

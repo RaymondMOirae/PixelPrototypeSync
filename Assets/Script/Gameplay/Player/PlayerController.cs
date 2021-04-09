@@ -12,7 +12,7 @@ using Prototype.Gameplay.UI;
 
 namespace Prototype.Gameplay.Player
 {
-    public enum AttackType {L, M, R, NA};
+    public enum AttackType {L, M, R, Rotate, NA};
 
     public class PlayerController : AttackableBase
     {
@@ -68,8 +68,7 @@ namespace Prototype.Gameplay.Player
 
         private void FixedUpdate()
         {
-
-            if (!_wController.DuringAttack)
+            if (!_wController.DuringAttack || _wController.CurrentType == AttackType.Rotate)
             {
                 _isDashing = false;
                 _rigidbody.velocity = MoveSpeed;
@@ -82,7 +81,6 @@ namespace Prototype.Gameplay.Player
             {
                 _rigidbody.velocity = Vector2.zero;
             }
-
         }
 
         public void HandleDirectionInput(Vector2 dir)
@@ -92,7 +90,8 @@ namespace Prototype.Gameplay.Player
             {
                 _curDir = dir;
             }
-            else if (Mathf.Abs(dir.x) > 0.0001f || Mathf.Abs(dir.y) > 0.0001f)
+            else if ((Mathf.Abs(dir.x) > 0.0001f || Mathf.Abs(dir.y) > 0.0001f) && 
+                      (!_wController.DuringAttack || _wController.CurrentType == AttackType.Rotate))
             {
                 _curDir = dir;
                 _sprite.flipX = CurDir.x <= 0;
@@ -135,6 +134,7 @@ namespace Prototype.Gameplay.Player
             InputManager.Inputs.Player.AttackL.performed += (cxt) => LaunchAttack(AttackType.L);
             InputManager.Inputs.Player.AttackM.performed += (cxt) => LaunchAttack(AttackType.M);
             InputManager.Inputs.Player.AttackR.performed += (cxt) => LaunchAttack(AttackType.R);
+            InputManager.Inputs.Player.AttackRotate.performed += (cxt) => LaunchAttack(AttackType.Rotate);
             InputManager.Inputs.Player.Move.started      += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());
             InputManager.Inputs.Player.Move.performed    += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());
             InputManager.Inputs.Player.Move.canceled     += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());

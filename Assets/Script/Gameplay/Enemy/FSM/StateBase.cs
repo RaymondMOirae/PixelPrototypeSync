@@ -19,11 +19,8 @@ namespace Prototype.Gameplay.Enemy.FSM
         }
 
         public virtual void PerformAction() { }
-
         public virtual void CheckTransition() { }
-
         public virtual void OnExitState(StateType nextState) { }
     }
-
 }
 

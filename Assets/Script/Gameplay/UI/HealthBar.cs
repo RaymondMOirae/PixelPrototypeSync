@@ -28,14 +28,10 @@ namespace Prototype.Gameplay.UI
             slider = GetComponent<Slider>();
         }
 
-
         public void RestoreMaxHealth()
         {
             CurrentHealth = MaxHealth;
         }
-
-
     }
-
 }
 

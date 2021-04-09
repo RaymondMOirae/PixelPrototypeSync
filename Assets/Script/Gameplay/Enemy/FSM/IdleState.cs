@@ -39,9 +39,9 @@ namespace Prototype.Gameplay.Enemy.FSM
         {
             while (true)
             {
-                if (_enemy.Rigidbody.velocity.magnitude <= StandingThreshold)
+                if (_enemy.Rigidbdy.velocity.magnitude <= StandingThreshold)
                 {
-                    _enemy.Move(Random.insideUnitCircle.normalized, _enemy.WalkSpeed);
+                    _enemy.Walk(Random.insideUnitCircle.normalized);
                     Debug.Log("Walk");
 
                 }
@@ -53,6 +53,5 @@ namespace Prototype.Gameplay.Enemy.FSM
                 yield return new WaitForSeconds(_enemy.PatrolInterval);
             }
         }
-
     }
 }

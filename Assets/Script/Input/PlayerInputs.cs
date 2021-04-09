@@ -53,6 +53,14 @@ namespace Prototype.Input
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""AttackRotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""983c74b8-6526-4b3b-80a5-b3bc030cf646"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""InteractionButton"",
                     ""type"": ""Button"",
                     ""id"": ""24159b80-0879-4570-bd36-16bf699f4afc"",
@@ -270,6 +278,28 @@ namespace Prototype.Input
                     ""action"": ""InteractionButton"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bbb89d22-0259-44e8-a49f-d6241ec9de11"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""AttackRotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52dff60a-45da-402b-b2a6-e791c9afb099"",
+                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""AttackRotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -370,6 +400,7 @@ namespace Prototype.Input
             m_Player_AttackL = m_Player.FindAction("AttackL", throwIfNotFound: true);
             m_Player_AttackM = m_Player.FindAction("AttackM", throwIfNotFound: true);
             m_Player_AttackR = m_Player.FindAction("AttackR", throwIfNotFound: true);
+            m_Player_AttackRotate = m_Player.FindAction("AttackRotate", throwIfNotFound: true);
             m_Player_InteractionButton = m_Player.FindAction("InteractionButton", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -427,6 +458,7 @@ namespace Prototype.Input
         private readonly InputAction m_Player_AttackL;
         private readonly InputAction m_Player_AttackM;
         private readonly InputAction m_Player_AttackR;
+        private readonly InputAction m_Player_AttackRotate;
         private readonly InputAction m_Player_InteractionButton;
         public struct PlayerActions
         {
@@ -436,6 +468,7 @@ namespace Prototype.Input
             public InputAction @AttackL => m_Wrapper.m_Player_AttackL;
             public InputAction @AttackM => m_Wrapper.m_Player_AttackM;
             public InputAction @AttackR => m_Wrapper.m_Player_AttackR;
+            public InputAction @AttackRotate => m_Wrapper.m_Player_AttackRotate;
             public InputAction @InteractionButton => m_Wrapper.m_Player_InteractionButton;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
@@ -458,6 +491,9 @@ namespace Prototype.Input
                     @AttackR.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackR;
                     @AttackR.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackR;
                     @AttackR.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackR;
+                    @AttackRotate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackRotate;
+                    @AttackRotate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackRotate;
+                    @AttackRotate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackRotate;
                     @InteractionButton.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
                     @InteractionButton.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
                     @InteractionButton.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
@@ -477,6 +513,9 @@ namespace Prototype.Input
                     @AttackR.started += instance.OnAttackR;
                     @AttackR.performed += instance.OnAttackR;
                     @AttackR.canceled += instance.OnAttackR;
+                    @AttackRotate.started += instance.OnAttackRotate;
+                    @AttackRotate.performed += instance.OnAttackRotate;
+                    @AttackRotate.canceled += instance.OnAttackRotate;
                     @InteractionButton.started += instance.OnInteractionButton;
                     @InteractionButton.performed += instance.OnInteractionButton;
                     @InteractionButton.canceled += instance.OnInteractionButton;
@@ -568,6 +607,7 @@ namespace Prototype.Input
             void OnAttackL(InputAction.CallbackContext context);
             void OnAttackM(InputAction.CallbackContext context);
             void OnAttackR(InputAction.CallbackContext context);
+            void OnAttackRotate(InputAction.CallbackContext context);
             void OnInteractionButton(InputAction.CallbackContext context);
         }
         public interface IUIActions

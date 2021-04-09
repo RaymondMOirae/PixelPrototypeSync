@@ -16,10 +16,10 @@ namespace Prototype.Gameplay.Enemy.FSM
         public override void OnEnterState()
         {
             _enemy.StandStill();
-            if (_enemy.canAttack)
+            if (_enemy.CanAttack)
             {
                 _coroutine = _enemy.StartCoroutine(Attack());
-                _enemy.canAttack = false;
+                _enemy.CanAttack = false;
                 _enemy.StartCoroutine(AsyncEnableAttack());
             }
 
@@ -53,7 +53,7 @@ namespace Prototype.Gameplay.Enemy.FSM
         IEnumerator AsyncEnableAttack()
         {
             yield return new WaitForSeconds(_enemy.AttackInterval);
-            _enemy.canAttack = true;
+            _enemy.CanAttack = true;
         }
 
     }

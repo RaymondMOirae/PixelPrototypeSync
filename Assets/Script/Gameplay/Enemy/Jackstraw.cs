@@ -24,6 +24,5 @@ namespace Prototype.Gameplay.Enemy
             Debug.Log("Damage:" + type  + " " + damage.ToString() + " received by Jackstraw");
         }
     }
-
 }
 

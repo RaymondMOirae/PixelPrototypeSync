@@ -7,7 +7,7 @@ using System;
 
 namespace Prototype.Editor
 {
-    [CustomEditor(typeof(Enemy),true)]
+    //[CustomEditor(typeof(Enemy),true)]
     public class EditorEnemy : UnityEditor.Editor
     {
 
@@ -17,8 +17,8 @@ namespace Prototype.Editor
 
             Enemy script = target as Enemy;
 
-            DrawOptionalField(ref script.UseMeleeSnesor, "近战", ref script._meleeAttackRadius, "近战半径");
-            DrawOptionalField(ref script.UseRangedSensor, "远程", ref script._rangedAttackRadius, "远程半径");
+            //DrawOptionalField(ref script.UseMeleeSnesor, "近战", ref script.MeleeAttackRadius, "近战半径");
+            //DrawOptionalField(ref script.UseRangedSensor, "远程", ref script.RangedAttackRadius, "远程半径");
 
             //EditorGUILayout.Toggle("InView", script.SensorResult.InViewField);
             //EditorGUILayout.Toggle("InAttack", script.SensorResult.InAttackField);

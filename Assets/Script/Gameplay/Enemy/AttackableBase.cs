@@ -29,14 +29,6 @@ namespace Prototype.Gameplay.Enemy
             currentHealth -= damage;
             healthBar.CurrentHealth = currentHealth;
         }
-
-        public virtual void TakeDamage(Vector2 pos, float damage, float force)
-        {
-            currentHealth -= damage;
-            healthBar.CurrentHealth = currentHealth;
-        }
-
     }
-
 }
 

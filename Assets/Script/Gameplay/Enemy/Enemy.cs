@@ -22,65 +22,45 @@ namespace Prototype.Gameplay.Enemy
 
     public class Enemy : AttackableBase
     {
+        private GameObject _player;
+        private Dictionary<StateType, StateBase> _states;
+        private EnemySensorResult _sensorResult;
+        private ContactFilter2D _playerFilter;
+        [SerializeField] private LayerMask _playerLayer;
+
+        [Header("行为参数")]
+        [SerializeField] private float _walkSpeed;
+        [SerializeField] private float _chaseSpeed;
+        [SerializeField] private float _chaseInterval;
+        [SerializeField] private float _patrolInterval;
+        [SerializeField] private float _attackInterval;
+        [SerializeField] private float _damage;
+        [SerializeField] private float _guardRadius;
+
+        //[Header("感知范围")]
+
+        //[HideInInspector] public bool UseRangedSensor;
+        //[HideInInspector] public bool UseMeleeSnesor;
+        //[HideInInspector] public float RangedAttackRadius;
+        //[HideInInspector] public float MeleeAttackRadius;
+
         public StateBase CurState;
         public StateType CurSense;
 
-        public EnemySensorResult SensorResult;
-
-        private Dictionary<StateType, StateBase> _states;
-
-        public LayerMask PlayerLayer;
-        public ContactFilter2D PlayerFilter;
-        [HideInInspector] public Rigidbody2D Rigidbody;
-
-        [Header("行为参数")]
-        public float WalkSpeed;
-        public float ChaseSpeed;
-        public float ChaseInterval;
-        public float PatrolInterval;
-        public float AttackInterval;
-        public float Damage;
-        [HideInInspector] public bool canAttack = true;
-
-        #region AttackFields
-        [Header("感知范围")]
-        [HideInInspector] public bool UseMeleeSnesor;
-        [HideInInspector] public float _meleeAttackRadius;
-        public float MeleeAttackRadius
-        {
-            get { return UseMeleeSnesor ? _meleeAttackRadius: 0.0f; }
-            set { _meleeAttackRadius = value; }
-        }
-
-        [HideInInspector] public bool UseRangedSensor;
-        [HideInInspector] public float _rangedAttackRadius;
-        public float RangedAttackRadius
-        {
-            get { return UseRangedSensor ? _rangedAttackRadius : 0.0f; }
-            set { _rangedAttackRadius = value; }
-        }
-
-        public float GuardRadius;
-
-        #endregion
+        public bool CanAttack { get; set; }
+        public float ChaseInterval { get => _chaseInterval; }
+        public float PatrolInterval { get =>_patrolInterval; }
+        public float AttackInterval { get => _attackInterval; }
+        public float GuardRadius { get => _guardRadius; }
+        public EnemySensorResult SensorResult { get => _sensorResult; }
+        public ContactFilter2D PlayerFilter { get => _playerFilter; }
+        public Rigidbody2D Rigidbdy { get; private set; }
 
         private void Start()
         {
             InitHealthBar();
+            InitComponents();
             InitStates();
-
-            PlayerFilter = new ContactFilter2D();
-            PlayerFilter.SetLayerMask(PlayerLayer);
-            PlayerFilter.useLayerMask = true;
-            PlayerFilter.useTriggers = true;
-            SensorResult.Reset(false);
-
-        }
-
-        protected override void InitHealthBar()
-        {
-            base.InitHealthBar();
-            Rigidbody = GetComponent<Rigidbody2D>();
         }
 
         private void InitStates()
@@ -95,6 +75,22 @@ namespace Prototype.Gameplay.Enemy
             CurState.OnEnterState();
             CurSense = StateType.Idle;
 
+            CanAttack = true;
+        }
+
+        private void InitComponents()
+        {
+            Rigidbdy = GetComponent<Rigidbody2D>();
+            _player = GameObject.Find("Player");
+            _playerFilter = new ContactFilter2D();
+            _playerFilter.SetLayerMask(_playerLayer);
+            _playerFilter.useLayerMask = true;
+            _playerFilter.useTriggers = true;
+            _sensorResult.Reset(false);
+        }
+        protected override void InitHealthBar()
+        {
+            base.InitHealthBar();
         }
 
         public void SwitchState(StateType nextState)
@@ -109,33 +105,45 @@ namespace Prototype.Gameplay.Enemy
             CurState.CheckTransition();
         }
 
-        public void Move(Vector2 direction, float speed)
+        public void Walk(Vector2 dir)
         {
-            Rigidbody.velocity = direction * speed;
+            Rigidbdy.velocity = dir * _walkSpeed;
+        }
+        public void Run(Vector2 dir)
+        {
+            Rigidbdy.velocity = dir * _chaseSpeed;
         }
 
         public void StandStill()
         {
-            Rigidbody.velocity = Vector2.zero;
+            Rigidbdy.velocity = Vector2.zero;
+        }
+        public void SetInViewField(bool b)
+        {
+            _sensorResult.InViewField = b;
+            UpdateState();
+        }
+
+        public void SetInAttackField(bool b)
+        {
+            _sensorResult.InAttackField = b;
+            UpdateState();
         }
 
         public void CastAttack()
         {
-            BroadcastMessage("MeleeAttack", Damage);
+            BroadcastMessage("AimPlayer", _player.transform.position);
+            BroadcastMessage("MeleeAttack", _damage);
         }
 
-        public override void TakeDamage(Vector2 pos, float damage, float force)
+        public override void TakeDamage(string type, float damage)
         {
-            base.TakeDamage(pos, damage, force);
+            base.TakeDamage(type, damage);
             if (currentHealth <= 0)
             {
                 Destroy(gameObject);
             }
-            Vector2 f = (MathUtility.ToVector2(transform.position) - pos).normalized * force;
-            Rigidbody.AddForce(f,ForceMode2D.Impulse);
         }
-
     }
-
 }
 

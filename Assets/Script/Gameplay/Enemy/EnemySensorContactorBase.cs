@@ -8,6 +8,5 @@ namespace Prototype.Gameplay.Enemy
     {
         void InitContactor();
     }
-
 }
 
