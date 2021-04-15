@@ -7,7 +7,7 @@ using Prototype.Gameplay.Player;
 
 namespace Prototype.Gameplay.Enemy
 {
-    public enum StateType { Idle, Chase, Attack};
+    public enum StateType { Idle, Chase, Attack, HitRecover};
 
     public struct EnemySensorResult
     {
@@ -31,9 +31,12 @@ namespace Prototype.Gameplay.Enemy
         [Header("行为参数")]
         [SerializeField] private float _walkSpeed;
         [SerializeField] private float _chaseSpeed;
+        [SerializeField] private float _staggerSpeed;
         [SerializeField] private float _chaseInterval;
         [SerializeField] private float _patrolInterval;
         [SerializeField] private float _attackInterval;
+        [SerializeField] private float _staggerTime;
+        [SerializeField] private float _hitRecoverTime;
         [SerializeField] private float _damage;
         [SerializeField] private float _guardRadius;
 
@@ -45,12 +48,17 @@ namespace Prototype.Gameplay.Enemy
         //[HideInInspector] public float MeleeAttackRadius;
 
         public StateBase CurState;
-        public StateType CurSense;
+        public StateType CurStateType;
 
         public bool CanAttack { get; set; }
+        public float WalkSpeed { get => _walkSpeed; }
+        public float ChaseSpeed { get => _chaseSpeed; }
+        public float StaggerSpeed { get => _staggerSpeed; }
         public float ChaseInterval { get => _chaseInterval; }
         public float PatrolInterval { get =>_patrolInterval; }
         public float AttackInterval { get => _attackInterval; }
+        public float StaggerTime { get => _staggerTime; }
+        public float HitRecoverTime { get => _hitRecoverTime; }
         public float GuardRadius { get => _guardRadius; }
         public EnemySensorResult SensorResult { get => _sensorResult; }
         public ContactFilter2D PlayerFilter { get => _playerFilter; }
@@ -69,11 +77,12 @@ namespace Prototype.Gameplay.Enemy
 
             _states.Add(StateType.Idle, new IdleState(this));
             _states.Add(StateType.Chase, new ChaseState(this));
-            _states.Add(StateType.Attack , new AttackState(this));
+            _states.Add(StateType.Attack, new AttackState(this));
+            _states.Add(StateType.HitRecover, new HitRecoverState(this));
 
             CurState = _states[StateType.Idle];
             CurState.OnEnterState();
-            CurSense = StateType.Idle;
+            CurStateType = StateType.Idle;
 
             CanAttack = true;
         }
@@ -105,13 +114,10 @@ namespace Prototype.Gameplay.Enemy
             CurState.CheckTransition();
         }
 
-        public void Walk(Vector2 dir)
+        public void Move(Vector2 dir, float speed)
         {
-            Rigidbdy.velocity = dir * _walkSpeed;
-        }
-        public void Run(Vector2 dir)
-        {
-            Rigidbdy.velocity = dir * _chaseSpeed;
+            dir = dir.normalized;
+            Rigidbdy.velocity = dir * speed;
         }
 
         public void StandStill()
@@ -143,6 +149,7 @@ namespace Prototype.Gameplay.Enemy
             {
                 Destroy(gameObject);
             }
+            _states[CurStateType].OnExitState(StateType.HitRecover);
         }
     }
 }

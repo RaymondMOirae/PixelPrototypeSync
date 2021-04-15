@@ -8,10 +8,7 @@ namespace Prototype.Gameplay.Enemy.FSM
     {
         private Coroutine _coroutine;
 
-        public AttackState(Enemy e) : base(e)
-        {
-
-        }
+        public AttackState(Enemy e) : base(e) { }
 
         public override void OnEnterState()
         {
@@ -37,7 +34,7 @@ namespace Prototype.Gameplay.Enemy.FSM
         public override void OnExitState(StateType nextState)
         {
             _enemy.StopCoroutine(_coroutine);
-            _enemy.CurSense = nextState;
+            _enemy.CurStateType = nextState;
             _enemy.SwitchState(nextState);
         }
 
@@ -55,6 +52,5 @@ namespace Prototype.Gameplay.Enemy.FSM
             yield return new WaitForSeconds(_enemy.AttackInterval);
             _enemy.CanAttack = true;
         }
-
     }
 }

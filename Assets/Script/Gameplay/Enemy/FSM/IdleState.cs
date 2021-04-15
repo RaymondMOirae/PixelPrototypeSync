@@ -8,14 +8,10 @@ namespace Prototype.Gameplay.Enemy.FSM
     {
         private float StandingThreshold = 0.02f;
         private Coroutine _coroutine;
-        public IdleState(Enemy e) : base(e)
-        {
-
-        }
+        public IdleState(Enemy e) : base(e) { }
 
         public override void OnEnterState()
         {
-
             _coroutine = _enemy.StartCoroutine(Patrol());
         }
 
@@ -31,7 +27,7 @@ namespace Prototype.Gameplay.Enemy.FSM
         public override void OnExitState(StateType nextState)
         {
             _enemy.StopCoroutine(_coroutine);
-            _enemy.CurSense = nextState;
+            _enemy.CurStateType = nextState;
             _enemy.SwitchState(nextState);
         }
 
@@ -41,9 +37,8 @@ namespace Prototype.Gameplay.Enemy.FSM
             {
                 if (_enemy.Rigidbdy.velocity.magnitude <= StandingThreshold)
                 {
-                    _enemy.Walk(Random.insideUnitCircle.normalized);
+                    _enemy.Move(Random.insideUnitCircle, _enemy.WalkSpeed);
                     Debug.Log("Walk");
-
                 }
                 else
                 {

@@ -86,16 +86,22 @@ namespace Prototype.Gameplay.Player
         public void HandleDirectionInput(Vector2 dir)
         {
             dir = dir.normalized;
-            if (_wController.CurrentType == AttackType.M)
-            {
-                _curDir = dir;
-            }
-            else if ((Mathf.Abs(dir.x) > 0.0001f || Mathf.Abs(dir.y) > 0.0001f) && 
-                      (!_wController.DuringAttack || _wController.CurrentType == AttackType.Rotate))
+
+            if ((Mathf.Abs(dir.x) > 0.0001f || Mathf.Abs(dir.y) > 0.0001f) && 
+                      !_wController.DuringAttack)
             {
                 _curDir = dir;
                 _sprite.flipX = CurDir.x <= 0;
                 _wController.PointAt(CurDir);
+            }
+            else if(_wController.CurrentType == AttackType.Rotate)
+            {
+                _curDir = dir;
+                _sprite.flipX = CurDir.x <= 0;
+            }
+            else if (_wController.CurrentType == AttackType.M)
+            {
+                _curDir = dir;
             }
             else
             {
