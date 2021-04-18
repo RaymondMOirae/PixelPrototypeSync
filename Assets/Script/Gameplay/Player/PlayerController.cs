@@ -10,6 +10,7 @@ using Prototype.Gameplay.Player.Attack;
 using Prototype.Gameplay.RoomFacility;
 using Prototype.Gameplay.UI;
 
+
 namespace Prototype.Gameplay.Player
 {
     public enum AttackType {L, M, R, Rotate, NA};
@@ -32,6 +33,7 @@ namespace Prototype.Gameplay.Player
         [SerializeField] private LayerMask _interactLayer;
         private ContactFilter2D _interactFilter;
 
+
         // components
         private Rigidbody2D _rigidbody;
         private Collider2D _collider;
@@ -39,12 +41,12 @@ namespace Prototype.Gameplay.Player
 
         private WeaponController _wController;
 
-        public float AttackRadius { get { return _attackRadius; } }
-        public float MidOuterAngle { get { return _midOuterAngle; } }
-        public float SideOuterAngle { get { return _sideOuterAngle; } }
-        public Vector2 CurDir { get { return _curDir; } }
-        public Vector2 MoveSpeed { get { return _curDir * _moveSpeed; } }
-        public Vector2 DashSpeed { get { return _curDir * _dashSpeed; } }
+        public float AttackRadius => _attackRadius;
+        public float MidOuterAngle => _midOuterAngle;
+        public float SideOuterAngle => _sideOuterAngle;
+        public Vector2 CurDir => _curDir;
+        public Vector2 MoveSpeed => _curDir * _moveSpeed;
+        public Vector2 DashSpeed => _curDir * _dashSpeed;
         public bool CanMove { get { return _canMove; } set { _canMove = value; } }
 
         private void Awake()

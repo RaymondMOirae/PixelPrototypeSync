@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Prototype.Gameplay.Enemy;
 using Prototype.Gameplay.UI;
+using Prototype.Rendering;
 
 namespace Prototype.Gameplay.Player.Attack
 {
@@ -16,7 +17,9 @@ namespace Prototype.Gameplay.Player.Attack
 
         private Animator _animator;
         private List<int> _checkList = new List<int>();
-        private TouchInputs _touchInputs;
+        private TouchInputs _touchInputs; 
+        private WeaponDisplay _wDisplayUI;
+        private SpriteRenderer _wRenderer;
 
         public bool DuringAttack { get { return _isAttacking; } }
         public float BeatForce { get { return _force; } }
@@ -25,8 +28,16 @@ namespace Prototype.Gameplay.Player.Attack
 
         private void Awake()
         {
+            _wDisplayUI = GameObject.Find("WeaponDisplay").GetComponent<WeaponDisplay>();
+            _wRenderer = GameObject.Find("Analyzer").GetComponent<SpriteRenderer>();
+
             _animator = GetComponent<Animator>();
             _touchInputs = GameObject.Find("TouchInputs").GetComponent<TouchInputs>();
+        }
+
+        private void Start()
+        {
+            _wDisplayUI.SetWeaponDisplay(_wRenderer.sprite);
         }
 
         private void FixedUpdate()

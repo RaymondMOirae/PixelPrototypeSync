@@ -51,17 +51,17 @@ namespace Prototype.Gameplay.Enemy
         public StateType CurStateType;
 
         public bool CanAttack { get; set; }
-        public float WalkSpeed { get => _walkSpeed; }
-        public float ChaseSpeed { get => _chaseSpeed; }
-        public float StaggerSpeed { get => _staggerSpeed; }
-        public float ChaseInterval { get => _chaseInterval; }
-        public float PatrolInterval { get =>_patrolInterval; }
-        public float AttackInterval { get => _attackInterval; }
-        public float StaggerTime { get => _staggerTime; }
-        public float HitRecoverTime { get => _hitRecoverTime; }
-        public float GuardRadius { get => _guardRadius; }
-        public EnemySensorResult SensorResult { get => _sensorResult; }
-        public ContactFilter2D PlayerFilter { get => _playerFilter; }
+        public float WalkSpeed => _walkSpeed;
+        public float ChaseSpeed => _chaseSpeed;
+        public float StaggerSpeed => _staggerSpeed;
+        public float ChaseInterval => _chaseInterval;
+        public float PatrolInterval =>_patrolInterval;
+        public float AttackInterval => _attackInterval;
+        public float StaggerTime => _staggerTime;
+        public float HitRecoverTime => _hitRecoverTime;
+        public float GuardRadius => _guardRadius;
+        public EnemySensorResult SensorResult => _sensorResult;
+        public ContactFilter2D PlayerFilter => _playerFilter;
         public Rigidbody2D Rigidbdy { get; private set; }
 
         private void Start()
