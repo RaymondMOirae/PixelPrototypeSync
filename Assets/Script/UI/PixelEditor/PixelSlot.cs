@@ -47,7 +47,7 @@ namespace Prototype.UI
             if (pixel && pixel.Protected)
                 Editable = false;
             
-            if (pixel is null)
+            if (pixel?.Type is null)
             {
                 pixelImage.sprite = null;
                 pixelImage.color = Color.white.Transparent();

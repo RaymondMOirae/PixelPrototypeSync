@@ -139,7 +139,7 @@ namespace Prototype.UI
         {
             if (!(_promise is null))
                 throw new Exception("Duplicated editor.");
-
+          
             Inventory = inventory;
             // _editingImage = image;
             UpdateUI();

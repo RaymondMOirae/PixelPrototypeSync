@@ -44,10 +44,11 @@ namespace Prototype.Gameplay.Player
         public float AttackRadius => _attackRadius;
         public float MidOuterAngle => _midOuterAngle;
         public float SideOuterAngle => _sideOuterAngle;
+        public bool CanMove { get { return _canMove; } set { _canMove = value; } }
         public Vector2 CurDir => _curDir;
         public Vector2 MoveSpeed => _curDir * _moveSpeed;
         public Vector2 DashSpeed => _curDir * _dashSpeed;
-        public bool CanMove { get { return _canMove; } set { _canMove = value; } }
+        public WeaponController Weapon => _wController;
 
         private void Awake()
         {

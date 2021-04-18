@@ -41,7 +41,7 @@ namespace Prototype.Rendering
         {
             Image = image;
             var sprite = Sprite.Create(image.Texture,
-                new Rect(0, 0, image.Texture.width, image.Texture.height), Vector2.one / 2);
+                new Rect(0, 0, image.Texture.width, image.Texture.height), Vector2.right);
             _spriteRenderer.sprite = sprite;
         }
 

@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace Prototype.Script.Test
 {
-    public class TestPlayerInventory : MonoBehaviour
+    public class PlayerPackage : MonoBehaviour
     {
         public Inventory.Inventory Inventory = new Inventory.Inventory();
 
@@ -30,13 +30,14 @@ namespace Prototype.Script.Test
                 }
             }
 
-            foreach (var image in TestPixelImages)
+            /*foreach (var image in TestPixelImages)
             {
+		        Inventory.SaveItem(image.Image.Clone());
                 for (var i = 0; i < 4; i++)
                 {
-                    Inventory.SaveItem(image.Image.Clone());
+
                 }
-            }
+            }*/
         }
         
         private void Update()

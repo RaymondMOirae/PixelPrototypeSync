@@ -4,6 +4,7 @@ using UnityEngine;
 using Prototype.Gameplay.Enemy;
 using Prototype.Gameplay.UI;
 using Prototype.Rendering;
+using Prototype.Element;
 
 namespace Prototype.Gameplay.Player.Attack
 {
@@ -19,17 +20,25 @@ namespace Prototype.Gameplay.Player.Attack
         private List<int> _checkList = new List<int>();
         private TouchInputs _touchInputs; 
         private WeaponDisplay _wDisplayUI;
-        private SpriteRenderer _wRenderer;
+        private SpriteRenderer _wSpriteRenderer;
+
+        private PixelImageRenderer _wPixelRenderer;
+        //private AttackAnalyzer _wAnalyser;
 
         public bool DuringAttack { get { return _isAttacking; } }
         public float BeatForce { get { return _force; } }
         public List<int> CheckList { get { return _checkList; } }
         public AttackType CurrentType { get { return _attackType; } }
+        public PixelImage WeaponImage { get { return _wPixelRenderer.Image; } }
+        public PixelImageRenderer WeaponRenderer { get { return _wPixelRenderer; } }
 
         private void Awake()
         {
             _wDisplayUI = GameObject.Find("WeaponDisplay").GetComponent<WeaponDisplay>();
-            _wRenderer = GameObject.Find("Analyzer").GetComponent<SpriteRenderer>();
+            GameObject analyser = GameObject.Find("Analyzer");
+            _wSpriteRenderer = analyser.GetComponent<SpriteRenderer>();
+            _wPixelRenderer = analyser.GetComponent<PixelImageRenderer>();
+            //_wAnalyser = analyser.GetComponent<AttackAnalyzer>();
 
             _animator = GetComponent<Animator>();
             _touchInputs = GameObject.Find("TouchInputs").GetComponent<TouchInputs>();
@@ -37,7 +46,7 @@ namespace Prototype.Gameplay.Player.Attack
 
         private void Start()
         {
-            _wDisplayUI.SetWeaponDisplay(_wRenderer.sprite);
+            _wDisplayUI.SetWeaponDisplay(_wSpriteRenderer.sprite);
         }
 
         private void FixedUpdate()
@@ -71,6 +80,11 @@ namespace Prototype.Gameplay.Player.Attack
             }
 
         }
+
+        public void UpdateWeapon() {
+            _wPixelRenderer.SetPixelImage(_wPixelRenderer.Image);
+		}
+
     }
 }
 

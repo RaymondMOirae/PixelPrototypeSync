@@ -9,19 +9,25 @@ using Prototype.UI;
 using Prototype.Utils;
 using Script.GameSystem;
 using UnityEngine;
+using Prototype.Gameplay.Player;
+using Prototype.Gameplay.Player.Attack;
 
 namespace Prototype.Script.Test
 {
     public class TestPixelEditor : MonoBehaviour
     {
         public int Count = 32;
-        
         private List<Pixel> pixels = new List<Pixel>();
         public Inventory.Inventory Inventory;
         private PixelImageRenderer renderer;
-        private async void Start()
-        {
-            Inventory = new Inventory.Inventory();
+        private WeaponController _weapon;
+        
+        private async void Start(){
+            PlayerController player = GameObject.Find("Player").GetComponent<PlayerController>();
+            _weapon = player.Weapon;
+            renderer = _weapon.WeaponRenderer;
+
+            Inventory = player.GetComponent<PlayerPackage>().Inventory;
             foreach (var pixelType in PixelAssets.Current.PixelTypes.Where(p=>p.Attribute == PixelAttribute.Default))
             {
                 for (var i = 0; i < Count; i++)
@@ -30,22 +36,16 @@ namespace Prototype.Script.Test
                 }
             }
             
-            var image = new PixelImage(8, 8);
-            image.Pixels[7, 0] = PixelAssetManager.CreatePixel(PixelAssetManager.FindPixelType("WoodHandel"));
-            image.Pixels[6, 1] = PixelAssetManager.CreatePixel(PixelAssetManager.FindPixelType("Wood"));
-            image.Pixels[7, 0].Protected = true;
-            image.Pixels[6, 1].Protected = true;
-            image.UpdateTexture();
+            PixelImage image = _weapon.WeaponImage;
+
             
             Inventory.SaveItem(image);
             
             await PixelEditor.Instance.Edit(Inventory);
 
-            renderer = GameObjectPool.Get<PixelImageRenderer>();
-            // image.UpdateTexture();
+            image.UpdateTexture();
             renderer.SetPixelImage(image);
-            
-            // renderer.UpdatePixelImage(image);
+
         }
 
         private async void Update()

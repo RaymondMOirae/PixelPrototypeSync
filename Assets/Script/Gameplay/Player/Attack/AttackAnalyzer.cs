@@ -20,6 +20,11 @@ namespace Prototype.Gameplay.Player.Attack
             _analyser.UpdateWeaponData();
         }
 
+        public void UdateAnalyser() 
+	    {
+            _analyser.UpdateWeaponData();
+	    }
+
         public float ResolveDamageValue(AttackType type)
         {
             WeaponPixelData[,] data;
