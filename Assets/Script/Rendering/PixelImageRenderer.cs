@@ -15,13 +15,13 @@ namespace Prototype.Rendering
         [SerializeField]
         private PixelImageAsset _imageAsset;
         public PixelImage Image { get; private set; }
+        public Sprite Sprite{get{ return _spriteRenderer.sprite; } }
 
         private SpriteRenderer _spriteRenderer;
 
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            
         }
 
         private void Start()
@@ -33,13 +33,10 @@ namespace Prototype.Rendering
             }
         }
 
-        private void Update()
-        {
-        }
-
         public void SetPixelImage(PixelImage image)
         {
             Image = image;
+            Image.UpdateTexture();
             var sprite = Sprite.Create(image.Texture,
                 new Rect(0, 0, image.Texture.width, image.Texture.height), Vector2.right);
             _spriteRenderer.sprite = sprite;

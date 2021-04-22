@@ -61,7 +61,7 @@ namespace Prototype.Input
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""InteractionButton"",
+                    ""name"": ""Editor"",
                     ""type"": ""Button"",
                     ""id"": ""24159b80-0879-4570-bd36-16bf699f4afc"",
                     ""expectedControlType"": ""Button"",
@@ -264,18 +264,18 @@ namespace Prototype.Input
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""InteractionButton"",
+                    ""action"": ""Editor"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""9c875193-d735-493c-8d47-914c2f6f7927"",
-                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""path"": ""<XInputController>/start"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""InteractionButton"",
+                    ""action"": ""Editor"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -401,7 +401,7 @@ namespace Prototype.Input
             m_Player_AttackM = m_Player.FindAction("AttackM", throwIfNotFound: true);
             m_Player_AttackR = m_Player.FindAction("AttackR", throwIfNotFound: true);
             m_Player_AttackRotate = m_Player.FindAction("AttackRotate", throwIfNotFound: true);
-            m_Player_InteractionButton = m_Player.FindAction("InteractionButton", throwIfNotFound: true);
+            m_Player_Editor = m_Player.FindAction("Editor", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Pointer = m_UI.FindAction("Pointer", throwIfNotFound: true);
@@ -459,7 +459,7 @@ namespace Prototype.Input
         private readonly InputAction m_Player_AttackM;
         private readonly InputAction m_Player_AttackR;
         private readonly InputAction m_Player_AttackRotate;
-        private readonly InputAction m_Player_InteractionButton;
+        private readonly InputAction m_Player_Editor;
         public struct PlayerActions
         {
             private @PlayerInputs m_Wrapper;
@@ -469,7 +469,7 @@ namespace Prototype.Input
             public InputAction @AttackM => m_Wrapper.m_Player_AttackM;
             public InputAction @AttackR => m_Wrapper.m_Player_AttackR;
             public InputAction @AttackRotate => m_Wrapper.m_Player_AttackRotate;
-            public InputAction @InteractionButton => m_Wrapper.m_Player_InteractionButton;
+            public InputAction @Editor => m_Wrapper.m_Player_Editor;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -494,9 +494,9 @@ namespace Prototype.Input
                     @AttackRotate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackRotate;
                     @AttackRotate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackRotate;
                     @AttackRotate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttackRotate;
-                    @InteractionButton.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
-                    @InteractionButton.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
-                    @InteractionButton.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionButton;
+                    @Editor.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEditor;
+                    @Editor.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEditor;
+                    @Editor.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEditor;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -516,9 +516,9 @@ namespace Prototype.Input
                     @AttackRotate.started += instance.OnAttackRotate;
                     @AttackRotate.performed += instance.OnAttackRotate;
                     @AttackRotate.canceled += instance.OnAttackRotate;
-                    @InteractionButton.started += instance.OnInteractionButton;
-                    @InteractionButton.performed += instance.OnInteractionButton;
-                    @InteractionButton.canceled += instance.OnInteractionButton;
+                    @Editor.started += instance.OnEditor;
+                    @Editor.performed += instance.OnEditor;
+                    @Editor.canceled += instance.OnEditor;
                 }
             }
         }
@@ -608,7 +608,7 @@ namespace Prototype.Input
             void OnAttackM(InputAction.CallbackContext context);
             void OnAttackR(InputAction.CallbackContext context);
             void OnAttackRotate(InputAction.CallbackContext context);
-            void OnInteractionButton(InputAction.CallbackContext context);
+            void OnEditor(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {

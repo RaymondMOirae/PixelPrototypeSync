@@ -19,6 +19,7 @@ namespace Prototype.Gameplay.Player.Attack
         private Animator _animator;
         private List<int> _checkList = new List<int>();
         private TouchInputs _touchInputs; 
+        
         private WeaponDisplay _wDisplayUI;
         private SpriteRenderer _wSpriteRenderer;
 
@@ -46,6 +47,7 @@ namespace Prototype.Gameplay.Player.Attack
 
         private void Start()
         {
+            //_wPixelRenderer.SetPixelImage(_wPixelRenderer.Image);
             _wDisplayUI.SetWeaponDisplay(_wSpriteRenderer.sprite);
         }
 
@@ -81,8 +83,11 @@ namespace Prototype.Gameplay.Player.Attack
 
         }
 
-        public void UpdateWeapon() {
+        public void UpdateWeapon() 
+        {
+            WeaponImage.UpdateTexture();
             _wPixelRenderer.SetPixelImage(_wPixelRenderer.Image);
+            _wDisplayUI.SetWeaponDisplay(_wPixelRenderer.Sprite);
 		}
 
     }

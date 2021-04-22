@@ -38,12 +38,12 @@ namespace Prototype.Gameplay.Enemy.FSM
                 if (_enemy.Rigidbdy.velocity.magnitude <= StandingThreshold)
                 {
                     _enemy.Move(Random.insideUnitCircle, _enemy.WalkSpeed);
-                    Debug.Log("Walk");
+                    //Debug.Log("Walk");
                 }
                 else
                 {
                     _enemy.StandStill();
-                    Debug.Log("Stand");
+                    // Debug.Log("Stand");
                 }
                 yield return new WaitForSeconds(_enemy.PatrolInterval);
             }

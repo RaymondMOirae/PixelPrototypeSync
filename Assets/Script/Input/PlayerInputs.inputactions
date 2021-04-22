@@ -46,7 +46,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "InteractionButton",
+                    "name": "Editor",
                     "type": "Button",
                     "id": "24159b80-0879-4570-bd36-16bf699f4afc",
                     "expectedControlType": "Button",
@@ -249,18 +249,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "InteractionButton",
+                    "action": "Editor",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "9c875193-d735-493c-8d47-914c2f6f7927",
-                    "path": "<XInputController>/buttonSouth",
+                    "path": "<XInputController>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "InteractionButton",
+                    "action": "Editor",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

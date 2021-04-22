@@ -9,7 +9,7 @@ using Prototype.Gameplay.Enemy;
 using Prototype.Gameplay.Player.Attack;
 using Prototype.Gameplay.RoomFacility;
 using Prototype.Gameplay.UI;
-
+using Prototype.Inventory;
 
 namespace Prototype.Gameplay.Player
 {
@@ -40,6 +40,7 @@ namespace Prototype.Gameplay.Player
         private SpriteRenderer _sprite;
 
         private WeaponController _wController;
+        private InGamePixelEditor _pixelEditor;
 
         public float AttackRadius => _attackRadius;
         public float MidOuterAngle => _midOuterAngle;
@@ -55,6 +56,7 @@ namespace Prototype.Gameplay.Player
             _rigidbody = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
             _sprite = GetComponent<SpriteRenderer>();
+            _pixelEditor = GameObject.Find("InGamePixelEditor").GetComponent<InGamePixelEditor>();
             _wController = transform.Find("WeaponHolder").GetComponent<WeaponController>();
 
             _interactFilter = new ContactFilter2D();
@@ -147,9 +149,14 @@ namespace Prototype.Gameplay.Player
             InputManager.Inputs.Player.Move.started      += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());
             InputManager.Inputs.Player.Move.performed    += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());
             InputManager.Inputs.Player.Move.canceled     += (cxt) => HandleDirectionInput(cxt.ReadValue<Vector2>());
-            InputManager.Inputs.Player.InteractionButton.performed += (cxt) => HandleInteraction();
+            //InputManager.Inputs.Player.InteractionButton.performed += (cxt) => HandleInteraction();
+            InputManager.Inputs.Player.Editor.performed += (cxt) => LaunchEditor();
         }
 
+        private void LaunchEditor()
+        {
+            _pixelEditor.ShowEditor();
+        }
 
         protected override void FindHealthBar()
         {
