@@ -48,7 +48,7 @@ namespace Prototype.Gameplay.Player
         public bool CanMove { get { return _canMove; } set { _canMove = value; } }
         public Vector2 CurDir => _curDir;
         public Vector2 MoveSpeed => _curDir * _moveSpeed;
-        public Vector2 DashSpeed => _curDir * _dashSpeed;
+        public Vector2 DashSpeed => _wController.transform.right * _dashSpeed;
         public WeaponController Weapon => _wController;
 
         private void Awake()
