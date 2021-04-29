@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Prototype.Animation;
 using UnityEngine;
 using Prototype.Gameplay.Player;
 
@@ -16,7 +17,8 @@ namespace Prototype.Gameplay.Enemy.FSM
 
         public override void OnEnterState()
         {
-            _coroutine = _enemy.StartCoroutine(Chase()); ;
+            _coroutine = _enemy.StartCoroutine(Chase());
+            _enemy.AnimationController.SetAnimationState(AnimationController.StateWalk);
         }
 
         public override void CheckTransition()
@@ -41,6 +43,7 @@ namespace Prototype.Gameplay.Enemy.FSM
             {
                 Vector2 chaseDir = MathUtility.ToVector2(_player.transform.position - _enemy.transform.position);
                 _enemy.Move(chaseDir, _enemy.ChaseSpeed);
+                _enemy.AnimationController.SetDirection(chaseDir);
                 yield return new WaitForSeconds(_enemy.ChaseInterval);
             }
         }

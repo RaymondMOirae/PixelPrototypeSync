@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Prototype.Animation;
 using UnityEngine;
 
 namespace Prototype.Gameplay.Enemy.FSM
@@ -33,6 +34,9 @@ namespace Prototype.Gameplay.Enemy.FSM
             _staggerDir = MathUtility.ToVector2(_enemy.transform.position - _player.transform.position);
             _enemy.Move(_staggerDir, _enemy.StaggerSpeed);
             _enemy.StartCoroutine(EndHitRecover());
+            
+            _enemy.AnimationController.SetDirection(-_staggerDir);
+            _enemy.AnimationController.SetAnimationState(AnimationController.StateHit);
         }
 
         public override void OnExitState(StateType nextState)
