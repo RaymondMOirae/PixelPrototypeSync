@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Prototype.Animation;
 using UnityEngine;
 
 namespace Prototype.Gameplay.Enemy.FSM
@@ -13,6 +14,7 @@ namespace Prototype.Gameplay.Enemy.FSM
         public override void OnEnterState()
         {
             _coroutine = _enemy.StartCoroutine(Patrol());
+            _enemy.AnimationController.SetAnimationState(AnimationController.StateIdle);
         }
 
         public override void CheckTransition()
@@ -37,12 +39,17 @@ namespace Prototype.Gameplay.Enemy.FSM
             {
                 if (_enemy.Rigidbdy.velocity.magnitude <= StandingThreshold)
                 {
-                    _enemy.Move(Random.insideUnitCircle, _enemy.WalkSpeed);
+                    var dir = Random.insideUnitCircle;
+                    _enemy.Move(dir, _enemy.WalkSpeed);
+                    _enemy.AnimationController.SetDirection(dir);
+                    _enemy.AnimationController.SetAnimationState(AnimationController.StateWalk);
                     //Debug.Log("Walk");
                 }
                 else
                 {
                     _enemy.StandStill();
+                    
+                    _enemy.AnimationController.SetAnimationState(AnimationController.StateIdle);
                     // Debug.Log("Stand");
                 }
                 yield return new WaitForSeconds(_enemy.PatrolInterval);

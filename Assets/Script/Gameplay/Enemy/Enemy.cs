@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Prototype.Animation;
 using UnityEngine;
 using Prototype.Gameplay.UI;
 using Prototype.Gameplay.Enemy.FSM;
@@ -27,6 +29,8 @@ namespace Prototype.Gameplay.Enemy
         private EnemySensorResult _sensorResult;
         private ContactFilter2D _playerFilter;
         [SerializeField] private LayerMask _playerLayer;
+
+        [SerializeField] private AnimationController _animationController;
 
         [Header("行为参数")]
         [SerializeField] private float _walkSpeed;
@@ -63,6 +67,8 @@ namespace Prototype.Gameplay.Enemy
         public EnemySensorResult SensorResult => _sensorResult;
         public ContactFilter2D PlayerFilter => _playerFilter;
         public Rigidbody2D Rigidbdy { get; private set; }
+
+        public AnimationController AnimationController => _animationController;
 
         private void Start()
         {
