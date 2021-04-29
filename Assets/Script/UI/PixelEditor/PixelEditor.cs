@@ -53,7 +53,8 @@ namespace Prototype.UI
 
         private TaskCompletionSource<int> _promise = null;
         // private readonly HashSet<Vector2Int> _lockedPixels = new HashSet<Vector2Int>();
-        private PixelImage _editingImage = null;
+        private PixelWeapon _editingImage = null;
+        private PixelWeaponAnalyser _weaponAnalyser = null;
         private readonly Stack<UndoAction> _undoStack = new Stack<UndoAction>();
         private readonly Stack<UndoAction> _redoStack = new Stack<UndoAction>();
 
@@ -93,7 +94,7 @@ namespace Prototype.UI
         {
             if (selectedGroup)
             {
-                SetupCanvas(selectedGroup[0] as PixelImage);
+                SetupCanvas(selectedGroup[0] as PixelWeapon);
             }
             else
             {
@@ -109,7 +110,7 @@ namespace Prototype.UI
         {
             // EditMode = PixelEditMode.None;
             PalettePanel.LoadInventory(Inventory, itemType => itemType is PixelType);
-            TemplatesPanel.LoadInventory(Inventory, itemType => itemType is PixelImageType);
+            TemplatesPanel.LoadInventory(Inventory, itemType => itemType is PixelWeaponType);
          
             TemplatesPanel.SelectIndex(0);
             
@@ -118,9 +119,10 @@ namespace Prototype.UI
             // UpdateLayout();
         }
 
-        void SetupCanvas(PixelImage image)
+        void SetupCanvas(PixelWeapon weapon)
         {
-            _editingImage = image;
+            _editingImage = weapon;
+            _weaponAnalyser = new PixelWeaponAnalyser(weapon);
             this._undoStack.Clear();
             this._redoStack.Clear();
             ResetLayout();
@@ -261,6 +263,20 @@ namespace Prototype.UI
                 return;
             
             ApplyImage();
+            _weaponAnalyser.UpdateWeaponData();
+            if (_weaponAnalyser.BrokenPixels.Count > 0)
+            {
+                result = await Dialog.ShowPrefabAsync(
+                    UISettings.Current.BasicDialogPrefab,
+                    $"{_weaponAnalyser.BrokenPixels.Count} pixels not connected to weapon handle will be broken. " +
+                    $"Are you sure to continue?",
+                    this,
+                    DialogType.OkCancel);
+            
+                if (!result)
+                    return;
+            }
+            
             _editingImage.UpdateTexture();
             _promise.SetResult(0);
             _promise = null;

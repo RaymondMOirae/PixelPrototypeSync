@@ -18,6 +18,7 @@ namespace Prototype.UI
         public DialogType Type;
         [SerializeField] private Button ButtonOk;
         [SerializeField] private Button ButtonCancel;
+        [SerializeField] private Text Text;
         private TaskCompletionSource<bool> _resultPromise;
         private TaskCompletionSource<bool> _closePromise;
         private bool _active = false;
@@ -66,7 +67,8 @@ namespace Prototype.UI
             var dialog = GameObjectPool.Get<Dialog>(prefab);
             if (!dialog)
                 throw new Exception("Prefab dose not have a component of Dialog.");
-            
+
+            dialog.Text.text = text;
             owner.ShowPopup(dialog);
             
             var resultPromise = new TaskCompletionSource<bool>();
