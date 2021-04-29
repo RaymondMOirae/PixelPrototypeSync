@@ -32,9 +32,12 @@ namespace Prototype.Inventory
         }
 
         public T Take<T>(T item) where T : Item 
-            => Take(item) as T;
+            => TakeItem(item) as T;
 
-        public Item Take(Item item)
+        Item Take(Item item)
+            => TakeItem(item);
+
+        Item TakeItem(Item item)
         {
             foreach (var group in _itemGroups)
             {
@@ -44,6 +47,7 @@ namespace Prototype.Inventory
 
             return null;
         }
+        
 
         public T Take<T>(ItemType itemType) where T : Item
         {
