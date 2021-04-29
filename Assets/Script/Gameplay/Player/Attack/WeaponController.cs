@@ -11,6 +11,7 @@ namespace Prototype.Gameplay.Player.Attack
     [RequireComponent(typeof(Animator))]
     public class WeaponController : MonoBehaviour
     {
+        [SerializeField] private PixelImageAsset _testWeaponImageAsset;
 
         [SerializeField] private bool _isAttacking = false;
         [SerializeField] private float _force;
@@ -23,14 +24,14 @@ namespace Prototype.Gameplay.Player.Attack
         private WeaponDisplay _wDisplayUI;
         private SpriteRenderer _wSpriteRenderer;
 
-        private PixelImageRenderer _wPixelRenderer;
-        //private AttackAnalyzer _wAnalyser;
+        private PixelImageRenderer _wPixelRenderer;        
+        private AttackAnalyzer _wAnalyser;
 
         public bool DuringAttack { get { return _isAttacking; } }
         public float BeatForce { get { return _force; } }
         public List<int> CheckList { get { return _checkList; } }
         public AttackType CurrentType { get { return _attackType; } }
-        public PixelImage WeaponImage { get { return _wPixelRenderer.Image; } }
+        public PixelWeapon CurrentWeapon { get; private set; }
         public PixelImageRenderer WeaponRenderer { get { return _wPixelRenderer; } }
 
         private void Awake()
@@ -39,10 +40,15 @@ namespace Prototype.Gameplay.Player.Attack
             GameObject analyser = GameObject.Find("Analyzer");
             _wSpriteRenderer = analyser.GetComponent<SpriteRenderer>();
             _wPixelRenderer = analyser.GetComponent<PixelImageRenderer>();
-            //_wAnalyser = analyser.GetComponent<AttackAnalyzer>();
+            _wAnalyser = analyser.GetComponent<AttackAnalyzer>();
 
             _animator = GetComponent<Animator>();
             _touchInputs = GameObject.Find("TouchInputs").GetComponent<TouchInputs>();
+
+            CurrentWeapon = PixelWeapon.CreateFromPixelImage(_testWeaponImageAsset.Image.Clone(), new Vector2Int(7, 0),
+                WeaponForwardDirection.TopLeft);
+            _wPixelRenderer.SetPixelImage(CurrentWeapon);
+            _wAnalyser.CurrentWeapon = CurrentWeapon;
         }
 
         private void Start()
@@ -85,8 +91,8 @@ namespace Prototype.Gameplay.Player.Attack
 
         public void UpdateWeapon() 
         {
-            WeaponImage.UpdateTexture();
-            _wPixelRenderer.SetPixelImage(_wPixelRenderer.Image);
+            CurrentWeapon.UpdateTexture();
+            _wPixelRenderer.SetPixelImage(CurrentWeapon);
             _wDisplayUI.SetWeaponDisplay(_wPixelRenderer.Sprite);
 		}
 

@@ -14,7 +14,7 @@ namespace Prototype.Rendering
     {
         [SerializeField]
         private PixelImageAsset _imageAsset;
-        public PixelImage Image { get; private set; }
+        private PixelImage Image { get; set; }
         public Sprite Sprite{get{ return _spriteRenderer.sprite; } }
 
         private SpriteRenderer _spriteRenderer;

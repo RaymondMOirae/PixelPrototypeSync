@@ -74,7 +74,7 @@ namespace Prototype.Element
             }
         }
         
-        public readonly PixelImage Image;
+        public readonly PixelWeapon Weapon;
         public readonly WeaponPixelData[,] WeaponDataLeft;
         public readonly WeaponPixelData[,] WeaponDataRight;
         public readonly WeaponPixelData[,] WeaponDataStab;
@@ -84,6 +84,8 @@ namespace Prototype.Element
         public readonly OneSideAnalyserHelper LeftAnalyser;
         public readonly OneSideAnalyserHelper RightAnalyser;
         public readonly OneSideAnalyserHelper StabAnalyser;
+
+        public readonly List<BrokenPixel> BrokenPixels = new List<BrokenPixel>();
         
         // public float _paramP = 0.57f;
         // public float _paramK = 1.02f;
@@ -102,18 +104,17 @@ namespace Prototype.Element
         public float TotalDamageRight { get; private set; }
         public float TotalDamageStab { get; private set; }
 
-        public PixelWeaponAnalyser(PixelImage image, WeaponForwardDirection forwardCorner)
+        public PixelWeaponAnalyser(PixelWeapon weapon)
         {
-            Image = image;
-            WeaponDataLeft = new WeaponPixelData[image.Size.x, image.Size.y];
-            WeaponDataRight = new WeaponPixelData[image.Size.x, image.Size.y];
-            WeaponDataStab = new WeaponPixelData[image.Size.x, image.Size.y];
-            ForwardCorner = forwardCorner;
+            Weapon = weapon;
+            WeaponDataLeft = new WeaponPixelData[weapon.Size.x, weapon.Size.y];
+            WeaponDataRight = new WeaponPixelData[weapon.Size.x, weapon.Size.y];
+            WeaponDataStab = new WeaponPixelData[weapon.Size.x, weapon.Size.y];
 
-            switch (forwardCorner)
+            switch (weapon.ForwardDirection)
             {
                 case WeaponForwardDirection.TopLeft:
-                    _gridOrigin = new Vector2Int(image.Size.x, 0);
+                    _gridOrigin = new Vector2Int(weapon.Size.x, 0);
                     Origin = new Vector2(.5f, -.5f);
                     
                     LeftAnalyser = new OneSideAnalyserHelper()
@@ -121,11 +122,11 @@ namespace Prototype.Element
                         Tangent = new Vector2(-1, 1).normalized,
                         Normal = new Vector2(-1, -1).normalized,
                         OcclusionClearValue = int.MaxValue,
-                        OccludedPixels = new Utility.OffsetArray<int>(-image.Size.y - 3, image.Size.x + image.Size.y + 4),
-                        PixelIterator = Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMinYMin),
+                        OccludedPixels = new Utility.OffsetArray<int>(-weapon.Size.y - 3, weapon.Size.x + weapon.Size.y + 4),
+                        PixelIterator = Utility.DiagonalIndices(weapon.Size.x, weapon.Size.y, Utility.RectCorner.XMinYMin),
                         OcclusionCoordMap = (x, y) => (x, y),
                         OcclusionCompareMode = PixelCompareMode.Less,
-                        DamageAttenuationField = new float[image.Size.x, image.Size.y],
+                        DamageAttenuationField = new float[weapon.Size.x, weapon.Size.y],
                         IgnorePixel = (x, y, pixelX, pixelY) => (x + y) < (pixelX + pixelY),
                         AttenuationFieldParams = new AttenuationFieldParameters()
                         {
@@ -141,11 +142,11 @@ namespace Prototype.Element
                         Tangent = new Vector2(-1, 1).normalized,
                         Normal = new Vector2(1, 1).normalized,
                         OcclusionClearValue = int.MinValue,
-                        OccludedPixels = new Utility.OffsetArray<int>(-image.Size.y - 3, image.Size.x + image.Size.y + 4),
-                        PixelIterator = Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMaxYMax),
+                        OccludedPixels = new Utility.OffsetArray<int>(-weapon.Size.y - 3, weapon.Size.x + weapon.Size.y + 4),
+                        PixelIterator = Utility.DiagonalIndices(weapon.Size.x, weapon.Size.y, Utility.RectCorner.XMaxYMax),
                         OcclusionCoordMap = (x, y) => (x, y),
                         OcclusionCompareMode = PixelCompareMode.Greater,
-                        DamageAttenuationField = new float[image.Size.x, image.Size.y],
+                        DamageAttenuationField = new float[weapon.Size.x, weapon.Size.y],
                         IgnorePixel = (x, y, pixelX, pixelY) => (x + y) > (pixelX + pixelY),
                         AttenuationFieldParams = new AttenuationFieldParameters()
                         {
@@ -161,11 +162,11 @@ namespace Prototype.Element
                         Tangent = new Vector2(1, 1).normalized,
                         Normal = new Vector2(-1, 1).normalized,
                         OcclusionClearValue = int.MaxValue,
-                        OccludedPixels = new Utility.OffsetArray<int>(-2, image.Size.x + image.Size.y + 4),
-                        PixelIterator = Utility.DiagonalIndices(image.Size.x, image.Size.y, Utility.RectCorner.XMinYMax),
+                        OccludedPixels = new Utility.OffsetArray<int>(-2, weapon.Size.x + weapon.Size.y + 4),
+                        PixelIterator = Utility.DiagonalIndices(weapon.Size.x, weapon.Size.y, Utility.RectCorner.XMinYMax),
                         OcclusionCoordMap = (x, y) => (y, x),
                         OcclusionCompareMode = PixelCompareMode.Less,
-                        DamageAttenuationField = new float[image.Size.x, image.Size.y],
+                        DamageAttenuationField = new float[weapon.Size.x, weapon.Size.y],
                         IgnorePixel = (x, y, pixelX, pixelY) => (x - y) < (pixelX - pixelY),
                         AttenuationFieldParams = new AttenuationFieldParameters()
                         {
@@ -186,24 +187,24 @@ namespace Prototype.Element
         public void UpdateWeaponData()
         {
             
-            for(var y = 0;y<Image.Size.y; y++)
-            for (var x = 0; x < Image.Size.x; x++)
+            for(var y = 0;y<Weapon.Size.y; y++)
+            for (var x = 0; x < Weapon.Size.x; x++)
             {
                 WeaponDataLeft[x, y] = new WeaponPixelData()
                 {
-                    Pixel = Image[x, y],
+                    Pixel = Weapon[x, y],
                     DamageRate = 1,
                     WearRate = 1,
                 };
                 WeaponDataRight[x, y] = new WeaponPixelData()
                 {
-                    Pixel = Image[x, y],
+                    Pixel = Weapon[x, y],
                     DamageRate = 1,
                     WearRate = 1,
                 };
                 WeaponDataStab[x, y] = new WeaponPixelData()
                 {
-                    Pixel = Image[x, y],
+                    Pixel = Weapon[x, y],
                     DamageRate = 1,
                     WearRate = 1,
                 };
@@ -212,6 +213,8 @@ namespace Prototype.Element
             LeftAnalyser.Reset();
             RightAnalyser.Reset();
             StabAnalyser.Reset();
+            
+            AnalyseStructure();
             
             AnalyseOneSide(LeftAnalyser);
             AnalyseOneSide(RightAnalyser);
@@ -222,6 +225,103 @@ namespace Prototype.Element
             PhysicalAnalyse();
         }
 
+        private void AnalyseStructure()
+        {
+            Pixel GetPixelAt(int x, int y)
+            {
+                if (x < 0 || x >= Weapon.Size.x || y < 0 || y >= Weapon.Size.y)
+                    return null;
+                return Weapon.Pixels[x, y];
+            }
+            Dictionary<Pixel, Pixel> unionRoot = new Dictionary<Pixel, Pixel>();
+
+            Pixel GetRootOf(Pixel pixel)
+            {
+                if (unionRoot.TryGetValue(pixel, out var root))
+                {
+                    if (root == pixel)
+                        return pixel;
+
+                    var rootOfRoot = GetRootOf(root);
+                    unionRoot[root] = rootOfRoot;
+                    return rootOfRoot;
+                }
+                else
+                {
+                    unionRoot[pixel] = pixel;
+                    return pixel;
+                }
+            }
+            
+            BrokenPixels.Clear();
+            for (var y = 0; y < Weapon.Size.y; y++)
+            for (var x = 0; x < Weapon.Size.x; x++)
+            {
+                if(!Weapon.Pixels[x,y])
+                    continue;
+                if (Weapon.Pixels[x, y].Endurance <= 0)
+                {
+                    var brokenPixel = new BrokenPixel()
+                    {
+                        Pixel = Weapon.Pixels[x, y],
+                        Position = new Vector2Int(x, y),
+                    };
+                    BrokenPixels.Add(brokenPixel);
+                    Weapon.Pixels[x, y] = null;
+                }
+            }
+            Debug.Log($"{BrokenPixels.Count} pixels broken due to low endurance");
+            var enduranceBroken = BrokenPixels.Count;
+            // return;
+
+
+            Utility.RectCorner startCorner;
+            Pixel handelPixel;
+            switch (Weapon.ForwardDirection)
+            {
+                case WeaponForwardDirection.TopLeft:
+                    startCorner = Utility.RectCorner.XMaxYMin;
+                    handelPixel = Weapon.Pixels[Weapon.HandelPosition.x, Weapon.HandelPosition.y];
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            foreach (var (x, y) in Utility.DiagonalIndices(Weapon.Size.x, Weapon.Size.y, startCorner))
+            {
+                if (!Weapon.Pixels[x, y])
+                    continue;
+                for (var dy = -1; dy <= 1; dy++)
+                for (var dx = -1; dx <= 1; dx++)
+                {
+                    var neighbor = GetPixelAt(x + dx, y + dy);
+                    if (!neighbor || !neighbor.Type)
+                        continue;
+
+                    unionRoot[GetRootOf(neighbor)] = GetRootOf(Weapon.Pixels[x, y]);
+                }
+            }
+
+
+            for (var y = 0; y < Weapon.Size.y; y++)
+            for (var x = 0; x < Weapon.Size.x; x++)
+            {
+                if(!Weapon.Pixels[x,y])
+                    continue;
+                if (GetRootOf(Weapon.Pixels[x, y]) != GetRootOf(handelPixel))
+                {
+                    var brokenPixel = new BrokenPixel()
+                    {
+                        Pixel = Weapon.Pixels[x, y],
+                        Position = new Vector2Int(x, y),
+                    };
+                    BrokenPixels.Add(brokenPixel);
+                    Weapon.Pixels[x, y] = null;
+                }
+            }
+            Debug.Log($"{BrokenPixels.Count - enduranceBroken} pixels broken due to structure broken");
+        }
+
         void PhysicalAnalyse()
         {
 
@@ -229,16 +329,16 @@ namespace Prototype.Element
             Inertia = 0;
             Length = 0;
 
-            for (var y = 0; y < Image.Size.y; y++)
-            for (var x = 0; x < Image.Size.x; x++)
+            for (var y = 0; y < Weapon.Size.y; y++)
+            for (var x = 0; x < Weapon.Size.x; x++)
             {
-                if(Image[x, y] is null)
+                if(Weapon[x, y] is null)
                     continue;
 
                 var r = Vector2.Distance(new Vector2(x, y), _gridOrigin);
                 Length = Mathf.Max(Length, r);
-                Inertia += Image[x, y].Weight * r * r;
-                Mass += Image[x, y].Weight;
+                Inertia += Weapon[x, y].Weight * r * r;
+                Mass += Weapon[x, y].Weight;
             }
         }
 
@@ -257,13 +357,13 @@ namespace Prototype.Element
                     
                 }
 
-                if (!Image[posX, posY])
+                if (!Weapon[posX, posY])
                     continue;
 
                 helper.OccludedPixels[occludeX] = occludeY;
 
-                for (var y = 0; y < Image.Size.y; y++) 
-                for (var x = 0; x < Image.Size.x; x++)
+                for (var y = 0; y < Weapon.Size.y; y++) 
+                for (var x = 0; x < Weapon.Size.x; x++)
                 {
                     if(x == posX && y == posY)
                         continue;
@@ -317,10 +417,10 @@ namespace Prototype.Element
             TotalDamageLeft = 0;
             TotalDamageRight = 0;
             TotalDamageStab = 0;
-            for (var y = 0; y < Image.Size.y; y++)
-            for (var x = 0; x < Image.Size.x; x++)
+            for (var y = 0; y < Weapon.Size.y; y++)
+            for (var x = 0; x < Weapon.Size.x; x++)
             {
-                if (Image[x, y] is null)
+                if (Weapon[x, y] is null)
                 {
                     WeaponDataLeft[x, y] = WeaponDataRight[x, y] = WeaponDataStab[x, y] = new WeaponPixelData()
                     {
@@ -366,7 +466,11 @@ namespace Prototype.Element
                     break;
             }
 
-            var pixel = Image[x, y];
+            var pixel = Weapon[x, y];
+            if (!pixel)
+            {
+                attenuation = 0;
+            }
             // TODO: Complete weapon data.
             return new WeaponPixelData()
             {

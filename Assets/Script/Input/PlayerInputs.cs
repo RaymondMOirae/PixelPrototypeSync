@@ -314,6 +314,14 @@ namespace Prototype.Input
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""98dd9b7e-a172-49cc-ba3a-70fed94607e9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -325,6 +333,17 @@ namespace Prototype.Input
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse;Touch"",
                     ""action"": ""Pointer"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""271ae378-b703-4b84-b174-07f92fd48dee"",
+                    ""path"": ""*/{Back}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -405,6 +424,7 @@ namespace Prototype.Input
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Pointer = m_UI.FindAction("Pointer", throwIfNotFound: true);
+            m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -528,11 +548,13 @@ namespace Prototype.Input
         private readonly InputActionMap m_UI;
         private IUIActions m_UIActionsCallbackInterface;
         private readonly InputAction m_UI_Pointer;
+        private readonly InputAction m_UI_Back;
         public struct UIActions
         {
             private @PlayerInputs m_Wrapper;
             public UIActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
             public InputAction @Pointer => m_Wrapper.m_UI_Pointer;
+            public InputAction @Back => m_Wrapper.m_UI_Back;
             public InputActionMap Get() { return m_Wrapper.m_UI; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -545,6 +567,9 @@ namespace Prototype.Input
                     @Pointer.started -= m_Wrapper.m_UIActionsCallbackInterface.OnPointer;
                     @Pointer.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnPointer;
                     @Pointer.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnPointer;
+                    @Back.started -= m_Wrapper.m_UIActionsCallbackInterface.OnBack;
+                    @Back.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnBack;
+                    @Back.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnBack;
                 }
                 m_Wrapper.m_UIActionsCallbackInterface = instance;
                 if (instance != null)
@@ -552,6 +577,9 @@ namespace Prototype.Input
                     @Pointer.started += instance.OnPointer;
                     @Pointer.performed += instance.OnPointer;
                     @Pointer.canceled += instance.OnPointer;
+                    @Back.started += instance.OnBack;
+                    @Back.performed += instance.OnBack;
+                    @Back.canceled += instance.OnBack;
                 }
             }
         }
@@ -613,6 +641,7 @@ namespace Prototype.Input
         public interface IUIActions
         {
             void OnPointer(InputAction.CallbackContext context);
+            void OnBack(InputAction.CallbackContext context);
         }
     }
 }

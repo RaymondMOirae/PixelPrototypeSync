@@ -74,7 +74,7 @@ namespace Prototype.Editor
         private RenderTexture _canvasGridRT;
         private RenderTexture _pixelImageRT;
 
-        private PixelImage _editImage;
+        private PixelWeapon _editImage;
         private Mesh _imageMesh;
         private Mesh _analyseMesh;
         private PixelWeaponAnalyser _analyser;
@@ -289,13 +289,17 @@ namespace Prototype.Editor
                 NewImage();
                 return;
             }
-            _editImage = new PixelImage(_editAsset.Size);
+
+            _editImage = new PixelWeapon(_editAsset.Size, new Vector2Int(_editAsset.Size.x - 1, 0),
+                WeaponForwardDirection.TopLeft);
+            
             for(var y = 0;y < _editAsset.Height; y++)
             for (var x = 0; x < _editAsset.Width; x++)
             {
-                _editImage.Pixels[x, y] = _editAsset.Image.Pixels[x, y];
+                _editImage.Pixels[x, y] =
+                    _editAsset.Image.Pixels[x, y] ? new Pixel(_editAsset.Image.Pixels[x, y].Type) : null;
             }
-            _analyser = new PixelWeaponAnalyser(_editImage, WeaponForwardDirection.TopLeft);
+            _analyser = new PixelWeaponAnalyser(_editImage);
             UpdateMeshData();
             RenderImage();
             Repaint();
@@ -315,7 +319,7 @@ namespace Prototype.Editor
         {
             _editAsset = CreateInstance<PixelImageAsset>();
             _editAsset.name = "NewPixelImageAsset";
-            _editImage = new PixelImage(_editSize);
+            _editImage = new PixelWeapon(_editSize, new Vector2Int(_editSize.x - 1, 0), WeaponForwardDirection.TopLeft);
             _editAsset.Image = _editImage;
             
             if (!_pixelImageRT)
@@ -333,7 +337,7 @@ namespace Prototype.Editor
             _imageMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
             _analyseMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
             
-            _analyser = new PixelWeaponAnalyser(_editImage, WeaponForwardDirection.TopLeft);
+            _analyser = new PixelWeaponAnalyser(_editImage);
             
             UpdateMeshData();
             RenderImage();

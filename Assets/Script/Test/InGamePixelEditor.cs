@@ -39,7 +39,7 @@ namespace Prototype.Inventory
             
             //PixelImage image = _weapon.WeaponImage;
             
-            Inventory.SaveItem(_weapon.WeaponImage);
+            Inventory.SaveItem(_weapon.CurrentWeapon);
             
             //await PixelEditor.Instance.Edit(Inventory);
 

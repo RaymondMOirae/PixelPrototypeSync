@@ -8,19 +8,31 @@ namespace Prototype.Gameplay.Player.Attack
 {
     public class AttackAnalyzer : MonoBehaviour
     {
-        [SerializeField] private PixelImageAsset _asset;
+        private PixelWeapon _currentWeapon;
         [SerializeField] private PixelWeaponAnalyser _analyser;
-        private PixelImageRenderer _renderer;
+
+        public PixelWeapon CurrentWeapon
+        {
+            get => _currentWeapon;
+            set
+            {
+                _currentWeapon = value;
+                _analyser = new PixelWeaponAnalyser(value);
+                UpdateAnalyser();
+            }
+        }
 
         // Start is called before the first frame update
         private void Start()
         {
-            _renderer = GetComponent<PixelImageRenderer>();
-            _analyser = new PixelWeaponAnalyser(_renderer.Image, WeaponForwardDirection.TopLeft);
-            _analyser.UpdateWeaponData();
+            // _renderer = GetComponent<PixelImageRenderer>();
+            // var weapon = PixelWeapon.CreateFromPixelImage(_renderer.Image, new Vector2Int(7, 0),
+            //     WeaponForwardDirection.TopLeft);
+            // _analyser = new PixelWeaponAnalyser(weapon);
+            // _analyser.UpdateWeaponData();
         }
 
-        public void UdateAnalyser() 
+        public void UpdateAnalyser() 
 	    {
             _analyser.UpdateWeaponData();
 	    }
@@ -51,7 +63,16 @@ namespace Prototype.Gameplay.Player.Attack
             foreach(WeaponPixelData d in data)
             {
                 damage += d.Damage;
+
+                if (d.Pixel)
+                {
+                    d.Pixel.Endurance -= d.WearRate;
+                }
             }
+            // handel pixel endurance lost and structure broken
+            UpdateAnalyser();
+            CurrentWeapon.UpdateTexture();
+            
 
             return damage;
         }

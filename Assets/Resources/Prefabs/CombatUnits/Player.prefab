@@ -96,7 +96,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cedb36868548002428210b66988daa07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CheckList: []
+  _testWeaponImageAsset: {fileID: 11400000, guid: 99fe4154e35c9cb41a698252ecbbfe36,
+    type: 2}
+  _isAttacking: 0
+  _force: 0
 --- !u!1 &8273969897481958020
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,7 +145,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c504b5a737f4b44b88f7eac1b4a5140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _asset: {fileID: 11400000, guid: 99fe4154e35c9cb41a698252ecbbfe36, type: 2}
 --- !u!114 &8273969897481958073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,7 +157,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16b1ba295013472787f49c561286edc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _imageAsset: {fileID: 11400000, guid: 99fe4154e35c9cb41a698252ecbbfe36, type: 2}
 --- !u!212 &8273969897481958072
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -255,14 +256,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84b08b58ca981d042bfb188c5b5a89d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: {x: 8, y: 8}
-  TurningThresholdAngle: 50
-  AttackRadius: 2
-  MidOuterAngle: 30
-  SideOuterAngle: 120
-  MidInterpoNum: 5
-  SideInterpoNum: 6
-  CurDir: {x: 1, y: 0}
+  UseHealthBar: 0
+  CanDropPixel: 0
+  maxHealth: 0
+  currentHealth: 0
+  _spawnRadius: 0
+  _availableTypes: []
+  _canMove: 0
+  _isDashing: 0
+  _moveSpeed: 0
+  _dashSpeed: 0
+  _curDir: {x: 1, y: 0}
+  _attackRadius: 0
+  _midOuterAngle: 0
+  _sideOuterAngle: 0
   _attackLayer:
     serializedVersion: 2
     m_Bits: 512
