@@ -28,9 +28,11 @@ namespace Prototype.Gameplay.Enemy
         private Dictionary<StateType, StateBase> _states;
         private EnemySensorResult _sensorResult;
         private ContactFilter2D _playerFilter;
+        private Coroutine _stateWaitCoroutine;
         [SerializeField] private LayerMask _playerLayer;
 
         [SerializeField] private AnimationController _animationController;
+        [SerializeField] private Animator _animator;
 
         [Header("行为参数")]
         [SerializeField] private float _walkSpeed;
@@ -115,10 +117,19 @@ namespace Prototype.Gameplay.Enemy
             Debug.Log(nextState.ToString());
         }
 
-        public void UpdateState()
-        {
-            CurState.CheckTransition();
-        }
+        IEnumerator WaitForStateUpdate() 
+	    {
+            while(true)
+		    {
+                yield return new WaitForSeconds(Time.deltaTime);
+                if (_animator.GetCurrentAnimatorStateInfo(0).IsName("SkeletonWalk") ||
+		            _animator.GetCurrentAnimatorStateInfo(0).IsName("SkeletonIdle"))
+		        {
+                    break;
+		        }
+	        }
+		    CurState.CheckTransition();
+	    }
 
         public void Move(Vector2 dir, float speed)
         {
@@ -130,16 +141,20 @@ namespace Prototype.Gameplay.Enemy
         {
             Rigidbdy.velocity = Vector2.zero;
         }
+
         public void SetInViewField(bool b)
         {
+
+            //StopAllCoroutines();
             _sensorResult.InViewField = b;
-            UpdateState();
+            StartCoroutine(WaitForStateUpdate());
         }
 
         public void SetInAttackField(bool b)
         {
+            //StopAllCoroutines();
             _sensorResult.InAttackField = b;
-            UpdateState();
+            StartCoroutine(WaitForStateUpdate());
         }
 
         public void CastAttack()
