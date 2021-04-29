@@ -29,7 +29,6 @@ namespace Prototype.Rendering
             if (_imageAsset)
             {
                 Image = _imageAsset.Image;
-                Image.UpdateTexture();
                 ReGenerateTexture();
             }
         }

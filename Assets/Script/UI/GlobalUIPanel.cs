@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Prototype.UI
 {
-    [RequireComponent(typeof(CanvasGroup))]
     public class GlobalUIPanel<T> : UIPanel where T : GlobalUIPanel<T>
     {
         public static T Instance;

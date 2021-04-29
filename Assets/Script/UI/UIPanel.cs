@@ -4,38 +4,28 @@ using UnityEngine;
 
 namespace Prototype.UI
 {
-    [RequireComponent(typeof(CanvasGroup))]
+    [RequireComponent(typeof(UIVisibility))]
     public class UIPanel : MonoBehaviour, IUIPanel
     {
-        [SerializeField] private float TransitionTime = .2f;
-        [SerializeField] private bool ShowOnLoad = false;
-        private CanvasGroup _canvasGroup;
+        private UIVisibility _uiVisibility;
         private TaskCompletionSource<int> _completionSource;
         private IUIPanel _overlayPopup;
         protected virtual void Awake()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
-            if(ShowOnLoad)
-                Show();
-            else
-            {
-                _canvasGroup.alpha = 0;
-                gameObject.SetActive(false);
-            }
+            _uiVisibility = GetComponent<UIVisibility>();
+            if (!_uiVisibility)
+                _uiVisibility = gameObject.AddComponent<UIVisibility>();
         }
 
         public void Show()
         {
-            gameObject.SetActive(true);
-            StopAllCoroutines();
-            StartCoroutine(Utility.ShowUI(_canvasGroup, TransitionTime));
+            _uiVisibility.Show();
         }
 
         public void Hide()
         {
-            StopAllCoroutines();
             NotifyUIHide();
-            StartCoroutine(Utility.HideUI(_canvasGroup, TransitionTime, true));
+            _uiVisibility.Hide();
         }
 
         void NotifyUIHide()
@@ -47,15 +37,15 @@ namespace Prototype.UI
             }
         }
 
-        public async Task ShowAsync()
+        public Task ShowAsync()
         {
-            await Utility.ShowUIAsync(_canvasGroup, TransitionTime);
+            return _uiVisibility.ShowAsync();
         }
 
-        public async Task HideAsync()
+        public Task HideAsync()
         {
             NotifyUIHide();
-            await Utility.HideUIAsync(_canvasGroup, TransitionTime);
+            return _uiVisibility.HideAsync();
         }
 
         public async Task ShowAndWaitClose()
@@ -69,8 +59,7 @@ namespace Prototype.UI
         {
             if(_overlayPopup.NotNull())
                 throw new Exception("A popup is still on top of current UI.");
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
+            _uiVisibility.Lock();
             _overlayPopup = uiPanel;
         }
 
@@ -78,8 +67,7 @@ namespace Prototype.UI
         {
             if(panel != _overlayPopup)
                 throw new Exception("Popup instance mismatch.");
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
+            _uiVisibility.Unlock();
             _overlayPopup = null;
         }
     }

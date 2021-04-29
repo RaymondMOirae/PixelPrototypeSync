@@ -158,6 +158,7 @@ namespace Prototype.UI
 
             var result = await promise.Task;
             _editingImage = null;
+            Debug.Log("hide");
 
             Hide();
             
