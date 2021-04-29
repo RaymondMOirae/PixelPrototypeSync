@@ -32,7 +32,11 @@ namespace Prototype.Script.Test
 
             foreach (var image in TestPixelImages)
             {
-		        Inventory.SaveItem(image.Image);
+                var weapon = PixelWeapon.CreateFromPixelImage(image.Image.Clone(true),
+                    new Vector2Int(image.Width - 1, 0), WeaponForwardDirection.TopLeft);
+                weapon.UpdateTexture();
+                
+                Inventory.SaveItem(weapon);
             }
         }
         

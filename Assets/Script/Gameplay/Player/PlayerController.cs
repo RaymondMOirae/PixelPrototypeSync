@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Prototype.Element;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Prototype.Input;
@@ -10,6 +12,7 @@ using Prototype.Gameplay.Player.Attack;
 using Prototype.Gameplay.RoomFacility;
 using Prototype.Gameplay.UI;
 using Prototype.Inventory;
+using Prototype.Script.Test;
 
 namespace Prototype.Gameplay.Player
 {
@@ -67,6 +70,13 @@ namespace Prototype.Gameplay.Player
 
         private void Start()
         {
+            // Take weapon from package and use for main weapon
+            var package = GetComponent<PlayerPackage>();
+            var item = package.Inventory.ItemGroups
+                .FirstOrDefault(group => group.ItemType is PixelWeaponType)
+                ?.GetOne<PixelWeapon>();
+            _wController.CurrentWeapon = item;
+        
             InitInputs();
             InitHealthBar();
         }

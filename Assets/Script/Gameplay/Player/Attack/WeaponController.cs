@@ -11,7 +11,7 @@ namespace Prototype.Gameplay.Player.Attack
     [RequireComponent(typeof(Animator))]
     public class WeaponController : MonoBehaviour
     {
-        [SerializeField] private PixelImageAsset _testWeaponImageAsset;
+        // [SerializeField] private PixelImageAsset _testWeaponImageAsset;
 
         [SerializeField] private bool _isAttacking = false;
         [SerializeField] private float _force;
@@ -31,7 +31,19 @@ namespace Prototype.Gameplay.Player.Attack
         public float BeatForce { get { return _force; } }
         public List<int> CheckList { get { return _checkList; } }
         public AttackType CurrentType { get { return _attackType; } }
-        public PixelWeapon CurrentWeapon { get; private set; }
+
+        private PixelWeapon _currentWeapon;
+
+        public PixelWeapon CurrentWeapon
+        {
+            get => _currentWeapon;
+            set
+            {
+                _currentWeapon = value;
+                _wPixelRenderer.SetPixelImage(CurrentWeapon);
+                _wAnalyser.CurrentWeapon = CurrentWeapon;
+            }
+        }
         public PixelImageRenderer WeaponRenderer { get { return _wPixelRenderer; } }
 
         private void Awake()
@@ -44,17 +56,14 @@ namespace Prototype.Gameplay.Player.Attack
 
             _animator = GetComponent<Animator>();
             _touchInputs = GameObject.Find("TouchInputs").GetComponent<TouchInputs>();
-
-            CurrentWeapon = PixelWeapon.CreateFromPixelImage(_testWeaponImageAsset.Image.Clone(), new Vector2Int(7, 0),
-                WeaponForwardDirection.TopLeft);
-            _wPixelRenderer.SetPixelImage(CurrentWeapon);
-            _wAnalyser.CurrentWeapon = CurrentWeapon;
         }
 
         private void Start()
         {
             //_wPixelRenderer.SetPixelImage(_wPixelRenderer.Image);
             _wDisplayUI.SetWeaponDisplay(_wSpriteRenderer.sprite);
+            
+            
         }
 
         private void FixedUpdate()

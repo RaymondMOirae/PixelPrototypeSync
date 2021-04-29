@@ -29,17 +29,17 @@ namespace Prototype.Inventory
             //_renderer = _weapon.WeaponRenderer;
 
             Inventory = _player.GetComponent<PlayerPackage>().Inventory;
-            foreach (var pixelType in PixelAssets.Current.PixelTypes.Where(p=>p.Attribute == PixelAttribute.Default))
-            {
-                for (var i = 0; i < Count; i++)
-                {
-                    Inventory.SaveItem(new Pixel(pixelType));
-                }
-            }
+            // foreach (var pixelType in PixelAssets.Current.PixelTypes.Where(p=>p.Attribute == PixelAttribute.Default))
+            // {
+            //     for (var i = 0; i < Count; i++)
+            //     {
+            //         Inventory.SaveItem(new Pixel(pixelType));
+            //     }
+            // }
             
             //PixelImage image = _weapon.WeaponImage;
             
-            Inventory.SaveItem(_weapon.CurrentWeapon);
+            // Inventory.SaveItem(_weapon.CurrentWeapon);
             
             //await PixelEditor.Instance.Edit(Inventory);
 

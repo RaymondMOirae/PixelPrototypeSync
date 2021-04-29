@@ -619,11 +619,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 929bbb61d8d941c4afb7d4d50edc3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransitionTime: 0.2
-  ShowOnLoad: 0
   Type: 0
   ButtonOk: {fileID: 7120303243001437111}
   ButtonCancel: {fileID: 7120303243780278472}
+  Text: {fileID: 7120303243680241196}
 --- !u!1 &7120303244745837941
 GameObject:
   m_ObjectHideFlags: 0

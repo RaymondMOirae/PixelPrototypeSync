@@ -40,6 +40,12 @@ namespace Prototype.Inventory
             return item;
         }
 
+        public T GetOne<T>() where T : Item
+        {
+            return this.Count > 0 ? this[0] as T : null;
+        }
+        
+
         public static implicit operator bool(ItemGroup itemGroup)
             => !(itemGroup is null) && itemGroup.ItemType;
     }
