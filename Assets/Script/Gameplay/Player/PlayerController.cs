@@ -73,6 +73,24 @@ namespace Prototype.Gameplay.Player
 
         private void FixedUpdate()
         {
+            var inputDir = InputManager.Inputs.Player.Move.ReadValue<Vector2>();
+            if ((Mathf.Abs(inputDir.x) > 0.0001f || Mathf.Abs(inputDir.y) > 0.0001f) && 
+                !_wController.DuringAttack)
+            {
+                _curDir = inputDir;
+                _sprite.flipX = CurDir.x <= 0;
+                _wController.PointAt(CurDir);
+            }
+            else if(_wController.CurrentType == AttackType.Rotate)
+            {
+                _curDir = inputDir;
+                _sprite.flipX = CurDir.x <= 0;
+            }
+            else if (_wController.CurrentType == AttackType.M)
+                _curDir = inputDir;
+            else
+                _curDir = Vector2.zero;
+            
             if (!_wController.DuringAttack || _wController.CurrentType == AttackType.Rotate)
             {
                 _isDashing = false;
