@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8632c565ecb4e638cadd3d20c7c0a48, type: 3}
   m_Name: PixelBone
   m_EditorClassIdentifier: 
+  ItemID: 0
+  ItemName: Bone
   sprite: {fileID: 8275275817331019459, guid: 039727f2c9ff5464db94e47571673e08, type: 3}
-  name: Bone
   weight: 1
+  endurance: 1
   hardness: 1
-  damage: 1
-  defence: 1
+  droppedSize: 0.2
+  Attribute: 0
+  description: "\u4E00\u4E2A\u9AA8\u8D28\u50CF\u7D20\uFF0C\u867D\u7136\u8010\u4E45\u5EA6\u4E0D\u9AD8\uFF0C\u4F46\u6BD4\u8F83\u950B\u5229"

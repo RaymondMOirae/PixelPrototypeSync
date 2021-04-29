@@ -16,20 +16,18 @@ namespace Prototype.Element
     {
         public Sprite sprite;
         private Sprite _droppedSprite;
-        
-        public new string name;
 
         public float weight = 1;
         
+        public float endurance = 1;
+        
         public float hardness = 1;
-        
-        public float damage = 1;
-        
-        public float defence = 1;
 
         public float droppedSize = 0.2f;
 
         public PixelAttribute Attribute;
+
+        [TextArea] [SerializeField] private string description = "Descriptions";
 
         public override Sprite InventoryIcon => sprite;
         public override Sprite InventoryBackground => null;
@@ -44,12 +42,13 @@ namespace Prototype.Element
                 return _droppedSprite;
             }
         }
-        public override string Properties => "Properties";
 
-        public override string Description
-        {
-            get => "Description";
-        }
+        public override string Properties =>
+            $"Hardness: {hardness}\r\n" +
+            $"Weight: {weight}\r\n" +
+            $"Endurance: {endurance}\r\n";
+
+        public override string Description => description;
 
         void GenerateDroppedSprite()
         {

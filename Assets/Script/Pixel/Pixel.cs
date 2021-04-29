@@ -10,7 +10,7 @@ namespace Prototype.Element
         [SerializeField]
         private PixelType _type;
         public PixelType Type => _type;
-        public float Hardness;
+        public float Endurance;
 
         /// <summary>
         /// Indicate whether this pixel can be modified or destroyed from PixelImage.
@@ -18,12 +18,12 @@ namespace Prototype.Element
         public bool Protected = false;
 
         public float Weight => _type ? _type.weight : 0;
-        public float Damage => _type ? _type.damage : 0;
+        public float Damage => _type ? _type.hardness : 0;
 
         public Pixel(PixelType type)
         {
             this._type = type;
-            this.Hardness = type.hardness;
+            this.Endurance = type.endurance;
         }
 
         public static implicit operator bool(Pixel pixel)

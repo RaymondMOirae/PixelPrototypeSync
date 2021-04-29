@@ -57,12 +57,22 @@ namespace Prototype.Element
         }
 
         // Only use for test
-        public PixelImage Clone()
+        public PixelImage Clone(bool newPixelInstance = true)
         {
             var image = new PixelImage(this.Size)
             {
                 _pixels = _pixels.Clone() as Pixel[,]
             };
+            if (newPixelInstance)
+            {
+                
+                for (var y = 0; y < Size.y; y++)
+                for (var x = 0; x < Size.x; x++)
+                {
+                    image._pixels[x, y] = Pixels[x, y] ? new Pixel(Pixels[x, y].Type) : null;
+                }
+            }
+            
             image.UpdateTexture();
             return image;
         }
