@@ -23,7 +23,7 @@ namespace Prototype.UI
     [RequireComponent(typeof(CanvasGroup))]
     public class PixelEditor : GlobalUIPanel<PixelEditor>, ICustomEditorEX
     {
-
+    
         [SerializeField]
         private Resources _resources;
         
@@ -54,6 +54,8 @@ namespace Prototype.UI
         private TaskCompletionSource<int> _promise = null;
         // private readonly HashSet<Vector2Int> _lockedPixels = new HashSet<Vector2Int>();
         private PixelImage _editingImage = null;
+        private readonly Stack<UndoAction> _undoStack = new Stack<UndoAction>();
+        private readonly Stack<UndoAction> _redoStack = new Stack<UndoAction>();
 
         public PixelType PixelToPaint => PalettePanel.SelectedKey.ItemType as PixelType;
 
@@ -91,16 +93,19 @@ namespace Prototype.UI
         {
             if (selectedGroup)
             {
-                UpdateCanvas(selectedGroup[0] as PixelImage);
+                SetupCanvas(selectedGroup[0] as PixelImage);
             }
             else
             {
                 _editingImage = null;
-                UpdateLayout();
+                ResetLayout();
             }
         }
 
-        void UpdateUI()
+        /// <summary>
+         /// Reload all UI elements with player inventory
+         /// </summary>
+        void ReloadUI()
         {
             // EditMode = PixelEditMode.None;
             PalettePanel.LoadInventory(Inventory, itemType => itemType is PixelType);
@@ -113,10 +118,12 @@ namespace Prototype.UI
             // UpdateLayout();
         }
 
-        void UpdateCanvas(PixelImage image)
+        void SetupCanvas(PixelImage image)
         {
             _editingImage = image;
-            UpdateLayout();
+            this._undoStack.Clear();
+            this._redoStack.Clear();
+            ResetLayout();
         }
 
         // public void SetEditable(Vector2Int pos, bool editable)
@@ -142,7 +149,7 @@ namespace Prototype.UI
           
             Inventory = inventory;
             // _editingImage = image;
-            UpdateUI();
+            ReloadUI();
 
             Show();
             
@@ -167,7 +174,7 @@ namespace Prototype.UI
         }
 
         [EditorButton]
-        void UpdateLayout()
+        void ResetLayout()
         {
             if (slots != null)
             {
@@ -187,28 +194,58 @@ namespace Prototype.UI
                     var slot = GameObjectPool.Get<PixelSlot>(ResourceManager.Instance.PrefabPixelSlot);
                     slot.transform.SetParent(pixelCanvas.transform, false);
                     slots[x, y] = slot;
+                    slot.Setup(new Vector2Int(x, y));
                     slot.SetPixel(_editingImage.Pixels[x, y]);
                 }
             }
-            //
-            //
-            //
-            // foreach (var lockedSlot in _lockedPixels)
-            // {
-            //     if (slots.ContainsIndex(lockedSlot))
-            //         slots[lockedSlot.x, lockedSlot.y].Editable = false;
-            // }
-            
         }
 
-        public void Undo()
+        internal void Undo()
         {
-            
+            if (this._undoStack.Count > 0)
+            {
+                var action = this._undoStack.Pop();
+                switch (action.EditMode)
+                {
+                    case PixelEditMode.Paint: 
+                        slots[action.Position.x, action.Position.y].SetPixel(action.OldPixel);
+                        Inventory.Take(action.OldPixel);
+                        Inventory.SaveItem(action.NewPixel);
+                        break;
+                    case PixelEditMode.Erase:
+                        slots[action.Position.x, action.Position.y].SetPixel(action.OldPixel);
+                        Inventory.Take(action.OldPixel);
+                        break;
+                }
+                _redoStack.Push(action);
+            }
         }
 
-        public void Redo()
+        internal void Redo()
         {
-            
+            if (this._redoStack.Count > 0)
+            {
+                var action = this._redoStack.Pop();
+                switch (action.EditMode)
+                {
+                    case PixelEditMode.Paint:
+                        slots[action.Position.x, action.Position.y].SetPixel(action.NewPixel);
+                        Inventory.Take(action.NewPixel);
+                        Inventory.SaveItem(action.OldPixel);
+                        break;
+                    case PixelEditMode.Erase:
+                        slots[action.Position.x, action.Position.y].SetPixel(null);
+                        Inventory.SaveItem(action.OldPixel);
+                        break;
+                }
+                _undoStack.Push(action);
+            }
+        }
+
+        internal void RecordAction(UndoAction action)
+        {
+            this._undoStack.Push(action);
+            this._redoStack.Clear();
         }
 
         public async void Done()

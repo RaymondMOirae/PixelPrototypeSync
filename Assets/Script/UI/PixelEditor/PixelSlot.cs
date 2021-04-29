@@ -18,6 +18,8 @@ namespace Prototype.UI
 
         public bool Editable = true;
 
+        public Vector2Int Position;
+
         private void Awake()
         {
             SetPixel(null);
@@ -42,7 +44,12 @@ namespace Prototype.UI
             }
         }
 
-        public void SetPixel(Pixel pixel)
+        internal void Setup(Vector2Int position)
+        {
+            Position = position;
+        }
+
+        internal void SetPixel(Pixel pixel)
         {
             if (pixel && pixel.Protected)
                 Editable = false;
@@ -66,13 +73,36 @@ namespace Prototype.UI
             var pixel = PixelEditor.Instance.Inventory.Take<Pixel>(PixelEditor.Instance.PixelToPaint);
             if (!pixel)
                 return;
+
+            var action = new UndoAction()
+            {
+                Position = this.Position,
+                EditMode = PixelEditMode.Paint,
+                NewPixel = pixel,
+                OldPixel = Pixel,
+            };
             
+            PixelEditor.Instance.RecordAction(action);
+
             PixelEditor.Instance.Inventory.SaveItem(Pixel);
             SetPixel(pixel);
         }
 
         void Erase()
         {
+            if (Pixel?.Type is null)
+                return;
+            
+            
+            var action = new UndoAction()
+            {
+                Position = this.Position,
+                EditMode = PixelEditMode.Paint,
+                NewPixel = null,
+                OldPixel = Pixel,
+            };
+            PixelEditor.Instance.RecordAction(action);
+            
             PixelEditor.Instance.Inventory.SaveItem(Pixel);
             SetPixel(null);
         }
