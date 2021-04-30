@@ -8,6 +8,7 @@ namespace Prototype.Gameplay.Player
 {
     public class ItemPicker : MonoBehaviour
     {
+        [Serializable]
         public class PickEvent : UnityEvent<DroppedItem>
         {
         }

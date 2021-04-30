@@ -51,7 +51,7 @@ namespace Prototype.Script.Test
             }
         }
 
-        void OnItemPicked(DroppedItem item)
+        public void OnItemPicked(DroppedItem item)
         {
             Inventory.PickUp(item);
         }
