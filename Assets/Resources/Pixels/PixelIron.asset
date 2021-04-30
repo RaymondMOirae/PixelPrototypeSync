@@ -15,9 +15,9 @@ MonoBehaviour:
   ItemID: 0
   ItemName: Iron
   sprite: {fileID: 1524085319249975786, guid: 039727f2c9ff5464db94e47571673e08, type: 3}
-  weight: 1
+  weight: 7
   endurance: 10
-  hardness: 1
+  hardness: 15
   droppedSize: 0.2
   Attribute: 0
-  description: Descriptions
+  description: "\u94C1\u8D28\u50CF\u7D20"

@@ -15,10 +15,9 @@ MonoBehaviour:
   ItemID: 0
   ItemName: Fire
   sprite: {fileID: -756979679212654111, guid: 039727f2c9ff5464db94e47571673e08, type: 3}
-  name: Fire
-  weight: 1
-  hardness: 1
-  damage: 1
-  defence: 1
+  weight: 6
+  endurance: 50
+  hardness: 14
   droppedSize: 0.2
   Attribute: 0
+  description: "\u706B\u788E\u6676"

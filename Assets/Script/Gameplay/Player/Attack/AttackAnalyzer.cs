@@ -13,7 +13,8 @@ namespace Prototype.Gameplay.Player.Attack
     public class AttackAnalyzer : MonoBehaviour
     {
         private PixelWeapon _currentWeapon;
-        [SerializeField] private PixelWeaponAnalyser _analyser;
+        [SerializeField] private float DamageScale = 1;
+        private PixelWeaponAnalyser _analyser;
 
         private PixelImageRenderer _pixelImageRenderer;
 
@@ -55,16 +56,20 @@ namespace Prototype.Gameplay.Player.Attack
             switch (type)
             {
                 case AttackType.L:
+                    damage = _analyser.TotalDamageLeft;
                     data = _analyser.WeaponDataLeft;
                     break;
                 case AttackType.M:
+                    damage = _analyser.TotalDamageStab;
                     data = _analyser.WeaponDataStab;
                     break;
                 case AttackType.R:
+                    damage = _analyser.TotalDamageRight;
                     data = _analyser.WeaponDataRight;
                     break;
                 case AttackType.Rotate:
                     data = _analyser.WeaponDataStab;
+                    damage = _analyser.TotalDamageStab;
                     break;
                 default:
                     data = null;
@@ -73,13 +78,16 @@ namespace Prototype.Gameplay.Player.Attack
 
             foreach(WeaponPixelData d in data)
             {
-                damage += d.Damage;
+                // damage += d.Damage;
 
                 if (d.Pixel)
                 {
                     d.Pixel.Endurance -= d.WearRate;
                 }
             }
+
+            damage *= DamageScale;
+            
             // handel pixel endurance lost and structure broken
             UpdateAnalyser();
             

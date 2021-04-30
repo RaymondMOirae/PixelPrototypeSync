@@ -207,7 +207,7 @@ namespace Prototype.Editor
                     {
                         EditorUtils.Verticle(() =>
                         {
-                            EditorGUILayout.LabelField("Mass", _analyser.Mass.ToString("F1"));
+                            EditorGUILayout.LabelField("Mass", _analyser.Weight.ToString("F1"));
                             EditorGUILayout.LabelField("Intertia", _analyser.Inertia.ToString("F1"));
                             EditorGUILayout.LabelField("Length", _analyser.Length.ToString("F1"));
                         });
