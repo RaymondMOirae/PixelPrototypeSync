@@ -9,14 +9,14 @@ using Prototype.Utils;
 
 namespace Prototype.Gameplay.Player.Attack
 {
-    [RequireComponent(typeof(PixelImageRenderer))]
     public class AttackAnalyzer : MonoBehaviour
     {
         private PixelWeapon _currentWeapon;
         [SerializeField] private float DamageScale = 1;
         private PixelWeaponAnalyser _analyser;
 
-        private PixelImageRenderer _pixelImageRenderer;
+        [SerializeField] private PixelImageRenderer _pixelImageRenderer;
+        [SerializeField] private Transform _weaponCollider;
 
         public PixelWeapon CurrentWeapon
         {
@@ -26,12 +26,8 @@ namespace Prototype.Gameplay.Player.Attack
                 _currentWeapon = value;
                 _analyser = new PixelWeaponAnalyser(value);
                 UpdateAnalyser();
+                _pixelImageRenderer.SetPixelImage(value);
             }
-        }
-
-        private void Awake()
-        {
-            _pixelImageRenderer = GetComponent<PixelImageRenderer>();
         }
         
         public void UpdateAnalyser() 
@@ -47,7 +43,9 @@ namespace Prototype.Gameplay.Player.Attack
                     position = worldPos,
                 }, 30);
             }
-	    }
+
+            _weaponCollider.localScale = new Vector3(_analyser.Length * _pixelImageRenderer.PixelRenderSize, 1, 1);
+        }
 
         public float ResolveDamageValue(AttackType type)
         {

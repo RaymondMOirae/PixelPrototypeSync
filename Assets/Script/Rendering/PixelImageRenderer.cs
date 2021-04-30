@@ -11,7 +11,7 @@ namespace Prototype.Rendering
     [ExecuteInEditMode]
     public class PixelImageRenderer : MonoBehaviour, ICustomEditorEX
     {
-        public Vector2 RenderSize = Vector2.one;
+        public float PixelRenderSize = 0.1f;
         
         [SerializeField]
         private PixelImageAsset _imageAsset;
@@ -43,8 +43,8 @@ namespace Prototype.Rendering
                 image.Texture,
                 new Rect(0, 0, image.Texture.width, image.Texture.height), 
                 Vector2.right, 
-                image.Texture.width / RenderSize.x);
-            transform.localScale = RenderSize.ToVector3(1);
+                image.Texture.width);
+            transform.localScale = (image.Size.ToVector3(1) * PixelRenderSize);
             _spriteRenderer.sprite = sprite;
         }
 
