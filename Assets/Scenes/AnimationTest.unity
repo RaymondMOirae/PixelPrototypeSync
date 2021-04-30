@@ -60273,6 +60273,27 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!1 &1720404917 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8273969897275074895, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8273969898216823579}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1720404921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720404917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c504b5a737f4b44b88f7eac1b4a5140, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DamageScale: 0.1
+  _pixelImageRenderer: {fileID: 1794645690}
+  _weaponCollider: {fileID: 1911403880}
 --- !u!1 &1732379620
 GameObject:
   m_ObjectHideFlags: 0
@@ -60411,6 +60432,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8273969898216823579}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1794645690 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8273969897481958073, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8273969898216823579}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16b1ba295013472787f49c561286edc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1803071086
 GameObject:
   m_ObjectHideFlags: 0
@@ -62004,6 +62037,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DontDestroyOnLoad: 0
+--- !u!4 &1911403880 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8273969898285665085, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8273969898216823579}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1929669863
 GameObject:
   m_ObjectHideFlags: 0
@@ -64321,8 +64360,8 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2052232923}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
+  m_Alpha: 0
+  m_Interactable: 0
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &2052232927
@@ -64377,7 +64416,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionTime: 0.2
   ShowOnLoad: 0
-  VisibleInEditor: 1
+  VisibleInEditor: 0
 --- !u!1 &2058768169
 GameObject:
   m_ObjectHideFlags: 0
@@ -66909,6 +66948,11 @@ PrefabInstance:
       propertyPath: force
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 8273969897481958020, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_Name
+      value: Renderer
+      objectReference: {fileID: 0}
     - target: {fileID: 8273969897481958072, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
         type: 3}
       propertyPath: m_FlipX
@@ -67054,12 +67098,43 @@ PrefabInstance:
       propertyPath: _sideOuterAngle
       value: 120
       objectReference: {fileID: 0}
+    - target: {fileID: 8273969898285665084, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273969898285665084, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273969898285665084, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273969898285665084, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273969898285665085, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273969898285665085, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.43
+      objectReference: {fileID: 0}
     - target: {fileID: 8273969898285665086, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
         type: 3}
       propertyPath: m_TagString
       value: Weapon
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8273969897481958074, guid: 4ddfef5a1bc5e11408b26e224e1f9abb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 4ddfef5a1bc5e11408b26e224e1f9abb, type: 3}
 --- !u!50 &8695204938893445408
 Rigidbody2D:

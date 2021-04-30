@@ -14,7 +14,7 @@ namespace Prototype.Gameplay.Player.Attack
         void Start()
         {
             _controller = transform.parent.transform.parent.GetComponent<WeaponController>();
-            _analyzer = transform.parent.Find("Analyzer").GetComponent<AttackAnalyzer>();
+            _analyzer = GetComponentInParent<AttackAnalyzer>();
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
