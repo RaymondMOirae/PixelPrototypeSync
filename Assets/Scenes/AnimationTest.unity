@@ -1001,6 +1001,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _animationController: {fileID: 564865094}
+  _dropAmount: 4
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
@@ -50224,6 +50225,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _animationController: {fileID: 1596465894}
+  _dropAmount: 4
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
@@ -63621,6 +63623,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _animationController: {fileID: 1700605415}
+  _dropAmount: 3
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
@@ -63948,6 +63951,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _animationController: {fileID: 821509020}
+  _dropAmount: 6
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
