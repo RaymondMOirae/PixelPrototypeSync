@@ -10,6 +10,15 @@ namespace Prototype.Element
         LightSource,
         Hand,
     }
+
+    public enum ElementType
+    {
+        None,
+        Fire,
+        Water,
+        Wind,
+        Dirt,
+    }
     
     [CreateAssetMenu(fileName = "Pixel", menuName = "Prototype/Pixel")]
     public class PixelType : ItemType
@@ -26,6 +35,7 @@ namespace Prototype.Element
         public float droppedSize = 0.2f;
 
         public PixelAttribute Attribute;
+        public ElementType ElementType;
 
         [TextArea] [SerializeField] private string description = "Descriptions";
 

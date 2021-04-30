@@ -20,4 +20,5 @@ MonoBehaviour:
   hardness: 14
   droppedSize: 0.2
   Attribute: 0
+  ElementType: 1
   description: "\u706B\u788E\u6676"

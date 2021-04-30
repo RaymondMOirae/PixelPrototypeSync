@@ -51,41 +51,37 @@ namespace Prototype.Gameplay.Player.Attack
 
         public float ResolveDamageValue(AttackType type)
         {
-            WeaponPixelData[,] data;
+            WeaponData data = default;
             float damage = 0;
             switch (type)
             {
                 case AttackType.L:
-                    damage = _analyser.TotalDamageLeft;
-                    data = _analyser.WeaponDataLeft;
+                    data = _analyser.LeftSideData;
                     break;
                 case AttackType.M:
-                    damage = _analyser.TotalDamageStab;
-                    data = _analyser.WeaponDataStab;
+                    data = _analyser.SpikeData;
                     break;
                 case AttackType.R:
-                    damage = _analyser.TotalDamageRight;
-                    data = _analyser.WeaponDataRight;
+                    data = _analyser.RightSideData;
                     break;
                 case AttackType.Rotate:
-                    data = _analyser.WeaponDataStab;
-                    damage = _analyser.TotalDamageStab;
+                    data = _analyser.SpikeData;
                     break;
                 default:
-                    data = null;
                     break;
             }
 
-            foreach(WeaponPixelData d in data)
+            foreach(var pixelData in data.AvailablePixels)
             {
                 // damage += d.Damage;
 
-                if (d.Pixel)
+                if (pixelData.Pixel)
                 {
-                    d.Pixel.Endurance -= d.WearRate;
+                    pixelData.Pixel.Endurance -= pixelData.WearRate;
                 }
             }
 
+            damage = data.TotalPhysicalDamage;
             damage *= DamageScale;
             
             // handel pixel endurance lost and structure broken

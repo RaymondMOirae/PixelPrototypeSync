@@ -215,9 +215,9 @@ namespace Prototype.Editor
                         });
                         EditorUtils.Verticle(() =>
                         {
-                            EditorGUILayout.LabelField("Left Damage", _analyser.TotalDamageLeft.ToString("F1"));
-                            EditorGUILayout.LabelField("Right Damage", _analyser.TotalDamageRight.ToString("F1"));
-                            EditorGUILayout.LabelField("Stab Damage", _analyser.TotalDamageStab.ToString("F1"));
+                            EditorGUILayout.LabelField("Left Damage", _analyser.LeftSideData.TotalPhysicalDamage.ToString("F1"));
+                            EditorGUILayout.LabelField("Right Damage", _analyser.RightSideData.TotalPhysicalDamage.ToString("F1"));
+                            EditorGUILayout.LabelField("Stab Damage", _analyser.SpikeData.TotalPhysicalDamage.ToString("F1"));
                         });
                     });
                 });
