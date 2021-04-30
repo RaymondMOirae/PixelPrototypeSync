@@ -26,18 +26,10 @@ namespace Prototype.Gameplay.Enemy.FSM
 
         }
 
-        public override void CheckTransition()
-        {
-            EnemySensorResult res = _enemy.SensorResult;
-            if (res.InViewField == false)
-                OnExitState(StateType.Idle);
-            else if (res.InAttackField == false)
-                OnExitState(StateType.Chase);
-        }
+        public override void CheckTransition() { }
 
         public override void OnExitState(StateType nextState)
         {
-            // _enemy.StopCoroutine(_coroutine);
             _enemy.CurStateType = nextState;
             _enemy.SwitchState(nextState);
         }
@@ -47,11 +39,11 @@ namespace Prototype.Gameplay.Enemy.FSM
             await _enemy.AnimationController.WaitOnAnimationEvent("DamageFrame");
             _enemy.CastAttack();
             await _enemy.AnimationController.WaitAnimationExit();
-            // while (true)
-            // {
-            //     // _enemy.CastAttack();
-            //     yield return new WaitForSeconds(_enemy.AttackInterval);
-            // }
+            EnemySensorResult res = _enemy.SensorResult;
+            if (res.InViewField == false)
+                OnExitState(StateType.Idle);
+            else if (res.InAttackField == false)
+                OnExitState(StateType.Chase);
         }
 
         IEnumerator AsyncEnableAttack()
