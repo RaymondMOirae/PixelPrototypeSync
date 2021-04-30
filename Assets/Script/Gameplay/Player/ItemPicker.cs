@@ -27,7 +27,7 @@ namespace Prototype.Gameplay.Player
             var count = Physics2D.OverlapCircleNonAlloc(transform.position, MagnetRadius, _collector, 1 << LayerMask);
             for (var i = 0; i < count; i++)
             {
-                if (_collector[i].GetComponent<DroppedItem>() is var item && !_attractingItem.Contains(item))
+                if (_collector[i].GetComponent<DroppedItem>() is var item && !_attractingItem.Contains(item) && item.Pickable)
                 {
                     _attractingItem.Add(item);
                     item.FlyTo(transform);
@@ -37,7 +37,7 @@ namespace Prototype.Gameplay.Player
             count = Physics2D.OverlapCircleNonAlloc(transform.position, PickRadius, _collector, 1 << LayerMask);
             for (var i = 0; i < count; i++)
             {
-                if (_collector[i].GetComponent<DroppedItem>() is var item)
+                if (_collector[i].GetComponent<DroppedItem>() is var item && item.Pickable)
                 {
                     _attractingItem.Remove(item);
                     OnItemPicked.Invoke(item);

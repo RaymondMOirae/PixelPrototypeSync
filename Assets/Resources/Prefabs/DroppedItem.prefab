@@ -116,3 +116,56 @@ MonoBehaviour:
   Acceleration: 20
   MaxSpeed: 15
   AngularSpeed: 180
+  SpreadRadius: 1
+  DropAnimationDuration: 0.6
+  DropPositionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.007282257
+      value: 0.0099983215
+      inSlope: 3.3405333
+      outSlope: 3.3405333
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.17703463
+    - serializedVersion: 3
+      time: 0.5122577
+      value: 0.92399675
+      inSlope: -1.7945241
+      outSlope: -1.7945241
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.39609215
+    - serializedVersion: 3
+      time: 0.7310164
+      value: 0.036475647
+      inSlope: -3.4059467
+      outSlope: 3.108946
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.11488551
+      outWeight: 0.21758382
+    - serializedVersion: 3
+      time: 0.9289178
+      value: 0.2591147
+      inSlope: -0.047629878
+      outSlope: -0.22518755
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 1
+    - serializedVersion: 3
+      time: 1.0024414
+      value: 0.01499939
+      inSlope: -3.482498
+      outSlope: -3.482498
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16761772
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
