@@ -81,6 +81,36 @@ namespace Prototype.Gameplay.Player
             InitHealthBar();
         }
 
+        private void Update()
+        {
+            // For test switching weapons
+            var package = GetComponent<PlayerPackage>();
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                _wController.CurrentWeapon = package.Inventory.ItemGroups
+                    .Where(group => group.ItemType is PixelWeaponType)
+                    .Skip(0)
+                    .FirstOrDefault()
+                    ?.GetOne<PixelWeapon>();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                _wController.CurrentWeapon = package.Inventory.ItemGroups
+                    .Where(group => group.ItemType is PixelWeaponType)
+                    .Skip(1)
+                    .FirstOrDefault()
+                    ?.GetOne<PixelWeapon>();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                _wController.CurrentWeapon = package.Inventory.ItemGroups
+                    .Where(group => group.ItemType is PixelWeaponType)
+                    .Skip(2)
+                    .FirstOrDefault()
+                    ?.GetOne<PixelWeapon>();
+            }
+        }
+
         private void FixedUpdate()
         {
             var inputDir = InputManager.Inputs.Player.Move.ReadValue<Vector2>();
