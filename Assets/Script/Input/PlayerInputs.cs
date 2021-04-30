@@ -25,7 +25,7 @@ namespace Prototype.Input
                     ""type"": ""Value"",
                     ""id"": ""1c366862-92f8-4089-ae43-61b34048b672"",
                     ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone"",
                     ""interactions"": """"
                 },
                 {
