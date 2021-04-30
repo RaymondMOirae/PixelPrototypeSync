@@ -1,15 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Prototype.Element;
 using Prototype.Rendering;
+using Prototype.Settings;
+using Prototype.Utils;
 
 namespace Prototype.Gameplay.Player.Attack
 {
+    [RequireComponent(typeof(PixelImageRenderer))]
     public class AttackAnalyzer : MonoBehaviour
     {
         private PixelWeapon _currentWeapon;
         [SerializeField] private PixelWeaponAnalyser _analyser;
+
+        private PixelImageRenderer _pixelImageRenderer;
 
         public PixelWeapon CurrentWeapon
         {
@@ -22,19 +28,24 @@ namespace Prototype.Gameplay.Player.Attack
             }
         }
 
-        // Start is called before the first frame update
-        private void Start()
+        private void Awake()
         {
-            // _renderer = GetComponent<PixelImageRenderer>();
-            // var weapon = PixelWeapon.CreateFromPixelImage(_renderer.Image, new Vector2Int(7, 0),
-            //     WeaponForwardDirection.TopLeft);
-            // _analyser = new PixelWeaponAnalyser(weapon);
-            // _analyser.UpdateWeaponData();
+            _pixelImageRenderer = GetComponent<PixelImageRenderer>();
         }
-
+        
         public void UpdateAnalyser() 
 	    {
             _analyser.UpdateWeaponData();
+            CurrentWeapon.UpdateTexture();
+            foreach (var brokenPixel in _analyser.BrokenPixels)
+            {
+                var worldPos = _pixelImageRenderer.ImageToWorldPos(brokenPixel.Position);
+                GlobalEffectManager.Instance.PixelBrokenEffect.Emit(new ParticleSystem.EmitParams()
+                {
+                    applyShapeToPosition = true,
+                    position = worldPos,
+                }, 30);
+            }
 	    }
 
         public float ResolveDamageValue(AttackType type)
@@ -71,7 +82,6 @@ namespace Prototype.Gameplay.Player.Attack
             }
             // handel pixel endurance lost and structure broken
             UpdateAnalyser();
-            CurrentWeapon.UpdateTexture();
             
 
             return damage;
