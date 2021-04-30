@@ -273,11 +273,23 @@ namespace Prototype.UI
             ApplyImage(_analyseWeapon);
             _weaponAnalyser.UpdateWeaponData();
             WeaponInfoLeft.text = "[Left Side]\r\n" +
-                                  $"damage: {_weaponAnalyser.TotalDamageLeft}";
+                                  $"物理攻击力: +{_weaponAnalyser.LeftSideData.CommonDamage}\r\n" +
+                                  $"水元素攻击力: +{_weaponAnalyser.LeftSideData.WaterDamage}\r\n" +
+                                  $"土元素攻击力: +{_weaponAnalyser.LeftSideData.DirtDamage}\r\n" +
+                                  $"火元素攻击力: +{_weaponAnalyser.LeftSideData.FlameDamage}\r\n" +
+                                  $"风元素攻击力: +{_weaponAnalyser.LeftSideData.WindDamage}\r\n";
             WeaponInfoRight.text = "[Right Side]\r\n" +
-                                   $"damage: {_weaponAnalyser.TotalDamageRight}";
+                                   $"物理攻击力: +{_weaponAnalyser.RightSideData.CommonDamage}\r\n" +
+                                   $"水元素攻击力: +{_weaponAnalyser.RightSideData.WaterDamage}\r\n" +
+                                   $"土元素攻击力: +{_weaponAnalyser.RightSideData.DirtDamage}\r\n" +
+                                   $"火元素攻击力: +{_weaponAnalyser.RightSideData.FlameDamage}\r\n" +
+                                   $"风元素攻击力: +{_weaponAnalyser.RightSideData.WindDamage}\r\n";
             WeaponInfoSpike.text = "[Spike]\r\n" +
-                                   $"damage: {_weaponAnalyser.TotalDamageStab}";
+                                   $"物理攻击力: +{_weaponAnalyser.SpikeData.CommonDamage}\r\n" +
+                                   $"水元素攻击力: +{_weaponAnalyser.SpikeData.WaterDamage}\r\n" +
+                                   $"土元素攻击力: +{_weaponAnalyser.SpikeData.DirtDamage}\r\n" +
+                                   $"火元素攻击力: +{_weaponAnalyser.SpikeData.FlameDamage}\r\n" +
+                                   $"风元素攻击力: +{_weaponAnalyser.SpikeData.WindDamage}\r\n";
             WeaponInfoOverall.text = "[Overall]\r\n" +
                                      $"weight: {_weaponAnalyser.Weight}\r\n" +
                                      $"length: {_weaponAnalyser.Length}\r\n";

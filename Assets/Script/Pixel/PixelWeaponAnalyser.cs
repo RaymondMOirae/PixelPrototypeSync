@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Prototype.Element
@@ -24,6 +25,49 @@ namespace Prototype.Element
         /// Damage per hit
         /// </summary>
         public float Damage => (Pixel?.Damage ?? 0) * DamageRate;
+    }
+
+    public struct WeaponData
+    {
+        public WeaponPixelData[,] PixelData;
+
+        public IEnumerable<WeaponPixelData> CommonPixels =>
+            AvailablePixels.Where(data => data.Pixel.Type.ElementType == ElementType.None);
+        public IEnumerable<WeaponPixelData> FlamePixels =>
+            AvailablePixels.Where(data => data.Pixel.Type.ElementType == ElementType.Fire);
+        public IEnumerable<WeaponPixelData> WaterPixels => 
+            AvailablePixels.Where(data => data.Pixel.Type.ElementType == ElementType.Water);
+        public IEnumerable<WeaponPixelData> WindPixels => 
+            AvailablePixels.Where(data => data.Pixel.Type.ElementType == ElementType.Wind);
+        public IEnumerable<WeaponPixelData> DirtPixels =>
+            AvailablePixels.Where(data => data.Pixel.Type.ElementType == ElementType.Dirt);
+
+        public float CommonDamage => CommonPixels.Sum(data => data.Damage);
+        public float FlameDamage => FlamePixels.Sum(data => data.Damage);
+        public float WaterDamage => WaterPixels.Sum(data=>data.Damage);
+        public float WindDamage => WindPixels.Sum(data => data.Damage);
+        public float DirtDamage => DirtPixels.Sum(data => data.Damage);
+
+        public float TotalPhysicalDamage => AvailablePixels.Sum(data => data.Damage);
+        
+
+        public IEnumerable<WeaponPixelData> AvailablePixels
+        {
+            get
+            {
+                foreach (var data in PixelData)
+                {
+                    if (data.Pixel && data.DamageRate > 0)
+                        yield return data;
+                }
+            }
+        }
+
+        public WeaponData(Vector2Int size)
+        {
+            PixelData = new WeaponPixelData[size.x, size.y];
+        }
+        
     }
     public class PixelWeaponAnalyser
     {
@@ -75,9 +119,6 @@ namespace Prototype.Element
         }
         
         public readonly PixelWeapon Weapon;
-        public readonly WeaponPixelData[,] WeaponDataLeft;
-        public readonly WeaponPixelData[,] WeaponDataRight;
-        public readonly WeaponPixelData[,] WeaponDataStab;
         public readonly WeaponForwardDirection ForwardCorner;
 
 
@@ -99,10 +140,10 @@ namespace Prototype.Element
         public float Length { get; private set; }
         public float Weight { get; private set; }
         public float Inertia { get; private set; }
-        
-        public float TotalDamageLeft { get; private set; }
-        public float TotalDamageRight { get; private set; }
-        public float TotalDamageStab { get; private set; }
+
+        public WeaponData LeftSideData;
+        public WeaponData RightSideData;
+        public WeaponData SpikeData;
 
         private IEnumerable<WeaponPixelData> Enumerate(WeaponPixelData[,] data)
         {
@@ -115,9 +156,9 @@ namespace Prototype.Element
         public PixelWeaponAnalyser(PixelWeapon weapon)
         {
             Weapon = weapon;
-            WeaponDataLeft = new WeaponPixelData[weapon.Size.x, weapon.Size.y];
-            WeaponDataRight = new WeaponPixelData[weapon.Size.x, weapon.Size.y];
-            WeaponDataStab = new WeaponPixelData[weapon.Size.x, weapon.Size.y];
+            LeftSideData = new WeaponData(weapon.Size);
+            RightSideData = new WeaponData(weapon.Size);
+            SpikeData = new WeaponData(weapon.Size);
 
             switch (weapon.ForwardDirection)
             {
@@ -198,19 +239,19 @@ namespace Prototype.Element
             for(var y = 0;y<Weapon.Size.y; y++)
             for (var x = 0; x < Weapon.Size.x; x++)
             {
-                WeaponDataLeft[x, y] = new WeaponPixelData()
+                LeftSideData.PixelData[x, y] = new WeaponPixelData()
                 {
                     Pixel = Weapon[x, y],
                     DamageRate = 1,
                     WearRate = 1,
                 };
-                WeaponDataRight[x, y] = new WeaponPixelData()
+                RightSideData.PixelData[x, y] = new WeaponPixelData()
                 {
                     Pixel = Weapon[x, y],
                     DamageRate = 1,
                     WearRate = 1,
                 };
-                WeaponDataStab[x, y] = new WeaponPixelData()
+                SpikeData.PixelData[x, y] = new WeaponPixelData()
                 {
                     Pixel = Weapon[x, y],
                     DamageRate = 1,
@@ -422,9 +463,6 @@ namespace Prototype.Element
 
         void GenerateWeaponData()
         {
-            TotalDamageLeft = 0;
-            TotalDamageRight = 0;
-            TotalDamageStab = 0;
             Length = 0;
             Weight = 0;
             for (var y = 0; y < Weapon.Size.y; y++)
@@ -432,25 +470,23 @@ namespace Prototype.Element
             {
                 if (Weapon[x, y] is null)
                 {
-                    WeaponDataLeft[x, y] = WeaponDataRight[x, y] = WeaponDataStab[x, y] = new WeaponPixelData()
-                    {
-                        Pixel = null,
-                        DamageRate = 0,
-                        WearRate = 0
-                    };
+                    LeftSideData.PixelData[x, y] = RightSideData.PixelData[x, y] = SpikeData.PixelData[x, y]
+                        = new WeaponPixelData()
+                        {
+                            Pixel = null,
+                            DamageRate = 0,
+                            WearRate = 0
+                        };
                     continue;
                 }
 
                 var r = Vector2.Distance(new Vector2(x, y + 1), _gridOrigin);
                 Length = Mathf.Max(Length, r);
                 
-                WeaponDataLeft[x, y] = GenerateWeaponData(x, y, r, LeftAnalyser.DamageAttenuationField[x, y]);
-                WeaponDataRight[x, y] = GenerateWeaponData(x, y, r, RightAnalyser.DamageAttenuationField[x, y]);
-                WeaponDataStab[x, y] = GenerateWeaponData(x, y, r, StabAnalyser.DamageAttenuationField[x, y]);
+                LeftSideData.PixelData[x, y] = GenerateWeaponData(x, y, r, LeftAnalyser.DamageAttenuationField[x, y]);
+                RightSideData.PixelData[x, y] = GenerateWeaponData(x, y, r, RightAnalyser.DamageAttenuationField[x, y]);
+                SpikeData.PixelData[x, y] = GenerateWeaponData(x, y, r, StabAnalyser.DamageAttenuationField[x, y]);
 
-                TotalDamageLeft += WeaponDataLeft[x, y].Damage;
-                TotalDamageRight += WeaponDataRight[x, y].Damage;
-                TotalDamageStab += WeaponDataStab[x, y].Damage;
                 Weight += Weapon[x, y].Weight;
             }
         }

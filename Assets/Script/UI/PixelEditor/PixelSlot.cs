@@ -82,10 +82,10 @@ namespace Prototype.UI
                 OldPixel = Pixel,
             };
             
-            PixelEditor.Instance.RecordAction(action);
 
             PixelEditor.Instance.Inventory.SaveItem(Pixel);
             SetPixel(pixel);
+            PixelEditor.Instance.RecordAction(action);
         }
 
         void Erase()
@@ -101,10 +101,11 @@ namespace Prototype.UI
                 NewPixel = null,
                 OldPixel = Pixel,
             };
-            PixelEditor.Instance.RecordAction(action);
             
             PixelEditor.Instance.Inventory.SaveItem(Pixel);
             SetPixel(null);
+            
+            PixelEditor.Instance.RecordAction(action);
         }
         
     }
