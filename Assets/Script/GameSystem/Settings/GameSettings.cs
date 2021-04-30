@@ -15,8 +15,18 @@ namespace Prototype.Settings
         private const string SaveFolder = "Settings";
         private const string SavePath = "Assets/" + SaveFolder + "/" + FileName;
 
+#if UNITY_EDITOR
+
+        internal static SerializedObject GetSerializedSettings()
+        {
+            return new SerializedObject(GetOrCreateSettings());
+        }
+#endif
+        
+        
         internal static GameSettings GetOrCreateSettings()
         {
+#if UNITY_EDITOR
             var settings = AssetDatabase.LoadAssetAtPath<GameSettings>(SavePath);
             if (!settings)
             {
@@ -32,13 +42,13 @@ namespace Prototype.Settings
                 preloadAssets.Add(settings);
                 PlayerSettings.SetPreloadedAssets(preloadAssets.ToArray());
             }
-
             return settings;
-        }
+#else
+            throw new Exception("GameSettings should be loaded in runtime");
+            
+#endif
+            
 
-        internal static SerializedObject GetSerializedSettings()
-        {
-            return new SerializedObject(GetOrCreateSettings());
         }
 
         internal static IEnumerable<FieldInfo> GetSettingFields()
@@ -82,6 +92,7 @@ namespace Prototype.Settings
         private GamePrefabs GamePrefabs = new GamePrefabs();
     }
 
+    #if UNITY_EDITOR
     static class GameSettingsIMGUIRegister
     {
         [SettingsProvider]
@@ -107,4 +118,5 @@ namespace Prototype.Settings
         }
         
     }
+    #endif
 }
