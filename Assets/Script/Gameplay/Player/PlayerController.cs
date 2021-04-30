@@ -66,6 +66,8 @@ namespace Prototype.Gameplay.Player
             _interactFilter.SetLayerMask(_interactLayer);
             _interactFilter.useLayerMask = true;
             _interactFilter.useTriggers = true;
+            
+            GetComponent<ItemPicker>().OnItemPicked.AddListener(GetComponent<PlayerPackage>().OnItemPicked);
         }
 
         private void Start()

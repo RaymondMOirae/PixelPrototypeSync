@@ -207,8 +207,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab1e633699874484a3e889739997b50f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnItemPicked:
+    m_PersistentCalls:
+      m_Calls: []
   PickRadius: 0.6
-  MagnetRadius: 1
+  MagnetRadius: 2
   LayerMask: 12
 --- !u!114 &25594666
 MonoBehaviour:
@@ -1088,6 +1091,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: ResourceBlock2
       objectReference: {fileID: 0}
+    - target: {fileID: 949082422973262018, guid: 768df9c0b35c14827a7e7f73262a29bd,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 533880bc2aa1ada44881e840e689c2a8,
+        type: 3}
     - target: {fileID: 949082422973262019, guid: 768df9c0b35c14827a7e7f73262a29bd,
         type: 3}
       propertyPath: m_RootOrder
@@ -64474,6 +64483,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: ResourceBlock1
       objectReference: {fileID: 0}
+    - target: {fileID: 949082422973262018, guid: 768df9c0b35c14827a7e7f73262a29bd,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 7fb5c867ee5485142aa740c8ab508f65,
+        type: 3}
     - target: {fileID: 949082422973262019, guid: 768df9c0b35c14827a7e7f73262a29bd,
         type: 3}
       propertyPath: m_RootOrder
