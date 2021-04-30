@@ -228,6 +228,7 @@ MonoBehaviour:
   TestPixelImages:
   - {fileID: 11400000, guid: 99fe4154e35c9cb41a698252ecbbfe36, type: 2}
   - {fileID: 11400000, guid: adedac85f80e0a7428740b77e4fa86a1, type: 2}
+  - {fileID: 11400000, guid: b537c25a3d8987a46811669334b65b57, type: 2}
 --- !u!4 &25594670 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8273969898208333873, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
@@ -10685,8 +10686,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 250, y: 0}
+  m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &429184470
 MonoBehaviour:
@@ -55669,8 +55670,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 250, y: 0}
+  m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1165548901
 MonoBehaviour:
@@ -58083,8 +58084,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 250, y: 0}
+  m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1470550971
 MonoBehaviour:
@@ -58519,8 +58520,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 250, y: 0}
+  m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1528595092
 MonoBehaviour:
@@ -63764,8 +63765,6 @@ MonoBehaviour:
   WeaponInfoSpike: {fileID: 1528595093}
   pixelCanvas: {fileID: 1217783665}
   CompleteButton: {fileID: 341261467}
-  size: {x: 8, y: 8}
-  PixelSize: 8
   GridLineWidth: 1
   EditMode: 0
 --- !u!225 &2052232926
