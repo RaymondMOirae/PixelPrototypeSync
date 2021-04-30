@@ -50101,11 +50101,11 @@ RectTransform:
   m_Father: {fileID: 1152966966}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -100}
-  m_SizeDelta: {x: -200, y: 745.72144}
-  m_Pivot: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 8.1}
+  m_SizeDelta: {x: -200, y: -216.11584}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &692868027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64321,8 +64321,8 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2052232923}
   m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
+  m_Alpha: 1
+  m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &2052232927
@@ -64377,7 +64377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionTime: 0.2
   ShowOnLoad: 0
-  VisibleInEditor: 0
+  VisibleInEditor: 1
 --- !u!1 &2058768169
 GameObject:
   m_ObjectHideFlags: 0
@@ -66922,6 +66922,16 @@ PrefabInstance:
     - target: {fileID: 8273969897481958072, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
         type: 3}
       propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273969897481958073, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: RenderSize.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273969897481958073, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: RenderSize.y
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8273969897481958075, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
