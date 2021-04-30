@@ -10,6 +10,7 @@ using Prototype.Utils;
 using Script.GameSystem;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace Prototype.UI
 {
@@ -38,6 +39,11 @@ namespace Prototype.UI
 
         [SerializeField] private SelectGroup EditModeSelectGroup;
 
+        [SerializeField] private Text WeaponInfoOverall;
+        [SerializeField] private Text WeaponInfoLeft;
+        [SerializeField] private Text WeaponInfoRight;
+        [SerializeField] private Text WeaponInfoSpike;
+
         public Prototype.Inventory.Inventory Inventory { get; private set; }
 
         // public PixelPalette palette;
@@ -54,6 +60,7 @@ namespace Prototype.UI
         private TaskCompletionSource<int> _promise = null;
         // private readonly HashSet<Vector2Int> _lockedPixels = new HashSet<Vector2Int>();
         private PixelWeapon _editingImage = null;
+        private PixelWeapon _analyseWeapon = null;
         private PixelWeaponAnalyser _weaponAnalyser = null;
         private readonly Stack<UndoAction> _undoStack = new Stack<UndoAction>();
         private readonly Stack<UndoAction> _redoStack = new Stack<UndoAction>();
@@ -122,10 +129,16 @@ namespace Prototype.UI
         void SetupCanvas(PixelWeapon weapon)
         {
             _editingImage = weapon;
-            _weaponAnalyser = new PixelWeaponAnalyser(weapon);
+            _analyseWeapon = PixelWeapon.CreateFromPixelImage(
+                weapon.Clone(false),
+                weapon.HandelPosition,
+                weapon.ForwardDirection);
+            
+            _weaponAnalyser = new PixelWeaponAnalyser(_analyseWeapon);
             this._undoStack.Clear();
             this._redoStack.Clear();
             ResetLayout();
+            UpdateWeaponStats();
         }
 
         // public void SetEditable(Vector2Int pos, bool editable)
@@ -167,12 +180,12 @@ namespace Prototype.UI
             // return result;
         }
 
-        void ApplyImage()
+        void ApplyImage(PixelImage target)
         {
             for(var y = 0 ;  y<size.y;y++)
             for (var x = 0; x < size.x; x++)
             {
-                _editingImage.Pixels[x, y] = slots[x, y].Pixel;
+                target.Pixels[x, y] = slots[x, y].Pixel;
             }
         }
 
@@ -212,14 +225,17 @@ namespace Prototype.UI
                 {
                     case PixelEditMode.Paint: 
                         slots[action.Position.x, action.Position.y].SetPixel(action.OldPixel);
-                        Inventory.Take(action.OldPixel);
+                        if (action.OldPixel)
+                            Inventory.Take(action.OldPixel);
                         Inventory.SaveItem(action.NewPixel);
                         break;
                     case PixelEditMode.Erase:
                         slots[action.Position.x, action.Position.y].SetPixel(action.OldPixel);
-                        Inventory.Take(action.OldPixel);
+                        if (action.OldPixel)
+                            Inventory.Take(action.OldPixel);
                         break;
                 }
+                UpdateWeaponStats();
                 _redoStack.Push(action);
             }
         }
@@ -241,14 +257,31 @@ namespace Prototype.UI
                         Inventory.SaveItem(action.OldPixel);
                         break;
                 }
+                UpdateWeaponStats();
                 _undoStack.Push(action);
             }
         }
 
         internal void RecordAction(UndoAction action)
         {
+            UpdateWeaponStats();
             this._undoStack.Push(action);
             this._redoStack.Clear();
+        }
+
+        internal void UpdateWeaponStats()
+        {
+            ApplyImage(_analyseWeapon);
+            _weaponAnalyser.UpdateWeaponData();
+            WeaponInfoLeft.text = "[Left Side]\r\n" +
+                                  $"damage: {_weaponAnalyser.TotalDamageLeft}";
+            WeaponInfoRight.text = "[Right Side]\r\n" +
+                                   $"damage: {_weaponAnalyser.TotalDamageRight}";
+            WeaponInfoSpike.text = "[Spike]\r\n" +
+                                   $"damage: {_weaponAnalyser.TotalDamageStab}";
+            WeaponInfoOverall.text = "[Overall]\r\n" +
+                                     $"weight: {_weaponAnalyser.Weight}\r\n" +
+                                     $"length: {_weaponAnalyser.Length}\r\n";
         }
 
         public async void Done()
@@ -262,7 +295,7 @@ namespace Prototype.UI
             if (!result)
                 return;
             
-            ApplyImage();
+            ApplyImage(_analyseWeapon);
             _weaponAnalyser.UpdateWeaponData();
             if (_weaponAnalyser.BrokenPixels.Count > 0)
             {
@@ -276,6 +309,8 @@ namespace Prototype.UI
                 if (!result)
                     return;
             }
+            
+            ApplyImage(_editingImage);
             
             _editingImage.UpdateTexture();
             _promise.SetResult(0);

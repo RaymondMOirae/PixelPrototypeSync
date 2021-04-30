@@ -97,12 +97,20 @@ namespace Prototype.Element
         private Vector2Int _gridOrigin;
         public Vector2 Origin { get; private set; }
         public float Length { get; private set; }
-        public float Mass { get; private set; }
+        public float Weight { get; private set; }
         public float Inertia { get; private set; }
         
         public float TotalDamageLeft { get; private set; }
         public float TotalDamageRight { get; private set; }
         public float TotalDamageStab { get; private set; }
+
+        private IEnumerable<WeaponPixelData> Enumerate(WeaponPixelData[,] data)
+        {
+            foreach (var weaponPixelData in data)
+            {
+                yield return weaponPixelData;
+            }
+        }
 
         public PixelWeaponAnalyser(PixelWeapon weapon)
         {
@@ -325,7 +333,7 @@ namespace Prototype.Element
         void PhysicalAnalyse()
         {
 
-            Mass = 0;
+            Weight = 0;
             Inertia = 0;
             Length = 0;
 
@@ -338,7 +346,7 @@ namespace Prototype.Element
                 var r = Vector2.Distance(new Vector2(x, y), _gridOrigin);
                 Length = Mathf.Max(Length, r);
                 Inertia += Weapon[x, y].Weight * r * r;
-                Mass += Weapon[x, y].Weight;
+                Weight += Weapon[x, y].Weight;
             }
         }
 
@@ -417,6 +425,8 @@ namespace Prototype.Element
             TotalDamageLeft = 0;
             TotalDamageRight = 0;
             TotalDamageStab = 0;
+            Length = 0;
+            Weight = 0;
             for (var y = 0; y < Weapon.Size.y; y++)
             for (var x = 0; x < Weapon.Size.x; x++)
             {
@@ -430,7 +440,10 @@ namespace Prototype.Element
                     };
                     continue;
                 }
-                var r = Vector2.Distance(new Vector2(x, y), _gridOrigin);
+
+                var r = Vector2.Distance(new Vector2(x, y + 1), _gridOrigin);
+                Length = Mathf.Max(Length, r);
+                
                 WeaponDataLeft[x, y] = GenerateWeaponData(x, y, r, LeftAnalyser.DamageAttenuationField[x, y]);
                 WeaponDataRight[x, y] = GenerateWeaponData(x, y, r, RightAnalyser.DamageAttenuationField[x, y]);
                 WeaponDataStab[x, y] = GenerateWeaponData(x, y, r, StabAnalyser.DamageAttenuationField[x, y]);
@@ -438,6 +451,7 @@ namespace Prototype.Element
                 TotalDamageLeft += WeaponDataLeft[x, y].Damage;
                 TotalDamageRight += WeaponDataRight[x, y].Damage;
                 TotalDamageStab += WeaponDataStab[x, y].Damage;
+                Weight += Weapon[x, y].Weight;
             }
         }
 
