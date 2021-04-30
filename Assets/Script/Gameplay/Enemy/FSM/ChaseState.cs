@@ -42,7 +42,7 @@ namespace Prototype.Gameplay.Enemy.FSM
             while (true)
             {
                 Vector2 chaseDir = MathUtility.ToVector2(_player.transform.position - _enemy.transform.position);
-                _enemy.Move(chaseDir, _enemy.ChaseSpeed);
+                _enemy.ChasePlayer(chaseDir);
                 _enemy.AnimationController.SetDirection(chaseDir);
                 yield return new WaitForSeconds(_enemy.ChaseInterval);
             }

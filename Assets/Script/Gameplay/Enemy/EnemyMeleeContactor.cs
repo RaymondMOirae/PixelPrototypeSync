@@ -21,11 +21,18 @@ namespace Prototype.Gameplay.Enemy
             _collider.isTrigger = true;
         }
 
-        private void AimPlayer(Vector3 relativePos)
+        private void AimPlayer(Vector3 playerPos)
         {
-            Vector3 _aim = relativePos - transform.position;
+            Vector3 _aim = playerPos - transform.position;
             _aim.z = 0;
+            if (transform.localScale.x < 0)
+                _aim.x = -_aim.x;
             transform.right = _aim;
+            if (_collider.IsTouchingLayers(_enemy.PlayerLayer))
+                _enemy.SetInAttackField(true);
+            else
+                _enemy.SetInAttackField(false);
+
         }
 
         private void OnTriggerEnter2D(Collider2D collision)

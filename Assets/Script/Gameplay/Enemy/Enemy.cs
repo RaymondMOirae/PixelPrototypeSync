@@ -66,6 +66,7 @@ namespace Prototype.Gameplay.Enemy
         public float HitRecoverTime => _hitRecoverTime;
         public float GuardRadius => _guardRadius;
         public EnemySensorResult SensorResult => _sensorResult;
+        public LayerMask PlayerLayer => _playerLayer;
         public ContactFilter2D PlayerFilter => _playerFilter;
         public Rigidbody2D Rigidbdy { get; private set; }
 
@@ -143,6 +144,12 @@ namespace Prototype.Gameplay.Enemy
         {
             BroadcastMessage("AimPlayer", _player.transform.position);
             BroadcastMessage("MeleeAttack", _damage);
+        }
+
+        public void ChasePlayer(Vector2 chaseDir)
+        {
+            BroadcastMessage("AimPlayer", _player.transform.position);
+            Move(chaseDir, _chaseSpeed);
         }
 
         public override void TakeDamage(string type, float damage)

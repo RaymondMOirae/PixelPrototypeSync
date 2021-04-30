@@ -40,10 +40,10 @@ namespace Prototype.Gameplay.Enemy.FSM
             _enemy.CastAttack();
             await _enemy.AnimationController.WaitAnimationExit();
             EnemySensorResult res = _enemy.SensorResult;
-            if (res.InViewField == false)
-                OnExitState(StateType.Idle);
-            else if (res.InAttackField == false)
+            if (res.InViewField == true)
                 OnExitState(StateType.Chase);
+            else
+                OnExitState(StateType.Idle);
         }
 
         IEnumerator AsyncEnableAttack()
