@@ -29,7 +29,7 @@ MonoBehaviour:
       Endurance: 0
       Protected: 0
     - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
-      Endurance: 1
+      Endurance: 10
       Protected: 0
     - _type: {fileID: 0}
       Endurance: 0
@@ -57,7 +57,7 @@ MonoBehaviour:
       Endurance: 0
       Protected: 0
     - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
-      Endurance: 1
+      Endurance: 10
       Protected: 0
     - _type: {fileID: 11400000, guid: db4a1855a85122d44943fa5a3b771232, type: 2}
       Endurance: 10000000
@@ -85,7 +85,7 @@ MonoBehaviour:
       Endurance: 1
       Protected: 0
     - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
-      Endurance: 1
+      Endurance: 10
       Protected: 0
     - _type: {fileID: 0}
       Endurance: 0
@@ -113,7 +113,7 @@ MonoBehaviour:
       Endurance: 0
       Protected: 0
     - _type: {fileID: 11400000, guid: 040c1ffce3ba7994a97b75f8994361f1, type: 2}
-      Endurance: 1
+      Endurance: 10
       Protected: 0
   - Pixels:
     - _type: {fileID: 0}

@@ -15,10 +15,9 @@ MonoBehaviour:
   ItemID: 0
   ItemName: Gold
   sprite: {fileID: -744765803367671949, guid: 039727f2c9ff5464db94e47571673e08, type: 3}
-  name: Gold
   weight: 1
+  endurance: 10
   hardness: 1
-  damage: 1
-  defence: 1
   droppedSize: 0.2
   Attribute: 0
+  description: Descriptions
