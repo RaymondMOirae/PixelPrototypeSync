@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 2458afef3a70490d881e9241f70a71b7
+=======
+guid: 3755a50d5377247d5bc1f5f10e4681be
+>>>>>>> ee1eb86 ([feature] Enemy can drop pixel on destroy.)
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

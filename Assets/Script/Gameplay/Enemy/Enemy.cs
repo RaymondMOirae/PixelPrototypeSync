@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Prototype.Animation;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using Prototype.Gameplay.UI;
 using Prototype.Gameplay.Enemy.FSM;
 using Prototype.Gameplay.Player;
+using Prototype.Element;
+using Prototype.Settings;
 
 namespace Prototype.Gameplay.Enemy
 {
@@ -32,6 +35,7 @@ namespace Prototype.Gameplay.Enemy
         [SerializeField] private LayerMask _playerLayer;
 
         [SerializeField] private AnimationController _animationController;
+        [SerializeField] private int _dropAmount;
 
         [Header("行为参数")]
         [SerializeField] private float _walkSpeed;
@@ -55,6 +59,7 @@ namespace Prototype.Gameplay.Enemy
         public StateBase CurState;
         public StateType CurStateType;
 
+        private List<PixelType> PixelTypes => PixelAssets.Current.PixelTypes;
         public bool CanAttack { get; set; }
         public float WalkSpeed => _walkSpeed;
         public float ChaseSpeed => _chaseSpeed;
@@ -157,6 +162,13 @@ namespace Prototype.Gameplay.Enemy
             base.TakeDamage(type, damage);
             if (currentHealth <= 0)
             {
+                for(int i = 0; i < _dropAmount; i++) 
+		        { 
+				    int pixelIndex = (int)(Random.value * PixelTypes.Count);
+					Vector2 offset = Random.insideUnitCircle * _spawnRadius;
+					var pos =  transform.position + MathUtility.ToVector3(offset);
+				    base.DropPixel(PixelTypes[pixelIndex], pos);	
+		        }
                 Destroy(gameObject);
             }
             _states[CurStateType].OnExitState(StateType.HitRecover);
