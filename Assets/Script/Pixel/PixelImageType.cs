@@ -25,6 +25,10 @@ namespace Prototype.Element
             {
                 if (Size.x == Size.y && Size.x == 8)
                     return UISettings.Current.InventoryPreviewBackgrounds.Image8x8;
+                if (Size.x == Size.y && Size.x == 12)
+                    return UISettings.Current.InventoryPreviewBackgrounds.Image12x12;
+                if (Size.x == Size.y && Size.x == 16)
+                    return UISettings.Current.InventoryPreviewBackgrounds.Image16x16;
                 return null;
             }
         }

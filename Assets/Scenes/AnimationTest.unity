@@ -227,6 +227,7 @@ MonoBehaviour:
   ItemPicker: {fileID: 25594665}
   TestPixelImages:
   - {fileID: 11400000, guid: 99fe4154e35c9cb41a698252ecbbfe36, type: 2}
+  - {fileID: 11400000, guid: adedac85f80e0a7428740b77e4fa86a1, type: 2}
 --- !u!4 &25594670 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8273969898208333873, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
@@ -992,7 +993,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UseHealthBar: 0
-  CanDropPixel: 0
+  CanDropPixel: 1
   maxHealth: 50
   currentHealth: 0
   _spawnRadius: 0
@@ -1001,7 +1002,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _animationController: {fileID: 564865094}
-  _dropAmount: 4
+  _dropAmount: 10
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
@@ -10684,8 +10685,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 250, y: 0}
-  m_SizeDelta: {x: 500, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &429184470
 MonoBehaviour:
@@ -50216,7 +50217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UseHealthBar: 0
-  CanDropPixel: 0
+  CanDropPixel: 1
   maxHealth: 50
   currentHealth: 0
   _spawnRadius: 0
@@ -50225,7 +50226,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _animationController: {fileID: 1596465894}
-  _dropAmount: 4
+  _dropAmount: 10
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
@@ -55668,8 +55669,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 250, y: 0}
-  m_SizeDelta: {x: 500, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1165548901
 MonoBehaviour:
@@ -58082,8 +58083,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 250, y: 0}
-  m_SizeDelta: {x: 500, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1470550971
 MonoBehaviour:
@@ -58518,8 +58519,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 250, y: 0}
-  m_SizeDelta: {x: 500, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1528595092
 MonoBehaviour:
@@ -63614,7 +63615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UseHealthBar: 0
-  CanDropPixel: 0
+  CanDropPixel: 1
   maxHealth: 50
   currentHealth: 0
   _spawnRadius: 0
@@ -63623,7 +63624,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _animationController: {fileID: 1700605415}
-  _dropAmount: 3
+  _dropAmount: 10
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
@@ -63942,7 +63943,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UseHealthBar: 0
-  CanDropPixel: 0
+  CanDropPixel: 1
   maxHealth: 50
   currentHealth: 0
   _spawnRadius: 0
@@ -63951,7 +63952,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _animationController: {fileID: 821509020}
-  _dropAmount: 6
+  _dropAmount: 10
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
