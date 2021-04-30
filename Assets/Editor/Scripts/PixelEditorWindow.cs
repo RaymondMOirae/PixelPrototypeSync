@@ -74,7 +74,9 @@ namespace Prototype.Editor
         private RenderTexture _canvasGridRT;
         private RenderTexture _pixelImageRT;
 
-        private PixelWeapon _editImage;
+        private PixelImage _editImage;
+        private PixelWeapon _analyseWeapon;
+        
         private Mesh _imageMesh;
         private Mesh _analyseMesh;
         private PixelWeaponAnalyser _analyser;
@@ -135,7 +137,7 @@ namespace Prototype.Editor
             var canvasHeight = (int)position.height - WorkSpaceHeight;
             EditorGUI.DrawRect(new Rect(0, 0, position.width, canvasHeight), Color.gray);
 
-            DrawEditor(canvasHeight);
+            DrawImageEditor(canvasHeight);
             
             DrawWorkSpace(new Rect(0, canvasHeight, position.width, position.height - canvasHeight));
         }
@@ -282,6 +284,12 @@ namespace Prototype.Editor
             });
         }
 
+        void ResizeCanvas()
+        {
+            _imageMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
+            _analyseMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
+        }
+
         void ReloadImage()
         {
             if (!_editAsset)
@@ -290,8 +298,11 @@ namespace Prototype.Editor
                 return;
             }
 
+
             _editImage = new PixelWeapon(_editAsset.Size, new Vector2Int(_editAsset.Size.x - 1, 0),
                 WeaponForwardDirection.TopLeft);
+            this._editSize = _editAsset.Size;
+            ResizeCanvas();
             
             for(var y = 0;y < _editAsset.Height; y++)
             for (var x = 0; x < _editAsset.Width; x++)
@@ -299,7 +310,14 @@ namespace Prototype.Editor
                 _editImage.Pixels[x, y] =
                     _editAsset.Image.Pixels[x, y] ? new Pixel(_editAsset.Image.Pixels[x, y].Type) : null;
             }
-            _analyser = new PixelWeaponAnalyser(_editImage);
+
+            _analyseWeapon = PixelWeapon.CreateFromPixelImage(
+                _editImage.Clone(false),
+                new Vector2Int(_editAsset.Size.x - 1, 0),
+                WeaponForwardDirection.TopLeft
+            );
+            _analyser = new PixelWeaponAnalyser(_analyseWeapon);
+            
             UpdateMeshData();
             RenderImage();
             Repaint();
@@ -334,15 +352,28 @@ namespace Prototype.Editor
             _pixelImageRT.filterMode = FilterMode.Bilinear;
             _pixelImageRT.Create();
 
-            _imageMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
-            _analyseMesh = PixelImageEditorUtils.CreateImageMesh(_editImage);
+            ResizeCanvas();
             
-            _analyser = new PixelWeaponAnalyser(_editImage);
+            _analyseWeapon = PixelWeapon.CreateFromPixelImage(
+                _editImage.Clone(false),
+                new Vector2Int(_editAsset.Size.x - 1, 0),
+                WeaponForwardDirection.TopLeft
+            );
+            _analyser = new PixelWeaponAnalyser(_analyseWeapon);
             
             UpdateMeshData();
             RenderImage();
         }
 
+        void UpdateAnalyseData()
+        {
+            for(var y = 0; y < _editSize.y;y ++)
+            for (var x = 0; x < _editSize.x; x++)
+            {
+                _analyseWeapon.Pixels[x, y] = _editImage.Pixels[x, y];
+            }
+        }
+        
         void UpdateMeshData()
         {
             if (!_editImage)
@@ -447,7 +478,7 @@ namespace Prototype.Editor
             _analyseMesh.UploadMeshData(false); 
         }
 
-        void DrawEditor(int height)
+        void DrawImageEditor(int height)
         {
             var canvasHeight = height - PaletteMinHeight;
             EditCanvas(new Rect(0, 0, position.width, canvasHeight));
@@ -575,6 +606,7 @@ namespace Prototype.Editor
 
             _editImage.Pixels[pos.x, pos.y] = PixelAssetManager.CreatePixel(_selectedPixelType);
             UpdateMeshData();
+            UpdateAnalyseData();
             RenderImage();
             Repaint();
         }
@@ -583,6 +615,7 @@ namespace Prototype.Editor
         {
             _editImage.Pixels[pos.x, pos.y] = null;
             UpdateMeshData();
+            UpdateAnalyseData();
             RenderImage();
             Repaint();
         }

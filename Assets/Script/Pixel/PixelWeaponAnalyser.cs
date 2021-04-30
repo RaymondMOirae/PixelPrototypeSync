@@ -303,7 +303,7 @@ namespace Prototype.Element
                 for (var dx = -1; dx <= 1; dx++)
                 {
                     var neighbor = GetPixelAt(x + dx, y + dy);
-                    if (!neighbor || !neighbor.Type)
+                    if (!neighbor)
                         continue;
 
                     unionRoot[GetRootOf(neighbor)] = GetRootOf(Weapon.Pixels[x, y]);
@@ -316,7 +316,7 @@ namespace Prototype.Element
             {
                 if(!Weapon.Pixels[x,y])
                     continue;
-                if (GetRootOf(Weapon.Pixels[x, y]) != GetRootOf(handelPixel))
+                if (!handelPixel || GetRootOf(Weapon.Pixels[x, y]) != GetRootOf(handelPixel))
                 {
                     var brokenPixel = new BrokenPixel()
                     {

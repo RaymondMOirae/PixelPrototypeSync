@@ -50,8 +50,7 @@ namespace Prototype.UI
         public GridLayoutGroup pixelCanvas;
         public Button CompleteButton;
         
-        public Vector2Int size;
-        public int PixelSize = 8;
+        public Vector2Int CanvasSize => _editingImage.Size;
         public float GridLineWidth;
         public PixelSlot[,] slots;
 
@@ -182,8 +181,8 @@ namespace Prototype.UI
 
         void ApplyImage(PixelImage target)
         {
-            for(var y = 0 ;  y<size.y;y++)
-            for (var x = 0; x < size.x; x++)
+            for(var y = 0 ;  y<CanvasSize.y;y++)
+            for (var x = 0; x < CanvasSize.x; x++)
             {
                 target.Pixels[x, y] = slots[x, y].Pixel;
             }
@@ -199,13 +198,13 @@ namespace Prototype.UI
                     GameObjectPool.Release(ResourceManager.Instance.PrefabPixelSlot, slot);
                 }
             }
-            slots = new PixelSlot[size.x, size.y];
+            slots = new PixelSlot[CanvasSize.x, CanvasSize.y];
             pixelCanvas.cellSize =
-                MathUtility.Floor(((pixelCanvas.transform as RectTransform)?.rect.size ?? Vector2.one) / size)
+                MathUtility.Floor(((pixelCanvas.transform as RectTransform)?.rect.size ?? Vector2.one) / CanvasSize)
                 - Vector2.one * GridLineWidth;
-            for (var y = 0; y < size.y; y++)
+            for (var y = 0; y < CanvasSize.y; y++)
             {
-                for (var x = 0; x < size.x; x++)
+                for (var x = 0; x < CanvasSize.x; x++)
                 {
                     var slot = GameObjectPool.Get<PixelSlot>(ResourceManager.Instance.PrefabPixelSlot);
                     slot.transform.SetParent(pixelCanvas.transform, false);

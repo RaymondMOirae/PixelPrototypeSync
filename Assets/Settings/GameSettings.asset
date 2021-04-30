@@ -32,6 +32,8 @@ MonoBehaviour:
       type: 3}
     InventoryPreviewBackgrounds:
       Image8x8: {fileID: 21300000, guid: 7b58d4c58b4cbe84b89687f94e2e5f88, type: 3}
+      Image12x12: {fileID: 21300000, guid: 8992a9922bea33c478e0d4ac0b62a3c5, type: 3}
+      Image16x16: {fileID: 21300000, guid: e825b1de1e365474b99183647755bfed, type: 3}
   GamePrefabs:
     DroppedItem: {fileID: 426827634613633123, guid: 10df8f71b8e7c214d953bb2c7494f059,
       type: 3}

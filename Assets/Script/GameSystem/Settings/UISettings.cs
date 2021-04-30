@@ -17,6 +17,8 @@ namespace Prototype.Settings
         public struct InventoryPreviewBackgrounds_T
         {
             public Sprite Image8x8;
+            public Sprite Image12x12;
+            public Sprite Image16x16;
         }
     }
 }
