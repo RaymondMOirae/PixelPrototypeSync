@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Prototype.Inventory
 {
@@ -12,10 +13,24 @@ namespace Prototype.Inventory
         [SerializeField] private float Acceleration = 1;
         [SerializeField] private float MaxSpeed = 2;
         [SerializeField] private float AngularSpeed = 2;
+        [SerializeField] private float SpreadRadius = 1;
+        [SerializeField] private float DropAnimationDuration = 1;
+        [SerializeField] private AnimationCurve DropPositionCurve;
         public Item Item { get; private set; }
-
-        private SpriteRenderer _spriteRenderer; 
+        public bool Pickable { get; private set; }
         
+
+        private SpriteRenderer _spriteRenderer;
+
+        private void Reset()
+        {
+            DropPositionCurve.keys = new[]
+            {
+                new Keyframe(0, 0),
+                new Keyframe(1, 0)
+            };
+        }
+
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -56,6 +71,23 @@ namespace Prototype.Inventory
             }
         }
 
+        IEnumerator DropCoroutine(Vector3 position)
+        {
+            transform.position = position;
+            var targetPos = Random.insideUnitCircle * SpreadRadius;
+            foreach (var t in Utility.TimerNormalized(DropAnimationDuration))
+            {
+                transform.position = new Vector3(
+                    position.x + Mathf.Lerp(0, targetPos.x, t),
+                    position.y + Mathf.Lerp(0, targetPos.y, t) + DropPositionCurve.Evaluate(t),
+                    position.z
+                );
+                yield return null;
+            }
+
+            Pickable = true;
+        }
+
         public void FlyTo(Transform target)
         {
             StartCoroutine(FlyCoroutine(target));
@@ -63,7 +95,8 @@ namespace Prototype.Inventory
 
         public void DropAt(Vector3 position)
         {
-            transform.position = position;
+            Pickable = false;
+            StartCoroutine(DropCoroutine(position));
         }
     }
 }
