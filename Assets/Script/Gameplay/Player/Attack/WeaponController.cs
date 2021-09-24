@@ -79,10 +79,10 @@ namespace Prototype.Gameplay.Player.Attack
                 _touchInputs.TriggerCoolDownCheck(type);
                 _animator.Play("Attack" + type.ToString(), 0, 0);
             }
-            else
-            {
-                _attackType = AttackType.NA;
-            }
+            // else
+            // {
+            //     _attackType = AttackType.NA;
+            // }
 
         }
 
