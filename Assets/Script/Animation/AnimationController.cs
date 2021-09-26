@@ -38,9 +38,9 @@ namespace Prototype.Animation
 
         public void EmitAnimationEvent(string eventName)
         {
-            if (_taskCompletionSources.TryGetValue(eventName, out var completionSource))
+            if (_taskCompletionSources.TryGetValue(eventName, out var completionSource) && completionSource != null)
             {
-                completionSource.SetResult(true);
+                completionSource.TrySetResult(true);
             }
         }
 
