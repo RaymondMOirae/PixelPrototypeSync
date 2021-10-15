@@ -170,6 +170,7 @@ namespace Prototype.UI
                 else
                 {
                     Done();
+                    return;
                 }
                 
             }
@@ -326,14 +327,15 @@ namespace Prototype.UI
                 result = await Dialog.ShowPrefabAsync(
                     UISettings.Current.BasicDialogPrefab,
                     $"{_weaponAnalyser.BrokenPixels.Count} pixels not connected to weapon handle will be broken. " +
-                    $"Are you sure to continue?",
+                    $"Can not apply the edit result.",
                     this,
-                    DialogType.OkCancel);
+                    DialogType.Ok);
+                _editingImage = _analyseWeapon;
             
                 if (!result)
                     return;
             }
-            
+
             ApplyImage(_editingImage);
             
             _editingImage.UpdateTexture();

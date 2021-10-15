@@ -10,8 +10,18 @@ namespace Prototype.UI
         private readonly Dictionary<T, SelectItem> _itemsByKey = new Dictionary<T, SelectItem>();
         private readonly Dictionary<SelectItem, T> _keysByItem = new Dictionary<SelectItem, T>();
         private readonly List<T> _keyLists = new List<T>();
+        private T _selectedKey = null;
         public SelectItem SelectedItem { get; private set; }
-        public T SelectedKey { get; private set; }
+        public T SelectedKey {
+            get
+            {
+                if (_selectedKey is null) 
+                    return _keyLists[0];
+                else 
+                    return _selectedKey;
+            }
+            private set => _selectedKey = value;
+        }
 
         public IEnumerable<SelectItem> Items => _itemsByKey.Values;
 
