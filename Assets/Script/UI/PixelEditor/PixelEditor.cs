@@ -159,8 +159,21 @@ namespace Prototype.UI
         public async Task Edit(Prototype.Inventory.Inventory inventory)
         {
             if (!(_promise is null))
-                throw new Exception("Duplicated editor.");
-          
+            {
+                if (!_undoStack.Any())
+                {
+                    _promise.SetResult(0);
+                    _promise = null;
+                    Hide();
+                    return;
+                }
+                else
+                {
+                    Done();
+                }
+                
+            }
+                
             Inventory = inventory;
             // _editingImage = image;
             ReloadUI();
