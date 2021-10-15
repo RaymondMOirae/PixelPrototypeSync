@@ -32,6 +32,7 @@ namespace Prototype.Gameplay.Enemy
         private EnemySensorResult _sensorResult;
         private ContactFilter2D _playerFilter;
         private Coroutine _stateWaitCoroutine;
+        private Vector2 _curHeadingDir;
         [SerializeField] private LayerMask _playerLayer;
 
         [SerializeField] private AnimationController _animationController;
@@ -84,6 +85,11 @@ namespace Prototype.Gameplay.Enemy
             InitStates();
         }
 
+        private void FixedUpdate()
+        {
+            Rigidbdy.velocity = _curHeadingDir;
+        }
+
         private void InitStates()
         {
             _states = new Dictionary<StateType, StateBase>();
@@ -124,13 +130,12 @@ namespace Prototype.Gameplay.Enemy
 
         public void Move(Vector2 dir, float speed)
         {
-            dir = dir.normalized;
-            Rigidbdy.velocity = dir * speed;
+            _curHeadingDir = dir.normalized * speed;
         }
 
         public void StandStill()
         {
-            Rigidbdy.velocity = Vector2.zero;
+            _curHeadingDir = Vector2.zero;
         }
 
         public void SetInViewField(bool b)
