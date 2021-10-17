@@ -37,6 +37,7 @@ namespace Prototype.Gameplay.Enemy.FSM
         async Task Attack()
         {
             await _enemy.AnimationController.WaitOnAnimationEvent("DamageFrame");
+            _enemy.StandStill();
             _enemy.CastAttack();
             await _enemy.AnimationController.WaitAnimationExit();
             EnemySensorResult res = _enemy.SensorResult;
