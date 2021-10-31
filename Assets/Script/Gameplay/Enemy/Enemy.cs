@@ -27,28 +27,28 @@ namespace Prototype.Gameplay.Enemy
 
     public class Enemy : AttackableBase
     {
-        private GameObject _player;
-        private Dictionary<StateType, StateBase> _states;
-        private EnemySensorResult _sensorResult;
-        private ContactFilter2D _playerFilter;
-        private Coroutine _stateWaitCoroutine;
-        private Vector2 _curHeadingDir;
-        [SerializeField] private LayerMask _playerLayer;
+        protected GameObject _player;
+        protected Dictionary<StateType, StateBase> _states;
+        protected EnemySensorResult _sensorResult;
+        protected ContactFilter2D _playerFilter;
+        protected Coroutine _stateWaitCoroutine;
+        protected Vector2 _curHeadingDir;
+        [SerializeField] protected LayerMask _playerLayer;
 
-        [SerializeField] private AnimationController _animationController;
-        [SerializeField] private int _dropAmount;
+        [SerializeField] protected AnimationController _animationController;
+        [SerializeField] protected int _dropAmount;
 
         [Header("行为参数")]
-        [SerializeField] private float _walkSpeed;
-        [SerializeField] private float _chaseSpeed;
-        [SerializeField] private float _staggerSpeed;
-        [SerializeField] private float _chaseInterval;
-        [SerializeField] private float _patrolInterval;
-        [SerializeField] private float _attackInterval;
-        [SerializeField] private float _staggerTime;
-        [SerializeField] private float _hitRecoverTime;
-        [SerializeField] private float _damage;
-        [SerializeField] private float _guardRadius;
+        [SerializeField] protected float _walkSpeed;
+        [SerializeField] protected float _chaseSpeed;
+        [SerializeField] protected float _staggerSpeed;
+        [SerializeField] protected float _chaseInterval;
+        [SerializeField] protected float _patrolInterval;
+        [SerializeField] protected float _attackInterval;
+        [SerializeField] protected float _staggerTime;
+        [SerializeField] protected float _hitRecoverTime;
+        [SerializeField] protected float _damage;
+        [SerializeField] protected float _guardRadius;
 
         //[Header("感知范围")]
 
@@ -78,26 +78,27 @@ namespace Prototype.Gameplay.Enemy
 
         public AnimationController AnimationController => _animationController;
 
-        private void Start()
+        protected void Start()
         {
             InitHealthBar();
             InitComponents();
             InitStates();
         }
 
-        private void FixedUpdate()
+        protected void FixedUpdate()
         {
             Rigidbdy.velocity = _curHeadingDir;
         }
 
-        private void InitStates()
+        protected virtual void InitStates()
         {
-            _states = new Dictionary<StateType, StateBase>();
-
-            _states.Add(StateType.Idle, new IdleState(this));
-            _states.Add(StateType.Chase, new ChaseState(this));
-            _states.Add(StateType.Attack, new AttackState(this));
-            _states.Add(StateType.HitRecover, new HitRecoverState(this));
+            _states = new Dictionary<StateType, StateBase>
+            {
+                {StateType.Idle, new IdleState(this)},
+                {StateType.Chase, new ChaseState(this)},
+                {StateType.Attack, new AttackState(this)},
+                {StateType.HitRecover, new HitRecoverState(this)}
+            };
 
             CurState = _states[StateType.Idle];
             CurState.OnEnterState();
@@ -106,7 +107,7 @@ namespace Prototype.Gameplay.Enemy
             CanAttack = true;
         }
 
-        private void InitComponents()
+        protected void InitComponents()
         {
             Rigidbdy = GetComponent<Rigidbody2D>();
             _player = GameObject.Find("Player");
@@ -150,7 +151,7 @@ namespace Prototype.Gameplay.Enemy
             CurState.CheckTransition();
         }
 
-        public void CastAttack()
+        public virtual void CastAttack()
         {
             BroadcastMessage("AimPlayer", _player.transform.position);
             BroadcastMessage("MeleeAttack", _damage);

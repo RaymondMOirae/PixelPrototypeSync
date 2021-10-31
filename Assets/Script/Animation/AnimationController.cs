@@ -108,6 +108,11 @@ namespace Prototype.Animation
             this._animator.SetTrigger(stateName);
         }
 
+        public void ResetAnimationState(string stateName)
+        {
+            this._animator.SetTrigger(stateName);
+        }
+
         public async Task WaitAnimationExit()
         {
             if (_exitCompletionSource != null)
