@@ -4,24 +4,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueBubbleCanvas : MonoBehaviour
+namespace Prototype.Gameplay.RoomFacility.Store
 {
-    private Text _contentText;
-    // Start is called before the first frame update
-    void Start()
+    public class DialogueBubbleCanvas : MonoBehaviour
     {
-        _contentText = GetComponentInChildren<Text>();
-    }
+        private Text _contentText;
+        // Start is called before the first frame update
+        void Start()
+        {
+            _contentText = GetComponentInChildren<Text>();
+        }
 
-    public void DisplayText(String content)
-    {
-        _contentText.text = content;
-        gameObject.SetActive(true);
-    }
+        public void DisplayText(String content)
+        {
+            _contentText.text = content;
+            gameObject.SetActive(true);
+        }
 
-    public void EndDisplay()
-    {
-        gameObject.SetActive(false);
-    }
+        public void EndDisplay()
+        {
+            gameObject.SetActive(false);
+        }
 
+    }
+        
 }
