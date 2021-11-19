@@ -24,6 +24,7 @@ namespace Prototype.Gameplay.Enemy
             CurStateType = StateType.Idle;
 
             CanAttack = true;
+            CanBeInterrupted = true;
         }
 
         public override void CastAttack()

@@ -14,8 +14,9 @@ namespace Prototype.Gameplay.Enemy.FSM
         {
             if (_enemy.CanAttack)
             {
-                _coroutine = _enemy.StartCoroutine(Attack());
+                Attack();
                 _enemy.CanAttack = false;
+                _enemy.CanBeInterrupted = true;
                 _enemy.StartCoroutine(AsyncEnableAttack());
             }
         }
@@ -33,18 +34,22 @@ namespace Prototype.Gameplay.Enemy.FSM
 
         public override void OnExitState(StateType nextState)
         {
-            _enemy.StopCoroutine(_coroutine);
             _enemy.AnimationController.ResetAnimationState(AnimationController.StateAttack);
             ChangeEnemyState(nextState);
         }
         
-        private IEnumerator Attack()
+        protected override async Task Attack()
         {
-            while (true)
-            {
-                _enemy.CastAttack();
-                yield return new WaitForSeconds(_enemy.AttackInterval);
-            }
+            await _enemy.AnimationController.WaitOnAnimationEvent("Uninterruptible");
+            _enemy.CanBeInterrupted = false;
+            _enemy.CastAttack();
+            await _enemy.AnimationController.WaitAnimationExit();
+            _enemy.CanBeInterrupted = true;
+            EnemySensorResult res = _enemy.SensorResult;
+            if(res.InViewField == true)
+                OnExitState(StateType.Attack);
+            else
+                OnExitState(StateType.Idle);
         }
 
     }

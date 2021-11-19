@@ -49,7 +49,7 @@ namespace Prototype.Gameplay.Enemy
         [SerializeField] protected float _hitRecoverTime;
         [SerializeField] protected float _damage;
         [SerializeField] protected float _guardRadius;
-
+        
         //[Header("感知范围")]
 
         //[HideInInspector] public bool UseRangedSensor;
@@ -62,6 +62,7 @@ namespace Prototype.Gameplay.Enemy
 
         private List<PixelType> PixelTypes => PixelAssets.Current.PixelTypes;
         public bool CanAttack { get; set; }
+        public bool CanBeInterrupted { get; set; }
         public float WalkSpeed => _walkSpeed;
         public float ChaseSpeed => _chaseSpeed;
         public float StaggerSpeed => _staggerSpeed;
@@ -105,6 +106,7 @@ namespace Prototype.Gameplay.Enemy
             CurStateType = StateType.Idle;
 
             CanAttack = true;
+            CanBeInterrupted = true;
         }
 
         protected void InitComponents()
@@ -177,7 +179,8 @@ namespace Prototype.Gameplay.Enemy
 		        }
                 Destroy(gameObject);
             }
-            _states[CurStateType].OnExitState(StateType.HitRecover);
+            if(CanBeInterrupted)
+                _states[CurStateType].OnExitState(StateType.HitRecover);
         }
     }
 }
