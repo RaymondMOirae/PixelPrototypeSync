@@ -10,7 +10,7 @@ namespace Prototype.Gameplay.RoomFacility.Store
     {
         private Text _contentText;
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             _contentText = GetComponentInChildren<Text>();
         }
