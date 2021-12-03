@@ -35,12 +35,12 @@ namespace Prototype.Gameplay.Player
         [SerializeField] private LayerMask _attackLayer;
         [SerializeField] private LayerMask _interactLayer;
         private ContactFilter2D _interactFilter;
-
-
+        
         // components
         private Rigidbody2D _rigidbody;
         private Collider2D _collider;
         private SpriteRenderer _sprite;
+        private PlayerAnimation _animator;
 
         private WeaponController _wController;
         private InGamePixelEditor _pixelEditor;
@@ -58,7 +58,8 @@ namespace Prototype.Gameplay.Player
         {
             _rigidbody = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
-            _sprite = GetComponent<SpriteRenderer>();
+            _animator = GetComponentInChildren<PlayerAnimation>();
+            _sprite = _animator.PlayerSprite;
             _pixelEditor = GameObject.Find("InGamePixelEditor").GetComponent<InGamePixelEditor>();
             _wController = transform.Find("WeaponHolder").GetComponent<WeaponController>();
 
@@ -150,8 +151,10 @@ namespace Prototype.Gameplay.Player
 
         public void HandleDirectionInput(Vector2 dir)
         {
+            // normalize input
             dir = dir.normalized;
 
+            // update player current moving direction
             if ((Mathf.Abs(dir.x) > 0.0001f || Mathf.Abs(dir.y) > 0.0001f) && 
                       !_wController.DuringAttack)
             {
@@ -172,6 +175,37 @@ namespace Prototype.Gameplay.Player
             {
                 _curDir = Vector2.zero;
             }
+            
+            // update player animator
+            if (_curDir != Vector2.zero)
+            {
+                switch (Vector2.SignedAngle(Vector2.up, _curDir))
+                {
+                    case float _angle when(_angle > -45.0f && _angle < 45.0f):
+                        // play up
+                        _animator.PlayWalkAnimation("Up");
+                        break;
+                    case float _angle when(_angle >= 45.0f && _angle <= 135.0f):
+                        // play right
+                        _animator.PlayWalkAnimation("Left");
+                        break;
+                    case float _angle when(_angle > 135.0f || _angle < -135.0f):
+                        // play down
+                        _animator.PlayWalkAnimation("Down");
+                        break;
+                    case float _angle when(_angle >= -135.0f && _angle <= -45.0f):
+                        // play left
+                        _animator.PlayWalkAnimation("Right");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                _animator.PlayIdle();
+            }
+            
         }
 
         private void LaunchAttack(AttackType type)
