@@ -13,6 +13,7 @@ using Prototype.Gameplay.RoomFacility;
 using Prototype.Gameplay.UI;
 using Prototype.Inventory;
 using Prototype.Script.Test;
+using Script.GameSystem;
 
 namespace Prototype.Gameplay.Player
 {
@@ -34,6 +35,7 @@ namespace Prototype.Gameplay.Player
         // layers and filters
         [SerializeField] private LayerMask _attackLayer;
         [SerializeField] private LayerMask _interactLayer;
+        [SerializeField] private AudioClip _attackSound;
         private ContactFilter2D _interactFilter;
         
         // components
@@ -207,10 +209,11 @@ namespace Prototype.Gameplay.Player
             }
             
         }
-
+        
         private void LaunchAttack(AttackType type)
         {
             _wController.Attack(type);
+            SoundManager.Instance.PlayPlayerSound(_attackSound);
             if (_wController.CurrentType == AttackType.M) _isDashing = true;
         }
 

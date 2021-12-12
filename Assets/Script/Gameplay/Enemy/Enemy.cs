@@ -8,7 +8,9 @@ using Prototype.Gameplay.UI;
 using Prototype.Gameplay.Enemy.FSM;
 using Prototype.Gameplay.Player;
 using Prototype.Element;
+using Prototype.Gameplay.RoomFacility.Store;
 using Prototype.Settings;
+using Script.GameSystem;
 
 namespace Prototype.Gameplay.Enemy
 {
@@ -34,9 +36,12 @@ namespace Prototype.Gameplay.Enemy
         protected Coroutine _stateWaitCoroutine;
         protected Vector2 _curHeadingDir;
         [SerializeField] protected LayerMask _playerLayer;
+        [SerializeField] protected AudioClip _attackedClip;
+        [SerializeField] protected AudioClip _dropPixelClip;
 
         [SerializeField] protected AnimationController _animationController;
-        [SerializeField] protected int _dropAmount;
+        [SerializeField] protected int _pixelDropAmount;
+        [SerializeField] protected uint _goldDropAmount;
 
         [Header("行为参数")]
         [SerializeField] protected float _walkSpeed;
@@ -168,15 +173,18 @@ namespace Prototype.Gameplay.Enemy
         public override void TakeDamage(string type, float damage)
         {
             base.TakeDamage(type, damage);
+            SoundManager.Instance.PlayEnvironmentClip(_attackedClip);
             if (currentHealth <= 0)
             {
-                for(int i = 0; i < _dropAmount; i++) 
+                for(int i = 0; i < _pixelDropAmount; i++) 
 		        { 
 				    int pixelIndex = (int)(Random.value * PixelTypes.Count);
 					Vector2 offset = Random.insideUnitCircle * _spawnRadius;
 					var pos =  transform.position + MathUtility.ToVector3(offset);
-				    base.DropPixel(PixelTypes[pixelIndex], pos);	
-		        }
+				    base.DropPixel(PixelTypes[pixelIndex], pos);
+                }
+                SoundManager.Instance.PlayEnvironmentClip(_dropPixelClip);
+                _player.GetComponent<PlayerWallet>().GainGold(_goldDropAmount);
                 Destroy(gameObject);
             }
             if(CanBeInterrupted)
