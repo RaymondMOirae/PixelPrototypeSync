@@ -35,7 +35,6 @@ namespace Prototype.Gameplay.Player
         // layers and filters
         [SerializeField] private LayerMask _attackLayer;
         [SerializeField] private LayerMask _interactLayer;
-        [SerializeField] private AudioClip _attackSound;
         private ContactFilter2D _interactFilter;
         
         // components
@@ -213,7 +212,6 @@ namespace Prototype.Gameplay.Player
         private void LaunchAttack(AttackType type)
         {
             _wController.Attack(type);
-            SoundManager.Instance.PlayPlayerSound(_attackSound);
             if (_wController.CurrentType == AttackType.M) _isDashing = true;
         }
 

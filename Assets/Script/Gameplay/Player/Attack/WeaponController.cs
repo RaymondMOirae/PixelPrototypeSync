@@ -5,6 +5,7 @@ using Prototype.Gameplay.Enemy;
 using Prototype.Gameplay.UI;
 using Prototype.Rendering;
 using Prototype.Element;
+using Script.GameSystem;
 
 namespace Prototype.Gameplay.Player.Attack
 {
@@ -15,6 +16,7 @@ namespace Prototype.Gameplay.Player.Attack
 
         [SerializeField] private bool _isAttacking = false;
         [SerializeField] private float _force;
+        [SerializeField] private AudioClip _attackSound;
         private AttackType _attackType = AttackType.NA;
 
         private Animator _animator;
@@ -77,6 +79,7 @@ namespace Prototype.Gameplay.Player.Attack
                 _isAttacking = true;
 
                 _touchInputs.TriggerCoolDownCheck(type);
+                SoundManager.Instance.PlayPlayerSound(_attackSound);
                 _animator.Play("Attack" + type.ToString(), 0, 0);
             }
             // else
