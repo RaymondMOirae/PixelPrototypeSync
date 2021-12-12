@@ -1733,18 +1733,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseHealthBar: 0
   CanDropPixel: 1
-  maxHealth: 999
+  maxHealth: 50
   currentHealth: 0
   _spawnRadius: 0
   _availableTypes: []
   _playerLayer:
     serializedVersion: 2
     m_Bits: 256
-  _attackedClip: {fileID: 0}
-  _dropPixelClip: {fileID: 0}
+  _attackedClip: {fileID: 8300000, guid: 077ceee07ae366a42958c1ec9d87b9a8, type: 3}
+  _dropPixelClip: {fileID: 8300000, guid: b137e324c7b02a24ca5de013849e187b, type: 3}
   _animationController: {fileID: 1809230731}
-  _pixelDropAmount: 0
-  _goldDropAmount: 0
+  _pixelDropAmount: 5
+  _goldDropAmount: 5
   _walkSpeed: 1
   _chaseSpeed: 0
   _staggerSpeed: 0
@@ -78594,18 +78594,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseHealthBar: 1
   CanDropPixel: 1
-  maxHealth: 999
+  maxHealth: 50
   currentHealth: 0
   _spawnRadius: 0
   _availableTypes: []
   _playerLayer:
     serializedVersion: 2
     m_Bits: 256
-  _attackedClip: {fileID: 0}
-  _dropPixelClip: {fileID: 0}
+  _attackedClip: {fileID: 8300000, guid: 077ceee07ae366a42958c1ec9d87b9a8, type: 3}
+  _dropPixelClip: {fileID: 8300000, guid: b137e324c7b02a24ca5de013849e187b, type: 3}
   _animationController: {fileID: 2024532531725680923}
-  _pixelDropAmount: 0
-  _goldDropAmount: 0
+  _pixelDropAmount: 5
+  _goldDropAmount: 5
   _walkSpeed: 0
   _chaseSpeed: 0
   _staggerSpeed: 0
@@ -81183,6 +81183,16 @@ PrefabInstance:
       propertyPath: _attackSound
       value: 
       objectReference: {fileID: 8300000, guid: 63ad54398b4d75d40a026365f0914475, type: 3}
+    - target: {fileID: 8273969897275074894, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.023
+      objectReference: {fileID: 0}
+    - target: {fileID: 8273969897275074894, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.205
+      objectReference: {fileID: 0}
     - target: {fileID: 8273969897481958072, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
         type: 3}
       propertyPath: m_Sprite
@@ -81258,6 +81268,11 @@ PrefabInstance:
       propertyPath: _attackSound
       value: 
       objectReference: {fileID: 8300000, guid: 63ad54398b4d75d40a026365f0914475, type: 3}
+    - target: {fileID: 8273969898208333879, guid: 4ddfef5a1bc5e11408b26e224e1f9abb,
+        type: 3}
+      propertyPath: _attackedSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 077ceee07ae366a42958c1ec9d87b9a8, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ddfef5a1bc5e11408b26e224e1f9abb, type: 3}
 --- !u!50 &8695204938893445408
@@ -81348,11 +81363,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 547651261}
     m_Modifications:
-    - target: {fileID: 1958243396526627243, guid: d7d6e6bdb0ffc4c2e9280fb12de9423a,
-        type: 3}
-      propertyPath: m_PresetInfoIsWorld
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7693368121486692754, guid: d7d6e6bdb0ffc4c2e9280fb12de9423a,
         type: 3}
       propertyPath: m_AnchorMax.x

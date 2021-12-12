@@ -119,8 +119,11 @@ MonoBehaviour:
   _playerLayer:
     serializedVersion: 2
     m_Bits: 256
+  _attackedClip: {fileID: 8300000, guid: 077ceee07ae366a42958c1ec9d87b9a8, type: 3}
+  _dropPixelClip: {fileID: 8300000, guid: b137e324c7b02a24ca5de013849e187b, type: 3}
   _animationController: {fileID: 9041562204777362869}
-  _dropAmount: 10
+  _pixelDropAmount: 0
+  _goldDropAmount: 0
   _walkSpeed: 2
   _chaseSpeed: 2.5
   _staggerSpeed: 7
@@ -456,6 +459,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 1710876789965274599, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+        type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 4887329487264502948}
     - target: {fileID: 6662701069686273086, guid: a6dd6d5d94fbbec46aaca397fb27114a,
         type: 3}
       propertyPath: m_Name
@@ -465,6 +473,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7374370705765084688, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8405999899431554944, guid: a6dd6d5d94fbbec46aaca397fb27114a,
         type: 3}
@@ -589,5 +602,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4887329487264502948 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4515242002771911455, guid: a6dd6d5d94fbbec46aaca397fb27114a,
+    type: 3}
+  m_PrefabInstance: {fileID: 9041562203707537339}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

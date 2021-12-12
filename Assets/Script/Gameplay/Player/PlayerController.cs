@@ -35,6 +35,7 @@ namespace Prototype.Gameplay.Player
         // layers and filters
         [SerializeField] private LayerMask _attackLayer;
         [SerializeField] private LayerMask _interactLayer;
+        [SerializeField] private AudioClip _attackedSound;
         private ContactFilter2D _interactFilter;
         
         // components
@@ -218,6 +219,7 @@ namespace Prototype.Gameplay.Player
         public void TakeDamage(float d)
         {
             base.TakeDamage("Enemy", d);
+            SoundManager.Instance.PlayPlayerSound(_attackedSound);
             Debug.Log("Player Received" + d + "Damage");
         }
 

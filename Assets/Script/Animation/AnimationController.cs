@@ -40,7 +40,7 @@ namespace Prototype.Animation
         {
             if (_taskCompletionSources.TryGetValue(eventName, out var completionSource) && completionSource != null)
             {
-                completionSource.TrySetResult(true);
+                completionSource.SetResult(true);
             }
         }
 
